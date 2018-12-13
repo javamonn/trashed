@@ -1,0 +1,5 @@
+web/src/pages/*.js
+web/lib
+web/node_modules
+
+api/.env
