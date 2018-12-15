@@ -69,5 +69,7 @@ yarn-error.log
 .yarn-integrity
 
 lib
+.merlin
 
 src/**/*.js
+
