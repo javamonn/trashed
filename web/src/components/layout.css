@@ -1,3 +1,65 @@
+:root {
+  --brand-color: #aed581;
+  --gray1: #eeeeee;
+  --primary-dark: rgba(0, 0, 0, 0.87);
+  --secondary-dark: rgba(0, 0, 0, 0.6);
+  --divider-dark: rgba(0, 0, 0, 0.12);
+}
+
+.bg-brand {
+  background-color: var(--brand-color);
+}
+
+.bg-gray-1 {
+  background-color: var(--gray1);
+}
+
+.pd {
+  color: var(--primary-dark);
+}
+
+.sd {
+  color: var(--secondary-dark);
+}
+
+.b--divider-dark {
+  border-color: var(--divider-dark);
+}
+
+.f36 {
+  font-size: 36px;
+}
+.f18 {
+  font-size: 18px;
+}
+.f15 {
+  font-size: 15px;
+}
+.f13 {
+  font-size: 13px;
+}
+
 .ff-lobster {
   font-family: 'Lobster', serif;
+}
+
+.ff-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.ff-abril-fatface {
+  font-family: 'Abril Fatface', serif;
+}
+
+.lh22 {
+  line-height: 22px;
+}
+
+.pa_75 {
+  padding: 0.75rem;
+}
+
+.pv_75 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }

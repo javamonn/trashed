@@ -1,0 +1,10 @@
+input[type='email']::placeholder {
+  font-family: 'Poppins', sans-serif;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 13px;
+}
+
+input:focus[type='email'] {
+  outline-color: var(--brand-color);
+}

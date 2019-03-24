@@ -1,18 +1,19 @@
 open Styles;
 
-[@bs.val] external require : string => unit = "";
+Utils.require("tachyons/css/tachyons.min.css");
 
-require("tachyons/css/tachyons.min.css");
-require("./layout.css");
-require("typeface-lobster");
+Utils.require("typeface-lobster");
+Utils.require("typeface-poppins");
+Utils.require("typeface-abril-fatface");
 
+Utils.require("./layout.css");
 
 let component = ReasonReact.statelessComponent("Layout")
 
 let make = (children) => {
   ...component,
   render: (_self) =>
-    <div className={cn(["absolute", "absolute--fill", "flex"])}> 
+    <div className={cn(["absolute", "absolute--fill", "flex", "flex-column"])}> 
       ...children
     </div>
 };

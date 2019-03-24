@@ -3,21 +3,23 @@
   "version": "1.0.0",
   "dependencies": {
     "gatsby": "^2.0.53",
-    "gatsby-image": "^2.0.20",
-    "gatsby-plugin-manifest": "^2.0.9",
-    "gatsby-plugin-offline": "^2.0.16",
-    "gatsby-plugin-react-helmet": "^3.0.2",
-    "gatsby-plugin-sharp": "^2.0.14",
-    "gatsby-source-filesystem": "^2.0.8",
-    "gatsby-transformer-sharp": "^2.1.8",
-    "prop-types": "^15.6.2",
+    "gatsby-image": "^2.0.34",
+    "gatsby-plugin-manifest": "^2.0.24",
+    "gatsby-plugin-offline": "^2.0.25",
+    "gatsby-plugin-react-helmet": "^3.0.10",
+    "gatsby-plugin-sharp": "^2.0.30",
+    "gatsby-source-filesystem": "^2.0.28",
+    "gatsby-transformer-sharp": "^2.1.17",
+    "prop-types": "^15.6.4",
     "re-classnames": "^3.0.0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
     "react-helmet": "^5.2.0",
-    "reason-react": "^0.5.3",
+    "reason-react": "^0.6.0",
     "tachyons": "^4.11.1",
-    "typeface-lobster": "0.0.54"
+    "typeface-abril-fatface": "0.0.72",
+    "typeface-lobster": "0.0.72",
+    "typeface-poppins": "0.0.72"
   },
   "keywords": [
     "gatsby"
@@ -35,7 +37,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "bs-platform": "^4.0.11",
+    "bs-platform": "^5.0.0",
     "concurrently": "^4.1.0",
     "prettier": "^1.15.2"
   },
