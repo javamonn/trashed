@@ -39,6 +39,7 @@ let make = _children => {
               <Button
                 label={ReasonReact.string("Read our journal")}
                 type_="button"
+                href="https://blog.trashed.today"
               />
             </div>
           </div>

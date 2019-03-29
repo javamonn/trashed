@@ -23,7 +23,9 @@ let make = _children => {
             "pa_75",
             "bg-transparent",
             "mr2",
-            "flex-auto"
+            "flex-auto",
+            "ff-poppins",
+            "f13"
           ])}
         />
         <Button
