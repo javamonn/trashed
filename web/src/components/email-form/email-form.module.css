@@ -1,10 +1,10 @@
-input[type='email']::placeholder {
+input[type='tel']::placeholder {
   font-family: 'Poppins', sans-serif;
   font-style: italic;
   color: rgba(0, 0, 0, 0.72);
   font-size: 13px;
 }
 
-input:focus[type='email'] {
+input:focus[type='tel'] {
   outline-color: var(--brand-color);
 }
