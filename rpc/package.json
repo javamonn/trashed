@@ -1,0 +1,23 @@
+{
+  "name": "google-nodejs",
+  "version": "0.1.0",
+  "description": "",
+  "main": "Index.bs.js",
+  "scripts": {
+    "bsb:build": "bsb -make-world",
+    "bsb:start": "bsb -make-world -w",
+    "bsb:clean": "bsb -clean-world",
+    "serverless:deploy": "serverless deploy",
+    "deploy": "npm run bsb:clean && npm run bsb:build && npm run serverless:deploy",
+    "start": "npm run bsb:start"
+  },
+  "author": "serverless.com",
+  "license": "MIT",
+  "dependencies": {
+    "bs-express": "^0.12.0",
+    "bs-platform": "^5.0.6"
+  },
+  "devDependencies": {
+    "serverless-google-cloudfunctions": "*"
+  }
+}
