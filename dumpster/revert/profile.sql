@@ -2,6 +2,6 @@
 
 BEGIN;
 
--- XXX Add DDLs here.
+  drop table if exists dumpster.profile;
 
 COMMIT;

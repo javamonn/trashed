@@ -2,6 +2,6 @@
 
 BEGIN;
 
--- XXX Add verifications here.
+  select * from bigspring.profile where false;
 
 ROLLBACK;
