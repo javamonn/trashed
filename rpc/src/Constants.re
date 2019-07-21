@@ -5,3 +5,7 @@ module Env = {
   [@bs.val]
   external twilioAuthToken: string = "process.env.TWILIO_AUTH_TOKEN";
 };
+
+module Strings = {
+  let phoneNumberRegistered = "Trashed!";
+};
