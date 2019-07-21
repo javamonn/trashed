@@ -7,6 +7,10 @@ provider:
   region: us-east1
   project: trashed-225300
   credentials: ~/.gcloud/trashed-serverless-service-account-pkey.json
+  environment:
+    TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER} 
+    TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN}
+    TWILIO_SID: ${env:TWILIO_SID}
 
 plugins:
   - serverless-google-cloudfunctions
@@ -19,10 +23,11 @@ package:
     - .git/**
 
 functions:
-  first:
-    handler: http
+  registerNotificationsPhoneNumber:
+    handler: registerNotificationsPhoneNumber
     events:
-      - http: path
+      - http: registerNotificationsPhoneNumber
+
 
 # you can define resources, templates etc. the same way you would in a
 # Google Cloud deployment configuration

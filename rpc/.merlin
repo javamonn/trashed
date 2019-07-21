@@ -8,6 +8,16 @@ FLG -nostdlib -color always
 FLG -w -30-40+6+7+27+32..39+44+45+101
 S /home/daniel/Documents/javamonn/trashed/rpc/node_modules/bs-express/lib/ocaml
 B /home/daniel/Documents/javamonn/trashed/rpc/node_modules/bs-express/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/rpc/node_modules/@glennsl/bs-json/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/rpc/node_modules/@glennsl/bs-json/lib/ocaml
 S .
 B lib/bs
+S src
+B lib/bs/src
+S src/bindings
+B lib/bs/src/bindings
+S src/services
+B lib/bs/src/services
+S src/endpoints
+B lib/bs/src/endpoints
 ####BSB GENERATED: NO EDIT}
