@@ -11,6 +11,9 @@ Parameters:
     Type: String
   unauthRoleArn:
     Type: String
+  
+  
+
     
   identityPoolName:
     Type: String
@@ -98,10 +101,7 @@ Parameters:
               
   additionalQuestions:
     Type: CommaDelimitedList
-      
-  triggers:
-    Type: String
-                    
+            
   parentStack:
     Type: String
                 
@@ -115,6 +115,9 @@ Parameters:
     Type: String
               
   hostedUI:
+    Type: String
+            
+  triggers:
     Type: String
             
 Conditions:
@@ -169,6 +172,8 @@ Resources:
           Mutable: true
         
       
+      
+      
       AutoVerifiedAttributes: !Ref autoVerifiedAttributes
       
             
@@ -188,6 +193,14 @@ Resources:
         SnsCallerArn: !GetAtt SNSRole.Arn
         ExternalId: trashe452c5745_role_external_id
     
+  
+    
+    
+  
+    
+    
+  
+   
     
   # Updating lambda role with permissions to Cognito
   

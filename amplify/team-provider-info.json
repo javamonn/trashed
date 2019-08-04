@@ -1,19 +1,19 @@
 {
-  "master": {
-    "awscloudformation": {
-      "AuthRoleName": "trashed-master-20190804154733-authRole",
-      "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-master-20190804154733-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-master-20190804154733-authRole",
-      "Region": "ap-south-1",
-      "DeploymentBucketName": "trashed-master-20190804154733-deployment",
-      "UnauthRoleName": "trashed-master-20190804154733-unauthRole",
-      "StackName": "trashed-master-20190804154733",
-      "StackId": "arn:aws:cloudformation:ap-south-1:046525304497:stack/trashed-master-20190804154733/c0366f70-b6f0-11e9-bfcf-0a4de2914436"
-    },
-    "categories": {
-      "auth": {
-        "trashed452c5745": {}
-      }
+    "master": {
+        "awscloudformation": {
+            "AuthRoleName": "trashed-master-20190804154733-authRole",
+            "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-master-20190804154733-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-master-20190804154733-authRole",
+            "Region": "ap-south-1",
+            "DeploymentBucketName": "trashed-master-20190804154733-deployment",
+            "UnauthRoleName": "trashed-master-20190804154733-unauthRole",
+            "StackName": "trashed-master-20190804154733",
+            "StackId": "arn:aws:cloudformation:ap-south-1:046525304497:stack/trashed-master-20190804154733/c0366f70-b6f0-11e9-bfcf-0a4de2914436"
+        },
+        "categories": {
+            "auth": {
+                "trashed452c5745": {}
+            }
+        }
     }
-  }
 }
