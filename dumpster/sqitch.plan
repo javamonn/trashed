@@ -1,6 +1,0 @@
-%syntax-version=1.0.0
-%project=dumpster
-%uri=https://github.com/javamonn/trashed
-
-schema 2019-07-21T18:38:16Z daniel,,, <daniel@debian> # Add schema
-profile 2019-07-21T18:58:37Z daniel,,, <daniel@debian> # Add profile table
