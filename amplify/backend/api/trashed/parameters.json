@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "trashed",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authtrashed452c5745",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
