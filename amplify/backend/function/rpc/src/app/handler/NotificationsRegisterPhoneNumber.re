@@ -9,29 +9,30 @@ module Params = {
     );
 };
 
-let handler = (request, response) => {
-  switch (
-    request
-    |> Express.Request.bodyJSON
-    |> Js.Option.andThen(Utils.wrapBs(Params.decode))
-  ) {
-  | Some(p) =>
-    TwilioService.sendMessage(
-      ~to_=Params.phoneNumberGet(p),
-      ~body=Constants.Strings.phoneNumberRegistered,
-    )
-    |> Js.Promise.then_(_r =>
-         Express.Response.(
-           response |> status(StatusCode.Ok) |> sendString("Ok.")
+let handler =
+  Express.PromiseMiddleware.from((_next, request, response) =>
+    switch (
+      request
+      |> Express.Request.bodyJSON
+      |> Js.Option.andThen(Utils.wrapBs(Params.decode))
+    ) {
+    | Some(p) =>
+      TwilioService.sendMessage(
+        ~to_=Params.phoneNumberGet(p),
+        ~body=Constants.Strings.phoneNumberRegistered,
+      )
+      |> Js.Promise.then_(_r =>
+           Express.Response.(
+             response |> status(StatusCode.Ok) |> sendString("Ok.")
+           )
+           |> Js.Promise.resolve
          )
-         |> Js.Promise.resolve
-       )
-  | None =>
-    Express.Response.(
-      response
-      |> status(StatusCode.BadRequest)
-      |> sendString("Missing phoneNumber.")
-      |> Js.Promise.resolve
-    )
-  };
-};
+    | None =>
+      Express.Response.(
+        response
+        |> status(StatusCode.BadRequest)
+        |> sendString("Missing phoneNumber.")
+        |> Js.Promise.resolve
+      )
+    }
+  );

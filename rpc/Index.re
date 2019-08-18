@@ -1,1 +1,0 @@
-let registerNotificationsPhoneNumber = RegisterNotificationsPhoneNumber.handler;
