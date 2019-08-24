@@ -85,3 +85,7 @@ dist/
 node_modules/
 aws-exports.js
 awsconfiguration.json
+
+amplify/backend/function
+amplify/backend/api
+amplify/backend/auth
