@@ -17,7 +17,8 @@
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
-    "start": "npm run bsb:start"
+    "start": "npm run bsb:start",
+    "build": "npm run bsb:clean && npm run bsb:build"
   },
   "author": "",
   "license": "ISC"

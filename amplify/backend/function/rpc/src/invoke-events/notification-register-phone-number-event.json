@@ -1,0 +1,7 @@
+{
+  "httpMethod": "GET",
+  "body": "{\"phoneNumber\": \"+16465467952\"}",
+  "path": "/notifications/register-phone-number",
+  "resource": "/{proxy+}",
+  "queryStringParameters": {}
+}
