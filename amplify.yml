@@ -1,0 +1,21 @@
+version: 0.1
+backend:
+  phases:
+    preBuild:
+      commands:
+        - ./amplify/scripts/prebuild-function.sh
+    build:
+      commands:
+        - ./amplify/scripts/build-function.sh
+frontend:
+  phases:
+    # IMPORTANT - Please verify your build commands
+    build:
+      commands: []
+  artifacts:
+    # IMPORTANT - Please verify your build output directory
+    baseDirectory: /
+    files:
+      - '**/*'
+  cache:
+    paths: []
