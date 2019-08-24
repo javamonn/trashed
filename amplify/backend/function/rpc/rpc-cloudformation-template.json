@@ -32,11 +32,11 @@
 		"LambdaFunction": {
 			"Type": "AWS::Lambda::Function",
 			"Metadata": {
-				"aws:asset:path": "./src",
+				"aws:asset:path": "./src/dist",
 				"aws:asset:property": "Code"
 			},
 			"Properties": {
-				"Handler": "index.handler",
+				"Handler": "bundle.handler",
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
@@ -84,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/rpc-47484c4e7334676a5a59-build.zip"
+					"S3Key": "amplify-builds/rpc-707670346f3748787779-build.zip"
 				}
 			}
 		},

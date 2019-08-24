@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config({ debug: true, path: '.env.development' })
+  require('dotenv').config({ debug: true, path: '.env' })
 }
 
 const awsServerlessExpress = require('aws-serverless-express');
