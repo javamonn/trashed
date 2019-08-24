@@ -1,0 +1,31 @@
+{
+  "name": "rpc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "aws-serverless-express": "^3.3.5",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "@glennsl/bs-json": "^4.0.0",
+    "bs-express": "^0.12.0",
+    "bs-platform": "^5.0.6",
+    "twilio": "^3.33.1"
+  },
+  "devDependencies": {
+    "dotenv": "^8.1.0",
+    "dotenv-cli": "^2.0.1",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "scripts": {
+    "bsb:build": "bsb -make-world",
+    "bsb:start": "bsb -make-world -w",
+    "bsb:clean": "bsb -clean-world",
+    "start": "npm run bsb:start",
+    "webpack:build": "npm run bsb:clean && npm run bsb:build && webpack",
+    "build": "NODE_ENV=production dotenv npm run webpack:build"
+  },
+  "author": "",
+  "license": "ISC"
+}
