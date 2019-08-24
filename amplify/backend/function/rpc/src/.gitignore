@@ -2,3 +2,4 @@ node_modules
 lib
 *.bs.js
 .merlin
+.env.development
