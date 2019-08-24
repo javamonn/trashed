@@ -27,6 +27,15 @@ let handler =
            )
            |> Js.Promise.resolve
          )
+      |> Js.Promise.catch(ex => {
+           Js.log(ex);
+           Express.Response.(
+             response
+             |> status(StatusCode.ServiceUnavailable)
+             |> sendString("Unable to process request.")
+           )
+           |> Js.Promise.resolve;
+         })
     | None =>
       Express.Response.(
         response
