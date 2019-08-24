@@ -12,7 +12,9 @@
     "bs-platform": "^5.0.6",
     "twilio": "^3.33.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "dotenv": "^8.1.0"
+  },
   "scripts": {
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",

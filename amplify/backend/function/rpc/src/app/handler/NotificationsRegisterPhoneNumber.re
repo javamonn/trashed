@@ -10,7 +10,8 @@ module Params = {
 };
 
 let handler =
-  Express.PromiseMiddleware.from((_next, request, response) =>
+  Express.PromiseMiddleware.from((_next, request, response) => {
+    Js.log("invoke: NotificationsRegisterPhoneNumber");
     switch (
       request
       |> Express.Request.bodyJSON
@@ -44,4 +45,4 @@ let handler =
         |> Js.Promise.resolve
       )
     }
-  );
+  });
