@@ -1,7 +1,0 @@
-type Item @model {
-	id: ID!
-	title: String!
-	content: String!
-	price: Int
-	rating: Float
-}
