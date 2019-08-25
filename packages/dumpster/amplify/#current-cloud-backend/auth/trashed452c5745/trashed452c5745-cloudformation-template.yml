@@ -3,14 +3,32 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   env:
     Type: String
-  authRoleName:
-    Type: String
-  unauthRoleName:
-    Type: String
   authRoleArn:
     Type: String
   unauthRoleArn:
     Type: String
+  
+  
+  
+  
+  functiontrashed452c5745PostConfirmationArn: 
+    Type: String
+    Default: functiontrashed452c5745PostConfirmationArn
+  
+  functiontrashed452c5745PostConfirmationName: 
+    Type: String
+    Default: functiontrashed452c5745PostConfirmationName
+  
+  
+  
+  functiontrashed452c5745PreSignupArn: 
+    Type: String
+    Default: functiontrashed452c5745PreSignupArn
+  
+  functiontrashed452c5745PreSignupName: 
+    Type: String
+    Default: functiontrashed452c5745PreSignupName
+  
   
   
 
@@ -21,9 +39,6 @@ Parameters:
   allowUnauthenticatedIdentities:
     Type: String
             
-  openIdLambdaRoleName:
-    Type: String
-              
   resourceNameTruncated:
     Type: String
               
@@ -62,10 +77,7 @@ Parameters:
               
   requiredAttributes:
     Type: CommaDelimitedList
-      
-  userpoolClientName:
-    Type: String
-                
+        
   userpoolClientGenerateSecret:
     Type: String
                 
@@ -78,9 +90,6 @@ Parameters:
   userpoolClientReadAttributes:
     Type: CommaDelimitedList
       
-  mfaLambdaRole:
-    Type: String
-              
   userpoolClientLambdaRole:
     Type: String
                 
@@ -92,14 +101,11 @@ Parameters:
               
   authSelections:
     Type: String
-                                                              
+                                      
   useDefault:
     Type: String
                       
   usernameAttributes:
-    Type: CommaDelimitedList
-              
-  additionalQuestions:
     Type: CommaDelimitedList
             
   parentStack:
@@ -173,6 +179,20 @@ Resources:
         
       
       
+      LambdaConfig:
+        
+        
+        
+        
+        
+          PostConfirmation: !Ref functiontrashed452c5745PostConfirmationArn
+        
+        
+        
+          PreSignUp: !Ref functiontrashed452c5745PreSignupArn
+        
+        
+      
       
       AutoVerifiedAttributes: !Ref autoVerifiedAttributes
       
@@ -198,8 +218,26 @@ Resources:
     
   
     
+  
+  UserPoolPostConfirmationLambdaInvokePermission: 
+    Type: "AWS::Lambda::Permission"
+    DependsOn: UserPool
+    Properties: 
+      Action: "lambda:invokeFunction"
+      Principal: "cognito-idp.amazonaws.com"
+      FunctionName: !Ref functiontrashed452c5745PostConfirmationName
+      SourceArn: !GetAtt UserPool.Arn
     
   
+  
+  UserPoolPreSignupLambdaInvokePermission: 
+    Type: "AWS::Lambda::Permission"
+    DependsOn: UserPool
+    Properties: 
+      Action: "lambda:invokeFunction"
+      Principal: "cognito-idp.amazonaws.com"
+      FunctionName: !Ref functiontrashed452c5745PreSignupName
+      SourceArn: !GetAtt UserPool.Arn
    
     
   # Updating lambda role with permissions to Cognito
@@ -220,7 +258,7 @@ Resources:
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: !Ref userpoolClientName
+      ClientName: trashe452c5745_app_client
       
       GenerateSecret: !Ref userpoolClientGenerateSecret
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity

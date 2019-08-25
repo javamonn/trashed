@@ -1,7 +1,6 @@
 {
     "identityPoolName": "trashed452c5745_identitypool_452c5745",
     "allowUnauthenticatedIdentities": true,
-    "openIdLambdaRoleName": "trashe452c5745_openid_lambda_role",
     "resourceNameTruncated": "trashe452c5745",
     "userPoolName": "trashed452c5745_userpool_452c5745",
     "autoVerifiedAttributes": [
@@ -21,7 +20,6 @@
     "requiredAttributes": [
         "phone_number"
     ],
-    "userpoolClientName": "trashe452c5745_app_client",
     "userpoolClientGenerateSecret": true,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
@@ -30,17 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "mfaLambdaRole": "trashe452c5745_totp_lambda_role",
     "userpoolClientLambdaRole": "trashe452c5745_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
     "resourceName": "trashed452c5745",
     "authSelections": "identityPoolAndUserPool",
-    "authRoleName": {
-        "Ref": "AuthRoleName"
-    },
-    "unauthRoleName": {
-        "Ref": "UnauthRoleName"
-    },
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",
@@ -57,16 +48,31 @@
     "usernameAttributes": [
         "email, phone_number"
     ],
-    "additionalQuestions": [
-        "requiredAttributes",
-        "triggers"
-    ],
     "parentStack": {
         "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "dependsOn": [],
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "trashed452c5745PostConfirmation",
+            "triggerProvider": "Cognito",
+            "attributes": [
+                "Arn",
+                "Name"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "trashed452c5745PreSignup",
+            "triggerProvider": "Cognito",
+            "attributes": [
+                "Arn",
+                "Name"
+            ]
+        }
+    ],
     "thirdPartyAuth": false,
     "hostedUI": false,
-    "triggers": "{}"
+    "triggers": "{\"PostConfirmation\":[\"custom\"],\"PreSignup\":[\"custom\"]}"
 }

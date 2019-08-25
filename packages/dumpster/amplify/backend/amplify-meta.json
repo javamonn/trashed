@@ -15,22 +15,41 @@
 		"trashed452c5745": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation",
-			"dependsOn": [],
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "trashed452c5745PostConfirmation",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "trashed452c5745PreSignup",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				}
+			],
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/auth/trashed452c5745-cloudformation-template.yml",
 				"logicalId": "authtrashed452c5745"
 			},
-			"lastPushTimeStamp": "2019-08-24T21:14:14.784Z",
+			"lastPushTimeStamp": "2019-08-25T19:34:35.256Z",
 			"output": {
-				"AppClientSecret": "1i683144fqvk61tl9pm4nd717s6qlpq2kdb8b3e5q05h85rgdf83",
-				"UserPoolId": "us-east-1_fADUvvMXP",
-				"AppClientIDWeb": "4phi6jh50qdo4k25pj9cc2us82",
-				"AppClientID": "7hjiekld8k8dqulma539bhun3v",
+				"AppClientSecret": "oh10fsivs5gjlh0s99qaq21eg7dltthhs918pbhe1ghudmg2p7v",
+				"UserPoolId": "us-east-1_qG3AN42lX",
+				"AppClientIDWeb": "552dnc6o7mefoba71ib814ovge",
+				"AppClientID": "3q5eclrpc48jd3bjkechq9snb8",
 				"IdentityPoolId": "us-east-1:4b017cc7-d78a-4bfc-b024-1cc6c2b92834",
 				"IdentityPoolName": "trashed452c5745_identitypool_452c5745__production",
 				"UserPoolName": "trashed452c5745_userpool_452c5745"
 			},
-			"lastPushDirHash": "SF52T2leYL80hiSNWtKuOYoF/NY="
+			"lastPushDirHash": "mAkaOiJ2RDD8crF1mmFYyOWIbPE="
 		}
 	},
 	"api": {
@@ -46,7 +65,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apitrashed"
 			},
-			"lastPushTimeStamp": "2019-08-24T21:14:14.785Z",
+			"lastPushTimeStamp": "2019-08-25T19:34:35.254Z",
 			"lastPushDirHash": "E5VXYbD8h4aNXUCGiygbmYuvhmU="
 		}
 	},
@@ -79,7 +98,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/rpc-cloudformation-template.json",
 				"logicalId": "functionrpc"
 			},
-			"lastPushTimeStamp": "2019-08-24T21:14:14.787Z",
+			"lastPushTimeStamp": "2019-08-25T19:34:35.255Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:rpc-production",
@@ -87,6 +106,44 @@
 				"LambdaExecutionRole": "trashedLambdaRole59092232-production"
 			},
 			"lastPushDirHash": "pStWlaTZ/gnfGhYgq4XeMlML9Us="
+		},
+		"trashed452c5745PostConfirmation": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"lastBuildTimeStamp": "2019-08-25T19:26:57.096Z",
+			"lastPackageTimeStamp": "2019-08-25T19:26:59.116Z",
+			"distZipFilename": "trashed452c5745PostConfirmation-7530755a6e474a6d6a65-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
+				"logicalId": "functiontrashed452c5745PostConfirmation"
+			},
+			"lastPushTimeStamp": "2019-08-25T19:34:35.256Z",
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PostConfirmation-production",
+				"Name": "trashed452c5745PostConfirmation-production"
+			},
+			"lastPushDirHash": "dGMCWGnVOg4l3lByQZPe/9Kox+k="
+		},
+		"trashed452c5745PreSignup": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"lastBuildTimeStamp": "2019-08-25T19:26:58.733Z",
+			"lastPackageTimeStamp": "2019-08-25T19:26:58.819Z",
+			"distZipFilename": "trashed452c5745PreSignup-63462f3031374f715863-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
+				"logicalId": "functiontrashed452c5745PreSignup"
+			},
+			"lastPushTimeStamp": "2019-08-25T19:34:35.256Z",
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PreSignup-production",
+				"Name": "trashed452c5745PreSignup-production"
+			},
+			"lastPushDirHash": "hTFBdZJPlIgBpnsEyGiGVgDv/VY="
 		}
 	},
 	"hosting": {}

@@ -75,7 +75,6 @@
 				"Parameters": {
 					"identityPoolName": "trashed452c5745_identitypool_452c5745",
 					"allowUnauthenticatedIdentities": true,
-					"openIdLambdaRoleName": "trashe452c5745_openid_lambda_role",
 					"resourceNameTruncated": "trashe452c5745",
 					"userPoolName": "trashed452c5745_userpool_452c5745",
 					"autoVerifiedAttributes": "phone_number",
@@ -89,22 +88,14 @@
 					"passwordPolicyMinLength": 8,
 					"passwordPolicyCharacters": "",
 					"requiredAttributes": "phone_number",
-					"userpoolClientName": "trashe452c5745_app_client",
 					"userpoolClientGenerateSecret": true,
 					"userpoolClientRefreshTokenValidity": 30,
 					"userpoolClientWriteAttributes": "email",
 					"userpoolClientReadAttributes": "email",
-					"mfaLambdaRole": "trashe452c5745_totp_lambda_role",
 					"userpoolClientLambdaRole": "trashe452c5745_userpoolclient_lambda_role",
 					"userpoolClientSetAttributes": false,
 					"resourceName": "trashed452c5745",
 					"authSelections": "identityPoolAndUserPool",
-					"authRoleName": {
-						"Ref": "AuthRoleName"
-					},
-					"unauthRoleName": {
-						"Ref": "UnauthRoleName"
-					},
 					"authRoleArn": {
 						"Fn::GetAtt": [
 							"AuthRole",
@@ -119,15 +110,38 @@
 					},
 					"useDefault": "manual",
 					"usernameAttributes": "email, phone_number",
-					"additionalQuestions": "requiredAttributes,triggers",
 					"parentStack": {
 						"Ref": "AWS::StackId"
 					},
 					"permissions": "",
-					"dependsOn": "",
+					"dependsOn": "[object Object],[object Object]",
 					"thirdPartyAuth": false,
 					"hostedUI": false,
-					"triggers": "{}",
+					"triggers": "{\"PostConfirmation\":[\"custom\"],\"PreSignup\":[\"custom\"]}",
+					"functiontrashed452c5745PostConfirmationArn": {
+						"Fn::GetAtt": [
+							"functiontrashed452c5745PostConfirmation",
+							"Outputs.Arn"
+						]
+					},
+					"functiontrashed452c5745PostConfirmationName": {
+						"Fn::GetAtt": [
+							"functiontrashed452c5745PostConfirmation",
+							"Outputs.Name"
+						]
+					},
+					"functiontrashed452c5745PreSignupArn": {
+						"Fn::GetAtt": [
+							"functiontrashed452c5745PreSignup",
+							"Outputs.Arn"
+						]
+					},
+					"functiontrashed452c5745PreSignupName": {
+						"Fn::GetAtt": [
+							"functiontrashed452c5745PreSignup",
+							"Outputs.Name"
+						]
+					},
 					"env": "production"
 				}
 			}
@@ -175,6 +189,28 @@
 							"Outputs.GraphQLAPIEndpointOutput"
 						]
 					},
+					"env": "production"
+				}
+			}
+		},
+		"functiontrashed452c5745PostConfirmation": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
+				"Parameters": {
+					"modules": "custom",
+					"resourceName": "trashed452c5745PostConfirmation",
+					"env": "production"
+				}
+			}
+		},
+		"functiontrashed452c5745PreSignup": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
+				"Parameters": {
+					"modules": "custom",
+					"resourceName": "trashed452c5745PreSignup",
 					"env": "production"
 				}
 			}
