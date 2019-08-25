@@ -1,9 +1,10 @@
 {
-  "name": "trashed",
+  "name": "@javamonn/landfill",
   "version": "1.0.0",
   "dependencies": {
     "@material-ui/core": "^4.2.0",
     "@material-ui/icons": "^4.2.1",
+    "aws-amplify": "^1.1.36",
     "gatsby": "^2.13.6",
     "gatsby-image": "^2.2.4",
     "gatsby-plugin-manifest": "^2.2.1",
