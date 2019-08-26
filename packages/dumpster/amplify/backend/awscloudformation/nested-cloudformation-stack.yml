@@ -209,7 +209,7 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
 				"Parameters": {
-					"modules": "custom",
+					"modules": "PreSignup.bs.js",
 					"resourceName": "trashed452c5745PreSignup",
 					"env": "production"
 				}
