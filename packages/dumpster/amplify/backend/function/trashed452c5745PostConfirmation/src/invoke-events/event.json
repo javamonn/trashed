@@ -1,7 +1,10 @@
 {
     "request": {
         "userPoolId": "testID",
-        "userName": "testUser"
+        "userName": "+16465467952",
+        "userAttributes": {
+          "phone_number": "+16465467952"
+        }
     },
     "response": {}
 }

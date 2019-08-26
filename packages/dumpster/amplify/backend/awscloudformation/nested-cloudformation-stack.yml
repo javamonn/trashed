@@ -198,7 +198,7 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
 				"Parameters": {
-					"modules": "custom",
+					"modules": "./dist/bundle.js",
 					"resourceName": "trashed452c5745PostConfirmation",
 					"env": "production"
 				}
@@ -209,7 +209,7 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
 				"Parameters": {
-					"modules": "PreSignup.bs.js",
+					"modules": "./app/Index.bs.js",
 					"resourceName": "trashed452c5745PreSignup",
 					"env": "production"
 				}

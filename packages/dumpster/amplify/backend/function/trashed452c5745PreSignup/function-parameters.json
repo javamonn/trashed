@@ -1,7 +1,7 @@
 {
     "trigger": true,
     "modules": [
-      "PreSignup.bs.js"
+      "app/Index.bs.js"
     ],
     "parentResource": "trashed452c5745",
     "functionName": "trashed452c5745PreSignup",

@@ -1,4 +1,4 @@
 {
-    "modules": "dist/bundle.js",
+    "modules": "./dist/bundle.js",
     "resourceName": "trashed452c5745PostConfirmation"
 }
