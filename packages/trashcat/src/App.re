@@ -1,7 +1,9 @@
 open Externals;
 open Lib.Styles;
+open Lib.Utils;
 
-[%%raw "import './app.pcss'"];
+%raw
+"import './app.pcss'";
 
 [@react.component]
 let make = () => {
@@ -17,16 +19,18 @@ let make = () => {
              let _ =
                switch (videoRef |> React.Ref.current |> Js.Nullable.toOption) {
                | Some(elem) =>
-                 let videoElem = VideoElement.unsafeAsVideoElement(elem);
-                 let _ = VideoElement.setSrcObject(videoElem, stream);
                  let _ =
-                   VideoElement.setOnLoadedMetadata(
-                     videoElem,
-                     _ev => {
-                       let _ = VideoElement.play(videoElem);
-                       ();
-                     },
-                   );
+                   elem
+                   *> Webapi.Dom.Element.setAttribute("muted", "true")
+                   *> Webapi.Dom.Element.setAttribute("playsinline", "true");
+                 let videoElem = VideoElement.unsafeAsVideoElement(elem);
+                 let _ =
+                   videoElem
+                   *> VideoElement.setSrcObject(stream)
+                   *> VideoElement.setOnLoadedMetadata(_ev => {
+                        let _ = VideoElement.play(videoElem);
+                        ();
+                      });
                  ();
                | None => ()
                };
@@ -37,7 +41,7 @@ let make = () => {
     });
 
   <video
-    className={cn(["h-screen", "w-screen"])}
+    className={cn(["h-screen", "w-screen", "object-cover"])}
     ref={ReactDOMRe.Ref.domRef(videoRef)}
   />;
 };
