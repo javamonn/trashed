@@ -9,23 +9,26 @@
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
     "rollup:start": "rollup -c -w",
-    "serve": "http-server \"./dist\"",
-    "start": "concurrently -k -n \"serve,bsb,webpack\" \"npm run serve\"  \"npm run bsb:start\" \"npm run rollup:start\""
+    "serve": "node ./static-server.js",
+    "start": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "bs-platform": "^5.0.6",
     "concurrently": "^4.1.2",
-    "http-server": "^0.11.1",
+    "node-static": "^0.7.11",
     "prettier": "^1.18.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "rollup": "^1.20.3",
+    "rollup-plugin-cleaner": "^1.0.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
-    "tachyons": "^4.11.1"
+    "tachyons": "^4.11.1",
+    "tailwindcss": "^1.1.2"
   },
   "dependencies": {
     "re-classnames": "^4.0.0",

@@ -12,4 +12,8 @@ S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/re-clas
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/re-classnames/lib/ocaml
 S src
 B lib/bs/src
+S src/externals
+B lib/bs/src/externals
+S src/lib
+B lib/bs/src/lib
 ####BSB GENERATED: NO EDIT}
