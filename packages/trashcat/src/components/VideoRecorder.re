@@ -53,7 +53,7 @@ module PhaseState = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~mimeType) => {
   let (phaseState, dispatchPhaseAction) =
     React.useReducer(
       (state, action) =>
@@ -86,12 +86,19 @@ let make = () => {
           | HandleRecorderEvent((MediaRecorder.Event.Stop, _ev)) =>
             switch (state) {
             | PhaseRecording(recording) =>
+              Js.log(recording->Recording.dataGet);
               let blob =
                 File.makeBlob(
                   recording->Recording.dataGet,
-                  File.blobOptions(~type_="video/webm"),
+                  File.blobOptions(~type_=mimeType),
                 );
+              Js.log(blob);
               let objectUrl = Webapi.Url.createObjectURL(blob);
+              let _ =
+                recording
+                ->Recording.streamGet
+                ->MediaStream.getTracks
+                ->Belt.Array.forEach(MediaStream.Track.stop);
               Review.make(~data=blob, ~objectUrl)->phaseReview;
             | _ => PhaseError(`InvalidPhaseTransitionAttempted_Stop)
             }
@@ -116,12 +123,10 @@ let make = () => {
                  ->dispatchPhaseAction;
                ();
              };
+             let mimeType_ = mimeType;
              let recorder =
                MediaRecorder.(
-                 make(
-                   s,
-                   options(~mimeType="video/webm") |> Js.Nullable.return,
-                 )
+                 make(s, options(~mimeType=mimeType_) |> Js.Nullable.return)
                  |> doto(
                       addEventListener(
                         "dataavailable",
@@ -178,7 +183,22 @@ let make = () => {
     PhaseState.(
       switch (phaseState) {
       | PhaseInitialized(initialized) =>
-        let _ = initialized->Initialized.recorderGet->MediaRecorder.start;
+        let recorder = initialized->Initialized.recorderGet;
+        let _ = recorder->MediaRecorder.start;
+        /**
+         * Safari does not fire a `start` event, so we manually dispatch one.
+         */
+        let _ =
+          switch (Lib.Constants.browser->Bowser.getBrowserName) {
+          | Some(`Safari) =>
+            let _ =
+              MediaRecorder.dispatchEvent(
+                Webapi.Dom.Event.make("start"),
+                recorder,
+              );
+            ();
+          | _ => ()
+          };
         ();
       | PhaseRecording(recording) =>
         let _ = recording->Recording.recorderGet->MediaRecorder.stop;

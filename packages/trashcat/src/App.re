@@ -3,5 +3,5 @@
 
 [@react.component]
 let make = () => {
-  <VideoRecorder />;
+  <VideoRecorder mimeType="video/mp4" />;
 };

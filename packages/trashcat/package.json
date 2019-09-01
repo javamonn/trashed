@@ -31,6 +31,7 @@
     "tailwindcss": "^1.1.2"
   },
   "dependencies": {
+    "bowser": "^2.5.3",
     "bs-webapi": "^0.15.3",
     "re-classnames": "^4.0.0",
     "reason-react": "^0.7.0"

@@ -6,3 +6,4 @@ module File = Externals_File;
 
 module VideoElement = Externals_VideoElement;
 
+module Bowser = Externals_Bowser;

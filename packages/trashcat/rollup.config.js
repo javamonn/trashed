@@ -31,6 +31,7 @@ module.exports = {
           'forwardRef',
           'useReducer',
         ],
+        bowser: ['getParser'],
       },
     }),
     replace({
