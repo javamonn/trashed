@@ -2,3 +2,4 @@ lib/bs/
 src/**/*.js
 .merlin
 .bsb.lock
+dist/build
