@@ -16,6 +16,8 @@ S src
 B lib/bs/src
 S src/externals
 B lib/bs/src/externals
+S src/components
+B lib/bs/src/components
 S src/lib
 B lib/bs/src/lib
 ####BSB GENERATED: NO EDIT}

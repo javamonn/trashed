@@ -21,4 +21,4 @@ module MediaConstraints = {
 [@bs.val] [@bs.scope ("window", "navigator", "mediaDevices")]
 external getUserMedia:
   MediaConstraints.t => Js.Promise.t(Externals_MediaStream.t) =
-  "";
+  "getUserMedia";

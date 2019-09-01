@@ -10,7 +10,7 @@ const DIST_DIR = path.resolve(__dirname, 'dist');
 const BUILD_DIR = path.resolve(DIST_DIR, './build');
 
 module.exports = {
-  input: './src/Index.js',
+  input: './src/Index.bs.js',
   output: {
     dir: BUILD_DIR,
     entryFileNames: '[name].mjs',
@@ -24,7 +24,13 @@ module.exports = {
       include: 'node_modules/**',
       namedExports: {
         'react-dom': ['render', 'hydrate'],
-        react: ['createElement', 'useEffect', 'useRef'],
+        react: [
+          'createElement',
+          'useEffect',
+          'useRef',
+          'forwardRef',
+          'useReducer',
+        ],
       },
     }),
     replace({
