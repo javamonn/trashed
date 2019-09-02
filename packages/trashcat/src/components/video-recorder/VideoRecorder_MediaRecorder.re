@@ -8,6 +8,7 @@ module PhaseState = {
     type t = {
       stream: MediaStream.t,
       recorder: MediaRecorder.t,
+      eventListeners: array((string, Dom.event => unit)),
     };
     let make = t;
   };
@@ -17,6 +18,7 @@ module PhaseState = {
     type t = {
       stream: MediaStream.t,
       recorder: MediaRecorder.t,
+      eventListeners: array((string, Dom.event => unit)),
       data: array(File.t),
     };
     let make = t;
@@ -28,6 +30,12 @@ module PhaseState = {
       data: File.t,
       objectUrl: string,
     };
+    let make = t;
+  };
+
+  module Complete = {
+    [@bs.deriving abstract]
+    type t = {data: File.t};
     let make = t;
   };
 
@@ -44,6 +52,7 @@ module PhaseState = {
     | PhaseInitialized(Initialized.t)
     | PhaseRecording(Recording.t)
     | PhaseReview(Review.t)
+    | PhaseComplete(Complete.t)
     | PhaseError(error);
 
   [@bs.deriving accessors]
@@ -52,24 +61,87 @@ module PhaseState = {
     | HandleRecorderEvent((MediaRecorder.Event.t, Dom.event));
 };
 
+let cleanupPhase = (~full=false, p) => {
+  let cleanupMediaStream = stream => {
+    let _ =
+      stream
+      ->MediaStream.getTracks
+      ->Belt.Array.forEach(MediaStream.Track.stop);
+    ();
+  };
+
+  let cleanupRecorder = (~recorder, ~eventListeners) => {
+    let _ =
+      eventListeners->Belt.Array.forEach(((t, l)) =>
+        MediaRecorder.removeEventListener(t, l, recorder)
+      );
+    let _ =
+      switch (recorder->MediaRecorder.state) {
+      | Some(`Recording)
+      | Some(`Paused) => recorder->MediaRecorder.stop
+      | _ => ()
+      };
+    ();
+  };
+
+  PhaseState.(
+    switch (p) {
+    | PhaseGettingUserMedia =>
+      /**
+       * FIXME: hold the promise and immediately end the stream
+       * once resolved
+       */
+      ()
+    | PhaseError(_) => ()
+    | PhaseComplete(_) => ()
+    | PhaseInitialized(_) when !full => ()
+    | PhaseInitialized(initialized) when full =>
+      let _ = initialized->Initialized.streamGet->cleanupMediaStream;
+      let _ =
+        cleanupRecorder(
+          ~recorder=initialized->Initialized.recorderGet,
+          ~eventListeners=initialized->Initialized.eventListenersGet,
+        );
+      ();
+    | PhaseRecording(recording) =>
+      let _ = recording->Recording.streamGet->cleanupMediaStream;
+      let _ =
+        cleanupRecorder(
+          ~recorder=recording->Recording.recorderGet,
+          ~eventListeners=recording->Recording.eventListenersGet,
+        );
+      ();
+    | PhaseReview(review) =>
+      let _ = review->Review.objectUrlGet->Webapi.Url.revokeObjectURL;
+      ();
+    }
+  );
+};
+
 [@react.component]
-let make = (~mimeType) => {
-  let (phaseState, dispatchPhaseAction) =
+let make = (~mimeType, ~onFile) => {
+  let ((phaseState, prevPhaseState), dispatchPhaseAction) =
     React.useReducer(
-      (state, action) =>
+      ((state, prevState), action) =>
         PhaseState.(
           switch (action) {
-          | SetPhase(p) => p
+          | SetPhase(p) => (p, state)
           | HandleRecorderEvent((MediaRecorder.Event.Start, _ev)) =>
             switch (state) {
             | PhaseInitialized(initialized) =>
-              Recording.make(
-                ~stream=initialized->Initialized.streamGet,
-                ~recorder=initialized->Initialized.recorderGet,
-                ~data=[||],
+              let nextPhaseState =
+                Recording.make(
+                  ~stream=initialized->Initialized.streamGet,
+                  ~recorder=initialized->Initialized.recorderGet,
+                  ~eventListeners=initialized->Initialized.eventListenersGet,
+                  ~data=[||],
+                )
+                ->phaseRecording;
+              (nextPhaseState, state);
+            | _ => (
+                PhaseError(`InvalidPhaseTransitionAttempted_Start),
+                state,
               )
-              ->phaseRecording
-            | _ => PhaseError(`InvalidPhaseTransitionAttempted_Start)
             }
           | HandleRecorderEvent((MediaRecorder.Event.DataAvailable, ev)) =>
             switch (state) {
@@ -80,8 +152,8 @@ let make = (~mimeType) => {
                 ->MediaRecorder.Event.dataGet;
               let phaseData = recording->Recording.dataGet;
               let _ = Js.Array.push(eventData, phaseData);
-              state;
-            | _ => PhaseError(`InvalidPhaseState)
+              (state, state);
+            | _ => (PhaseError(`InvalidPhaseState), state)
             }
           | HandleRecorderEvent((MediaRecorder.Event.Stop, _ev)) =>
             switch (state) {
@@ -92,19 +164,18 @@ let make = (~mimeType) => {
                   File.blobOptions(~type_=mimeType),
                 );
               let objectUrl = Webapi.Url.createObjectURL(blob);
-              let _ =
-                recording
-                ->Recording.streamGet
-                ->MediaStream.getTracks
-                ->Belt.Array.forEach(MediaStream.Track.stop);
-              Review.make(~data=blob, ~objectUrl)->phaseReview;
-            | _ => PhaseError(`InvalidPhaseTransitionAttempted_Stop)
+              let nextPhaseState =
+                Review.make(~data=blob, ~objectUrl)->phaseReview;
+              (nextPhaseState, state);
+            | _ => (PhaseError(`InvalidPhaseTransitionAttempted_Stop), state)
             }
-          | HandleRecorderEvent((MediaRecorder.Event.Error, _ev)) =>
-            PhaseError(`MediaRecorderError)
+          | HandleRecorderEvent((MediaRecorder.Event.Error, _ev)) => (
+              PhaseError(`MediaRecorderError),
+              state,
+            )
           }
         ),
-      PhaseState.PhaseGettingUserMedia,
+      (PhaseState.PhaseGettingUserMedia, PhaseState.PhaseGettingUserMedia),
     );
 
   let _ =
@@ -121,49 +192,59 @@ let make = (~mimeType) => {
                  ->dispatchPhaseAction;
                ();
              };
-             let mimeType_ = mimeType;
+             let eventListeners = [|
+               (
+                 "dataavailable",
+                 onMediaRecorderEvent(MediaRecorder.Event.DataAvailable),
+               ),
+               ("start", onMediaRecorderEvent(MediaRecorder.Event.Start)),
+               ("stop", onMediaRecorderEvent(MediaRecorder.Event.Stop)),
+               ("error", onMediaRecorderEvent(MediaRecorder.Event.Error)),
+             |];
              let recorder =
-               MediaRecorder.(
-                 make(s, options(~mimeType=mimeType_) |> Js.Nullable.return)
-                 |> doto(
-                      addEventListener(
-                        "dataavailable",
-                        onMediaRecorderEvent(Event.DataAvailable),
-                      ),
-                    )
-                 |> doto(
-                      addEventListener(
-                        "start",
-                        onMediaRecorderEvent(Event.Start),
-                      ),
-                    )
-                 |> doto(
-                      addEventListener(
-                        "stop",
-                        onMediaRecorderEvent(Event.Stop),
-                      ),
-                    )
-                 |> doto(
-                      addEventListener(
-                        "error",
-                        onMediaRecorderEvent(Event.Error),
-                      ),
-                    )
+               MediaRecorder.make(
+                 s,
+                 MediaRecorder.options(~mimeType) |> Js.Nullable.return,
                );
              let _ =
-               PhaseState.Initialized.make(~stream=s, ~recorder)
+               eventListeners->Belt.Array.reduce(
+                 recorder, (recorder, (ev, l)) =>
+                 doto(MediaRecorder.addEventListener(ev, l), recorder)
+               );
+             let _ =
+               PhaseState.Initialized.make(
+                 ~stream=s,
+                 ~recorder,
+                 ~eventListeners,
+               )
                ->PhaseState.phaseInitialized
                ->PhaseState.setPhase
                ->dispatchPhaseAction;
              Js.Promise.resolve();
            });
-      None;
+
+      let onCleanup = () => cleanupPhase(~full=true, phaseState);
+
+      Some(onCleanup);
     });
+
+  let _ =
+    React.useEffect2(
+      () => {
+        if (prevPhaseState !== phaseState) {
+          let _ = cleanupPhase(prevPhaseState);
+          ();
+        };
+        None;
+      },
+      (phaseState, prevPhaseState),
+    );
 
   let src =
     PhaseState.(
       switch (phaseState) {
       | PhaseGettingUserMedia => None
+      | PhaseComplete(_) => None
       | PhaseInitialized(initialized) =>
         initialized
         ->Initialized.streamGet
@@ -201,6 +282,13 @@ let make = (~mimeType) => {
         ();
       | PhaseRecording(recording) =>
         let _ = recording->Recording.recorderGet->MediaRecorder.stop;
+        ();
+      | PhaseReview(review) =>
+        let _ =
+          Complete.make(~data=review->Review.dataGet)
+          ->phaseComplete
+          ->PhaseState.setPhase
+          ->dispatchPhaseAction;
         ();
       | _ => ()
       }

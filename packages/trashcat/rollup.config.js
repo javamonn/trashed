@@ -30,6 +30,7 @@ module.exports = {
           'useRef',
           'forwardRef',
           'useReducer',
+          'useState',
         ],
         bowser: ['getParser'],
         ogv: ['OGVPlayer', 'OGVLoader'],

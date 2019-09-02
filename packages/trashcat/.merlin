@@ -14,10 +14,14 @@ S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-weba
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-webapi/lib/ocaml
 S src
 B lib/bs/src
+S src/screens
+B lib/bs/src/screens
 S src/externals
 B lib/bs/src/externals
 S src/components
 B lib/bs/src/components
+S src/components/video-recorder
+B lib/bs/src/components/video-recorder
 S src/lib
 B lib/bs/src/lib
 ####BSB GENERATED: NO EDIT}

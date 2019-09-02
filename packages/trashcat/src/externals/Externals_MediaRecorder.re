@@ -10,6 +10,15 @@ external make: (Externals_MediaStream.t, Js.Nullable.t(options)) => t =
 [@bs.send] external start: t => unit = "start";
 [@bs.send] external stop: t => unit = "stop";
 
+[@bs.deriving jsConverter]
+type state = [
+  | [@bs.as "recording"] `Recording
+  | [@bs.as "paused"] `Paused
+  | [@bs.as "inactive"] `Inactive
+];
+[@bs.get] external state: t => string = "state";
+let state = t => t->state->stateFromJs;
+
 include Webapi.Dom.EventTarget.Impl({
   type nonrec t = t;
 });

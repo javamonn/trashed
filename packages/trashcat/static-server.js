@@ -14,6 +14,9 @@ require('http')
             request,
             response,
           );
+        } else if (!request.url.includes('/build/')) {
+          const url = 'index.html';
+          fileServer.serveFile(url, 200, {}, request, response);
         } else {
           fileServer.serve(request, response);
         }

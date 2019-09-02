@@ -3,5 +3,9 @@
 
 [@react.component]
 let make = () => {
-  <VideoRecorder mimeType="video/webm;codecs=vp9" />;
+  let url = ReasonReactRouter.useUrl();
+  switch (url.path) {
+  | ["record"] => <VideoRecorderScreen />
+  | _ => ReasonReact.string("Nothing here!")
+  };
 };
