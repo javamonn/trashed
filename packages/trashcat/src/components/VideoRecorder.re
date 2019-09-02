@@ -86,13 +86,11 @@ let make = (~mimeType) => {
           | HandleRecorderEvent((MediaRecorder.Event.Stop, _ev)) =>
             switch (state) {
             | PhaseRecording(recording) =>
-              Js.log(recording->Recording.dataGet);
               let blob =
                 File.makeBlob(
                   recording->Recording.dataGet,
                   File.blobOptions(~type_=mimeType),
                 );
-              Js.log(blob);
               let objectUrl = Webapi.Url.createObjectURL(blob);
               let _ =
                 recording
@@ -174,7 +172,8 @@ let make = (~mimeType) => {
       | PhaseRecording(recording) =>
         recording->Recording.streamGet->VideoSurface.srcObject->Js.Option.some
       | PhaseReview(review) =>
-        review->Review.objectUrlGet->VideoSurface.srcUrl->Js.Option.some
+        let url = review->Review.objectUrlGet;
+        [|(url, mimeType)|]->VideoSurface.srcElement->Js.Option.some;
       | PhaseError(_) => None
       }
     );

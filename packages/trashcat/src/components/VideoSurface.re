@@ -88,7 +88,6 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
       ->ReasonReact.array
     | _ => React.null
     };
-
   <video
     autoPlay
     controls

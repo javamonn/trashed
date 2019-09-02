@@ -1,4 +1,5 @@
 let flip2 = (f, a, b) => f(b, a);
+let flip3 = (f, a, b, c) => f(b, c, a);
 
 let ( *> ) = (x, f) => {
   let _ = f(x);

@@ -32,6 +32,7 @@ module.exports = {
           'useReducer',
         ],
         bowser: ['getParser'],
+        ogv: ['OGVPlayer', 'OGVLoader'],
       },
     }),
     replace({
