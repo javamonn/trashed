@@ -29,7 +29,7 @@ type currentPositionOptions = {
   enableHighAccuracy: bool,
 };
 
-[@bs.val] [@bs.scope ("window", "geolocation")]
+[@bs.val] [@bs.scope ("window", "navigator", "geolocation")]
 external getCurrentPosition:
   (position => unit, positionError => unit, currentPositionOptions) => unit =
   "getCurrentPosition";

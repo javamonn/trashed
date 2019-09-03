@@ -16,4 +16,4 @@ let doto1 = (f, inst, arg1) => {
   inst;
 };
 
-external unsafeAsJsOb: 'a => Js.t('b) = "%identity";
+let wrapBs = (a, f) => f(. a);

@@ -24,22 +24,25 @@ let make = (~onPrompt, ~renderPromptText, ~onPermissionGranted, ~permission) => 
     );
 
   let _ =
-    React.useEffect0(() => {
-      let _ =
-        Permissions.(query(Descriptor.make(~name=permission)))
-        |> Js.Promise.then_(s => {
-             let phase =
-               switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
-               | Some(`Prompt) => PendingInternalPrompt
-               | Some(`Granted) => PermissionGranted
-               | Some(`Denied) => PermissionRejected
-               | None => PendingInternalPrompt
-               };
-             let _ = phase->setPhase->dispatch;
-             Js.Promise.resolve();
-           });
-      None;
-    });
+    React.useEffect1(
+      () => {
+        let _ =
+          Permissions.(query(Descriptor.make(~name=permission)))
+          |> Js.Promise.then_(s => {
+               let phase =
+                 switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
+                 | Some(`Prompt) => PendingInternalPrompt
+                 | Some(`Granted) => PermissionGranted
+                 | Some(`Denied) => PermissionRejected
+                 | None => PendingInternalPrompt
+                 };
+               let _ = phase->setPhase->dispatch;
+               Js.Promise.resolve();
+             });
+        None;
+      },
+      [|permission|],
+    );
 
   let _ =
     React.useEffect1(
@@ -76,8 +79,8 @@ let make = (~onPrompt, ~renderPromptText, ~onPermissionGranted, ~permission) => 
      | UnknownPermissionStatus => <Progress />
      | PendingInternalPrompt =>
        <div>
-         {renderPromptText()}
-         <button type_="button" onClick=handleClick>
+         <div className={cn(["block"])}> {renderPromptText()} </div>
+         <button className={cn(["block"])} type_="button" onClick=handleClick>
            {React.string("OK")}
          </button>
        </div>

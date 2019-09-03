@@ -15,6 +15,7 @@ module PhaseState = {
   module Initialized = {
     [@bs.deriving abstract]
     type t = {
+      coordinates: Geolocation.coordinates,
       stream: MediaStream.t,
       recorder: MediaRecorder.t,
       eventListeners: array((string, Dom.event => unit)),
@@ -25,6 +26,7 @@ module PhaseState = {
   module Recording = {
     [@bs.deriving abstract]
     type t = {
+      coordinates: Geolocation.coordinates,
       stream: MediaStream.t,
       recorder: MediaRecorder.t,
       eventListeners: array((string, Dom.event => unit)),
@@ -36,6 +38,7 @@ module PhaseState = {
   module Review = {
     [@bs.deriving abstract]
     type t = {
+      coordinates: Geolocation.coordinates,
       data: File.t,
       objectUrl: string,
     };
@@ -44,7 +47,10 @@ module PhaseState = {
 
   module Complete = {
     [@bs.deriving abstract]
-    type t = {data: File.t};
+    type t = {
+      data: File.t,
+      coordinates: Geolocation.coordinates,
+    };
     let make = t;
   };
 
@@ -148,6 +154,7 @@ let make = (~mimeType, ~onFile) => {
                   ~stream=initialized->Initialized.streamGet,
                   ~recorder=initialized->Initialized.recorderGet,
                   ~eventListeners=initialized->Initialized.eventListenersGet,
+                  ~coordinates=initialized->Initialized.coordinatesGet,
                   ~data=[||],
                 )
                 ->phaseRecording;
@@ -179,7 +186,12 @@ let make = (~mimeType, ~onFile) => {
                 );
               let objectUrl = Webapi.Url.createObjectURL(blob);
               let nextPhaseState =
-                Review.make(~data=blob, ~objectUrl)->phaseReview;
+                Review.make(
+                  ~data=blob,
+                  ~objectUrl,
+                  ~coordinates=recording->Recording.coordinatesGet,
+                )
+                ->phaseReview;
               (nextPhaseState, state);
             | _ => (PhaseError(`InvalidPhaseTransitionAttempted_Stop), state)
             }
@@ -253,7 +265,10 @@ let make = (~mimeType, ~onFile) => {
         ();
       | PhaseReview(review) =>
         let _ =
-          Complete.make(~data=review->Review.dataGet)
+          Complete.make(
+            ~data=review->Review.dataGet,
+            ~coordinates=review->Review.coordinatesGet,
+          )
           ->phaseComplete
           ->PhaseState.setPhase
           ->dispatchPhaseAction;
@@ -302,10 +317,13 @@ let make = (~mimeType, ~onFile) => {
          ->Js.Option.some
          ->Js.Promise.resolve;
        })
-    |> Js.Promise.catch(ex =>
-         Permissions.Status.make(~state=`Denied)
-         ->Js.Option.some
-         ->Js.Promise.resolve
+    |> Js.Promise.catch(_ex =>
+         /** FIXME: may have errored for other reasons */
+         (
+           Permissions.Status.make(~state=`Denied)
+           ->Js.Option.some
+           ->Js.Promise.resolve
+         )
        );
   };
 
@@ -318,20 +336,78 @@ let make = (~mimeType, ~onFile) => {
     };
   };
 
+  let handleGetGeolocation = () =>
+    Js.Promise.make((~resolve, ~reject) =>
+      Geolocation.getCurrentPosition(
+        position => {
+          let _ =
+            PhaseState.(
+              switch (phaseState) {
+              | PhaseGetGeolocation(getGeolocation) =>
+                Initialized.make(
+                  ~stream=getGeolocation->GetGeolocation.streamGet,
+                  ~recorder=getGeolocation->GetGeolocation.recorderGet,
+                  ~eventListeners=
+                    getGeolocation->GetGeolocation.eventListenersGet,
+                  ~coordinates=position->Geolocation.coordsGet,
+                )
+                ->phaseInitialized
+                ->setPhase
+                ->dispatchPhaseAction
+              | _ => ()
+              }
+            );
+          let _ =
+            Permissions.Status.make(~state=`Granted)
+            ->Js.Option.some
+            ->wrapBs(resolve);
+          ();
+        },
+        _positionError => {
+          /** FIXME: may have errored for other reasons */
+          let _ =
+            Permissions.Status.make(~state=`Denied)
+            ->Js.Option.some
+            ->wrapBs(resolve);
+          ();
+        },
+        Geolocation.currentPositionOptions(~enableHighAccuracy=true, ()),
+      )
+    );
+
+  let handleGetGeolocationGranted = () => {
+    switch (phaseState) {
+    | PhaseGetGeolocation(_) =>
+      let _ = handleGetGeolocation();
+      ();
+    | _ => ()
+    };
+  };
+
   PhaseState.(
     switch (phaseState) {
     | PhaseGetUserMedia =>
       <PermissionPrompt
         renderPromptText={() =>
           React.string(
-            "Trashed needs access to your camera to take videos of things.",
+            "Trashed needs to access to your camera to take videos of things.",
           )
         }
         onPrompt=handleGetUserMedia
         onPermissionGranted=handleGetUserMediaGranted
         permission=`Camera
       />
-    | PhaseGetGeolocation(_) => <div />
+    | PhaseGetGeolocation(_) =>
+      <PermissionPrompt
+        renderPromptText={() =>
+          React.string(
+            "Trashed needs to access your location to know where things (and you) are.",
+          )
+        }
+        onPrompt=handleGetGeolocation
+        onPermissionGranted=handleGetGeolocationGranted
+        permission=`Geolocation
+      />
     | _ =>
       let controls =
         PhaseState.(
