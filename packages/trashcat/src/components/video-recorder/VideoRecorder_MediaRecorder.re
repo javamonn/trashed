@@ -3,6 +3,15 @@ open Lib.Styles;
 open Lib.Utils;
 
 module PhaseState = {
+  module GetGeolocation = {
+    [@bs.deriving abstract]
+    type t = {
+      stream: MediaStream.t,
+      recorder: MediaRecorder.t,
+      eventListeners: array((string, Dom.event => unit)),
+    };
+    let make = t;
+  };
   module Initialized = {
     [@bs.deriving abstract]
     type t = {
@@ -48,7 +57,8 @@ module PhaseState = {
 
   [@bs.deriving accessors]
   type t =
-    | PhaseGettingUserMedia
+    | PhaseGetUserMedia
+    | PhaseGetGeolocation(GetGeolocation.t)
     | PhaseInitialized(Initialized.t)
     | PhaseRecording(Recording.t)
     | PhaseReview(Review.t)
@@ -86,12 +96,16 @@ let cleanupPhase = (~full=false, p) => {
 
   PhaseState.(
     switch (p) {
-    | PhaseGettingUserMedia =>
-      /**
-       * FIXME: hold the promise and immediately end the stream
-       * once resolved
-       */
-      ()
+    | PhaseGetUserMedia => ()
+    | PhaseGetGeolocation(getGeolocation) when full =>
+      let _ = getGeolocation->GetGeolocation.streamGet->cleanupMediaStream;
+      let _ =
+        cleanupRecorder(
+          ~recorder=getGeolocation->GetGeolocation.recorderGet,
+          ~eventListeners=getGeolocation->GetGeolocation.eventListenersGet,
+        );
+      ();
+    | PhaseGetGeolocation(_) => ()
     | PhaseError(_) => ()
     | PhaseComplete(_) => ()
     | PhaseInitialized(_) when !full => ()
@@ -175,58 +189,11 @@ let make = (~mimeType, ~onFile) => {
             )
           }
         ),
-      (PhaseState.PhaseGettingUserMedia, PhaseState.PhaseGettingUserMedia),
+      (PhaseState.PhaseGetUserMedia, PhaseState.PhaseGetUserMedia),
     );
 
   let _ =
-    React.useEffect0(() => {
-      let _ =
-        MediaDevices.MediaConstraints.(
-          make(~audio=true, ~video=makeVideo(~facingMode="environment"), ())
-        )
-        |> MediaDevices.getUserMedia
-        |> Js.Promise.then_(s => {
-             let onMediaRecorderEvent = (eventType, event) => {
-               let _ =
-                 PhaseState.handleRecorderEvent((eventType, event))
-                 ->dispatchPhaseAction;
-               ();
-             };
-             let eventListeners = [|
-               (
-                 "dataavailable",
-                 onMediaRecorderEvent(MediaRecorder.Event.DataAvailable),
-               ),
-               ("start", onMediaRecorderEvent(MediaRecorder.Event.Start)),
-               ("stop", onMediaRecorderEvent(MediaRecorder.Event.Stop)),
-               ("error", onMediaRecorderEvent(MediaRecorder.Event.Error)),
-             |];
-             let recorder =
-               MediaRecorder.make(
-                 s,
-                 MediaRecorder.options(~mimeType) |> Js.Nullable.return,
-               );
-             let _ =
-               eventListeners->Belt.Array.reduce(
-                 recorder, (recorder, (ev, l)) =>
-                 doto(MediaRecorder.addEventListener(ev, l), recorder)
-               );
-             let _ =
-               PhaseState.Initialized.make(
-                 ~stream=s,
-                 ~recorder,
-                 ~eventListeners,
-               )
-               ->PhaseState.phaseInitialized
-               ->PhaseState.setPhase
-               ->dispatchPhaseAction;
-             Js.Promise.resolve();
-           });
-
-      let onCleanup = () => cleanupPhase(~full=true, phaseState);
-
-      Some(onCleanup);
-    });
+    React.useEffect0(() => Some(() => cleanupPhase(~full=true, phaseState)));
 
   let _ =
     React.useEffect2(
@@ -243,7 +210,8 @@ let make = (~mimeType, ~onFile) => {
   let src =
     PhaseState.(
       switch (phaseState) {
-      | PhaseGettingUserMedia => None
+      | PhaseGetUserMedia => None
+      | PhaseGetGeolocation(_) => None
       | PhaseComplete(_) => None
       | PhaseInitialized(initialized) =>
         initialized
@@ -294,17 +262,89 @@ let make = (~mimeType, ~onFile) => {
       }
     );
 
-  let controls =
-    PhaseState.(
-      switch (phaseState) {
-      | PhaseReview(_) => true
-      | _ => false
-      }
-    );
+  let handleGetUserMedia = () => {
+    MediaDevices.MediaConstraints.(
+      make(~audio=true, ~video=makeVideo(~facingMode="environment"), ())
+    )
+    |> MediaDevices.getUserMedia
+    |> Js.Promise.then_(stream => {
+         let onMediaRecorderEvent = (eventType, event) => {
+           let _ =
+             PhaseState.handleRecorderEvent((eventType, event))
+             ->dispatchPhaseAction;
+           ();
+         };
+         let eventListeners = [|
+           (
+             "dataavailable",
+             onMediaRecorderEvent(MediaRecorder.Event.DataAvailable),
+           ),
+           ("start", onMediaRecorderEvent(MediaRecorder.Event.Start)),
+           ("stop", onMediaRecorderEvent(MediaRecorder.Event.Stop)),
+           ("error", onMediaRecorderEvent(MediaRecorder.Event.Error)),
+         |];
+         let recorder =
+           MediaRecorder.make(
+             stream,
+             MediaRecorder.options(~mimeType) |> Js.Nullable.return,
+           );
+         let _ =
+           eventListeners->Belt.Array.reduce(recorder, (recorder, (ev, l)) =>
+             doto(MediaRecorder.addEventListener(ev, l), recorder)
+           );
+         let _ =
+           PhaseState.GetGeolocation.make(~stream, ~recorder, ~eventListeners)
+           ->PhaseState.phaseGetGeolocation
+           ->PhaseState.setPhase
+           ->dispatchPhaseAction;
 
-  <div
-    className={cn(["w-screen", "h-screen", "relative"])}
-    onTouchEnd=handleTouchEnd>
-    <VideoSurface ?src autoPlay=true controls />
-  </div>;
+         Permissions.Status.make(~state=`Granted)
+         ->Js.Option.some
+         ->Js.Promise.resolve;
+       })
+    |> Js.Promise.catch(ex =>
+         Permissions.Status.make(~state=`Denied)
+         ->Js.Option.some
+         ->Js.Promise.resolve
+       );
+  };
+
+  let handleGetUserMediaGranted = () => {
+    switch (phaseState) {
+    | PhaseGetUserMedia =>
+      let _ = handleGetUserMedia();
+      ();
+    | _ => ()
+    };
+  };
+
+  PhaseState.(
+    switch (phaseState) {
+    | PhaseGetUserMedia =>
+      <PermissionPrompt
+        renderPromptText={() =>
+          React.string(
+            "Trashed needs access to your camera to take videos of things.",
+          )
+        }
+        onPrompt=handleGetUserMedia
+        onPermissionGranted=handleGetUserMediaGranted
+        permission=`Camera
+      />
+    | PhaseGetGeolocation(_) => <div />
+    | _ =>
+      let controls =
+        PhaseState.(
+          switch (phaseState) {
+          | PhaseReview(_) => true
+          | _ => false
+          }
+        );
+      <div
+        className={cn(["w-screen", "h-screen", "relative"])}
+        onTouchEnd=handleTouchEnd>
+        <VideoSurface ?src autoPlay=true controls />
+      </div>;
+    }
+  );
 };
