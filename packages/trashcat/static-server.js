@@ -14,7 +14,10 @@ require('http')
             request,
             response,
           );
-        } else if (!request.url.includes('/build/')) {
+        } else if (
+          !request.url.includes('/build/') &&
+          !request.url.includes('/images')
+        ) {
           const url = 'index.html';
           fileServer.serveFile(url, 200, {}, request, response);
         } else {
