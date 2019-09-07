@@ -13,7 +13,7 @@ type action =
   | SetPhase(phase);
 
 [@react.component]
-let make = (~onPrompt, ~renderPromptText, ~onPermissionGranted, ~permission) => {
+let make = (~onPrompt, ~renderPrompt, ~onPermissionGranted, ~permission) => {
   let (phase, dispatch) =
     React.useReducer(
       (_phase, action) =>
@@ -45,7 +45,7 @@ let make = (~onPrompt, ~renderPromptText, ~onPermissionGranted, ~permission) => 
     );
 
   let _ =
-    React.useEffect1(
+    React.useEffect2(
       () => {
         let _ =
           switch (phase) {
@@ -54,7 +54,7 @@ let make = (~onPrompt, ~renderPromptText, ~onPermissionGranted, ~permission) => 
           };
         None;
       },
-      [|phase|],
+      (phase, permission),
     );
 
   let handleClick = _ev => {
@@ -77,17 +77,22 @@ let make = (~onPrompt, ~renderPromptText, ~onPermissionGranted, ~permission) => 
   <div className={cn(["flex", "justify-center", "align-center"])}>
     {switch (phase) {
      | UnknownPermissionStatus => <Progress />
-     | PendingInternalPrompt =>
-       <div>
-         <div className={cn(["block"])}> {renderPromptText()} </div>
-         <button className={cn(["block"])} type_="button" onClick=handleClick>
-           {React.string("OK")}
-         </button>
-       </div>
+     | PendingInternalPrompt => renderPrompt(~onClick=handleClick)
      | PendingSystemPrompt => <Progress />
      | PermissionGranted => <div> {React.string("Permission granted.")} </div>
      | PermissionRejected =>
        <div> {React.string("Permission rejected.")} </div>
      }}
   </div>;
+};
+
+module Basic = {
+  [@react.component]
+  let make = (~text, ~onClick) =>
+    <div className={cn(["max-w-sm", "px-5"])}>
+      <Typography.PrimaryText className={cn(["block", "mb-4"])}>
+        {React.string(text)}
+      </Typography.PrimaryText>
+      <Button onClick> {React.string("OK")} </Button>
+    </div>;
 };

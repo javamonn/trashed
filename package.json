@@ -3,5 +3,8 @@
   "private": true,
   "devDependencies": {
     "lerna": "^3.16.4"
+  },
+  "dependencies": {
+    "rollup-plugin-livereload": "^1.0.1"
   }
 }

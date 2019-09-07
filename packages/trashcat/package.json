@@ -28,7 +28,8 @@
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
     "tachyons": "^4.11.1",
-    "tailwindcss": "^1.1.2"
+    "tailwindcss": "^1.1.2",
+    "chroma-js": "^2.0.6"
   },
   "dependencies": {
     "bowser": "^2.5.3",

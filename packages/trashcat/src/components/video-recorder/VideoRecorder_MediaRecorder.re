@@ -3,19 +3,9 @@ open Lib.Styles;
 open Lib.Utils;
 
 module PhaseState = {
-  module GetGeolocation = {
-    [@bs.deriving abstract]
-    type t = {
-      stream: MediaStream.t,
-      recorder: MediaRecorder.t,
-      eventListeners: array((string, Dom.event => unit)),
-    };
-    let make = t;
-  };
   module Initialized = {
     [@bs.deriving abstract]
     type t = {
-      coordinates: Geolocation.coordinates,
       stream: MediaStream.t,
       recorder: MediaRecorder.t,
       eventListeners: array((string, Dom.event => unit)),
@@ -26,11 +16,19 @@ module PhaseState = {
   module Recording = {
     [@bs.deriving abstract]
     type t = {
-      coordinates: Geolocation.coordinates,
       stream: MediaStream.t,
       recorder: MediaRecorder.t,
       eventListeners: array((string, Dom.event => unit)),
       data: array(File.t),
+    };
+    let make = t;
+  };
+
+  module GetGeolocation = {
+    [@bs.deriving abstract]
+    type t = {
+      data: File.t,
+      objectUrl: string,
     };
     let make = t;
   };
@@ -64,9 +62,9 @@ module PhaseState = {
   [@bs.deriving accessors]
   type t =
     | PhaseGetUserMedia
-    | PhaseGetGeolocation(GetGeolocation.t)
     | PhaseInitialized(Initialized.t)
     | PhaseRecording(Recording.t)
+    | PhaseGetGeolocation(GetGeolocation.t)
     | PhaseReview(Review.t)
     | PhaseComplete(Complete.t)
     | PhaseError(error);
@@ -103,14 +101,6 @@ let cleanupPhase = (~full=false, p) => {
   PhaseState.(
     switch (p) {
     | PhaseGetUserMedia => ()
-    | PhaseGetGeolocation(getGeolocation) when full =>
-      let _ = getGeolocation->GetGeolocation.streamGet->cleanupMediaStream;
-      let _ =
-        cleanupRecorder(
-          ~recorder=getGeolocation->GetGeolocation.recorderGet,
-          ~eventListeners=getGeolocation->GetGeolocation.eventListenersGet,
-        );
-      ();
     | PhaseGetGeolocation(_) => ()
     | PhaseError(_) => ()
     | PhaseComplete(_) => ()
@@ -130,6 +120,12 @@ let cleanupPhase = (~full=false, p) => {
           ~recorder=recording->Recording.recorderGet,
           ~eventListeners=recording->Recording.eventListenersGet,
         );
+      ();
+    | PhaseGetGeolocation(getGeolocation) when full =>
+      let _ =
+        getGeolocation
+        ->GetGeolocation.objectUrlGet
+        ->Webapi.Url.revokeObjectURL;
       ();
     | PhaseReview(review) =>
       let _ = review->Review.objectUrlGet->Webapi.Url.revokeObjectURL;
@@ -154,7 +150,6 @@ let make = (~mimeType, ~onFile) => {
                   ~stream=initialized->Initialized.streamGet,
                   ~recorder=initialized->Initialized.recorderGet,
                   ~eventListeners=initialized->Initialized.eventListenersGet,
-                  ~coordinates=initialized->Initialized.coordinatesGet,
                   ~data=[||],
                 )
                 ->phaseRecording;
@@ -186,12 +181,8 @@ let make = (~mimeType, ~onFile) => {
                 );
               let objectUrl = Webapi.Url.createObjectURL(blob);
               let nextPhaseState =
-                Review.make(
-                  ~data=blob,
-                  ~objectUrl,
-                  ~coordinates=recording->Recording.coordinatesGet,
-                )
-                ->phaseReview;
+                GetGeolocation.make(~data=blob, ~objectUrl)
+                ->phaseGetGeolocation;
               (nextPhaseState, state);
             | _ => (PhaseError(`InvalidPhaseTransitionAttempted_Stop), state)
             }
@@ -308,8 +299,8 @@ let make = (~mimeType, ~onFile) => {
              doto(MediaRecorder.addEventListener(ev, l), recorder)
            );
          let _ =
-           PhaseState.GetGeolocation.make(~stream, ~recorder, ~eventListeners)
-           ->PhaseState.phaseGetGeolocation
+           PhaseState.Initialized.make(~stream, ~recorder, ~eventListeners)
+           ->PhaseState.phaseInitialized
            ->PhaseState.setPhase
            ->dispatchPhaseAction;
 
@@ -344,14 +335,12 @@ let make = (~mimeType, ~onFile) => {
             PhaseState.(
               switch (phaseState) {
               | PhaseGetGeolocation(getGeolocation) =>
-                Initialized.make(
-                  ~stream=getGeolocation->GetGeolocation.streamGet,
-                  ~recorder=getGeolocation->GetGeolocation.recorderGet,
-                  ~eventListeners=
-                    getGeolocation->GetGeolocation.eventListenersGet,
+                Review.make(
                   ~coordinates=position->Geolocation.coordsGet,
+                  ~data=getGeolocation->GetGeolocation.dataGet,
+                  ~objectUrl=getGeolocation->GetGeolocation.objectUrlGet,
                 )
-                ->phaseInitialized
+                ->phaseReview
                 ->setPhase
                 ->dispatchPhaseAction
               | _ => ()
@@ -387,35 +376,55 @@ let make = (~mimeType, ~onFile) => {
   PhaseState.(
     switch (phaseState) {
     | PhaseGetUserMedia =>
-      <PermissionPrompt
-        renderPromptText={() =>
-          React.string(
-            "Trashed needs to access to your camera to take videos of things.",
-          )
-        }
-        onPrompt=handleGetUserMedia
-        onPermissionGranted=handleGetUserMediaGranted
-        permission=`Camera
-      />
+      <div
+        className={cn([
+          "w-screen",
+          "h-screen",
+          "flex",
+          "justify-center",
+          "align-center",
+          "flex-col",
+        ])}>
+        <PermissionPrompt
+          renderPrompt={(~onClick) =>
+            <PermissionPrompt.Basic
+              text="Trashed needs to access to your camera to take videos of things."
+              onClick
+            />
+          }
+          onPrompt=handleGetUserMedia
+          onPermissionGranted=handleGetUserMediaGranted
+          permission=`Camera
+        />
+      </div>
     | PhaseGetGeolocation(_) =>
-      <PermissionPrompt
-        renderPromptText={() =>
-          React.string(
-            "Trashed needs to access your location to know where things (and you) are.",
-          )
-        }
-        onPrompt=handleGetGeolocation
-        onPermissionGranted=handleGetGeolocationGranted
-        permission=`Geolocation
-      />
+      <div
+        className={cn([
+          "w-screen",
+          "h-screen",
+          "flex",
+          "justify-center",
+          "align-center",
+          "flex-col",
+        ])}>
+        <PermissionPrompt
+          renderPrompt={(~onClick) =>
+            <PermissionPrompt.Basic
+              text="Trashed needs to access your location to know where things (and you) are."
+              onClick
+            />
+          }
+          onPrompt=handleGetGeolocation
+          onPermissionGranted=handleGetGeolocationGranted
+          permission=`Geolocation
+        />
+      </div>
     | _ =>
       let controls =
-        PhaseState.(
-          switch (phaseState) {
-          | PhaseReview(_) => true
-          | _ => false
-          }
-        );
+        switch (phaseState) {
+        | PhaseState.PhaseReview(_) => true
+        | _ => false
+        };
       <div
         className={cn(["w-screen", "h-screen", "relative"])}
         onTouchEnd=handleTouchEnd>
