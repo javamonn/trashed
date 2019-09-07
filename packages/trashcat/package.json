@@ -16,7 +16,9 @@
   "license": "ISC",
   "devDependencies": {
     "bs-platform": "^5.0.6",
+    "chroma-js": "^2.0.6",
     "concurrently": "^4.1.2",
+    "graphql_ppx": "^0.2.8",
     "node-static": "^0.7.11",
     "prettier": "^1.18.2",
     "react": "^16.9.0",
@@ -28,14 +30,17 @@
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
     "tachyons": "^4.11.1",
-    "tailwindcss": "^1.1.2",
-    "chroma-js": "^2.0.6"
+    "tailwindcss": "^1.1.2"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.0",
+    "aws-appsync": "^2.0.0",
     "bowser": "^2.5.3",
     "bs-webapi": "^0.15.3",
     "ogv": "^1.6.1",
     "re-classnames": "^4.0.0",
+    "reason-apollo": "^0.17.0",
+    "reason-apollo-hooks": "^2.5.1",
     "reason-react": "^0.7.0"
   }
 }
