@@ -1,7 +1,6 @@
 /**
  * Amplify Typescript types: https://github.com/aws-amplify/amplify-js/blob/d5efee16181e108da52598f13b2eb05c15320244/packages/amazon-cognito-identity-js/index.d.ts
  */
-
 module Config = {
   [@bs.deriving abstract]
   type t =
@@ -35,6 +34,8 @@ module Auth = {
     "currentSession";
 };
 
-[@bs.module] external config: Config.t = "../aws-exports";
-[@bs.module "@aws-amplify/core"]
-external configure: Config.t => unit = "configure";
+[@bs.module "../aws-exports"] external config: Config.t = "default";
+
+type t;
+[@bs.module "@aws-amplify/core"] external inst: t = "default";
+[@bs.send] external configure: (t, Config.t) => unit = "configure";

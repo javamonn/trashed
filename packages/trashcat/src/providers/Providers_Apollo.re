@@ -26,8 +26,10 @@ let client = AppSync.Client.make(clientOptions);
 let make = (~children) =>
   <ReasonApollo.Provider
     client={client->AppSync.Client.asGeneratedApolloClient}>
-    <ReasonApolloHooks.ApolloProvider
-      client={client->AppSync.Client.asGeneratedApolloClient}>
-      children
-    </ReasonApolloHooks.ApolloProvider>
+    <AppSync.Rehydrated>
+      <ReasonApolloHooks.ApolloProvider
+        client={client->AppSync.Client.asGeneratedApolloClient}>
+        children
+      </ReasonApolloHooks.ApolloProvider>
+    </AppSync.Rehydrated>
   </ReasonApollo.Provider>;

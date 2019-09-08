@@ -12,30 +12,53 @@ const builtins = require('rollup-plugin-node-builtins');
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const BUILD_DIR = path.resolve(DIST_DIR, './build');
 
+const globalShim = (r, p) => `(require("${r}"), global.${p})`;
+const defaultShim = r => `({ default: require("${r}") })`;
+
+const buildAlias = ({to, prop, global_, default_}) =>
+  global_
+    ? globalShim(to, global_) + (prop ? prop : '')
+    : default_
+    ? defaultShim(to)
+    : `require("${to}")${prop ? prop : ''}`;
+
 const REQUIRE_ALIAS = [
   {
     from: 'aws-sdk/clients/s3',
     to: 'aws-sdk/dist/aws-sdk.js',
     prop: '.S3',
+    global_: 'AWS',
   },
   {
     from: 'aws-sdk/global',
     to: 'aws-sdk/dist/aws-sdk.js',
+    global_: 'AWS',
   },
   {
     from: 'aws-sdk/browser',
-    to: 'aws-sdk/dist/aws-sdk',
+    to: 'aws-sdk/dist/aws-sdk.js',
+    global_: 'AWS',
+  },
+  {
+    from: 'apollo-client',
+    to: 'apollo-client',
+    default_: true,
+  },
+  {
+    from: 'redux-thunk',
+    to: 'redux-thunk',
+    default_: true,
   },
 ].reduce(
-  (acc, {from, to, prop}) => ({
+  (acc, {from, ...alias}) => ({
     ...acc,
-    [`require("${from}")`]: `require("${to}")${prop ? prop : ''}`,
-    [`require('${from}')`]: `require("${to}")${prop ? prop : ''}`,
+    [`require("${from}")`]: buildAlias(alias),
+    [`require('${from}')`]: buildAlias(alias),
   }),
   {},
 );
 
-module.exports = {
+const config = {
   input: './src/Index.bs.js',
   output: {
     dir: BUILD_DIR,
@@ -55,8 +78,12 @@ module.exports = {
       },
     }),
     polyfill(['./polyfill.js']),
-    resolve({browser: true}),
+    resolve({
+      browser: true,
+      dedupe: ['apollo-cache-inmemory'],
+    }),
     commonjs({
+      ignoreGlobal: true,
       include: 'node_modules/**',
       namedExports: {
         'react-dom': ['render', 'hydrate'],
@@ -87,6 +114,7 @@ module.exports = {
         'js-cookie': ['get', 'set', 'remove'],
         '@aws-amplify/auth': ['currentSession'],
         '@aws-amplify/core': ['configure'],
+        'aws-sdk/dist/aws-sdk': ['util'],
       },
     }),
     postcss({
@@ -94,3 +122,5 @@ module.exports = {
     }),
   ],
 };
+
+module.exports = config;

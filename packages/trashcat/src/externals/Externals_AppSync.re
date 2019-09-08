@@ -15,8 +15,13 @@ module Client = {
     auth: authOptions,
   };
 
-  [@bs.new] [@bs.module] external make: options => t = "aws-appsync";
+  [@bs.new] [@bs.module "aws-appsync"] external make: options => t = "default";
 
   external asGeneratedApolloClient: t => ApolloClient.generatedApolloClient =
     "%identity";
+};
+
+module Rehydrated = {
+  [@bs.module "aws-appsync-react"] [@react.component]
+  external make: (~children: React.element) => React.element = "Rehydrated";
 };

@@ -5,7 +5,11 @@ require('http')
   .createServer((request, response) => {
     request
       .addListener('end', () => {
-        if (request.url.includes('.js') || request.url.includes('.pcss')) {
+        if (
+          request.url.includes('.js') ||
+          request.url.includes('.pcss') ||
+          request.url.includes('.mjs')
+        ) {
           const url = request.url.split('?')[0];
           fileServer.serveFile(
             url,
