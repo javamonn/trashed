@@ -1,6 +1,7 @@
 ####{BSB GENERATED: NO EDIT
 B lib/bs
 FLG -open Trashcat
+FLG -ppx /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/graphql_ppx/ppx
 FLG -ppx '/home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-platform/lib/bsppx.exe -bs-jsx 3'
 S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-platform/lib/ocaml
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-platform/lib/ocaml
@@ -12,6 +13,10 @@ S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/re-clas
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/re-classnames/lib/ocaml
 S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-webapi/lib/ocaml
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-webapi/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo-hooks/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo-hooks/lib/ocaml
 S src
 B lib/bs/src
 S src/screens
@@ -24,4 +29,6 @@ S src/components/video-recorder
 B lib/bs/src/components/video-recorder
 S src/lib
 B lib/bs/src/lib
+S src/providers
+B lib/bs/src/providers
 ####BSB GENERATED: NO EDIT}

@@ -10,3 +10,6 @@ module VideoElement = Externals_VideoElement;
 module OGV = Externals_OGV;
 
 module Bowser = Externals_Bowser;
+
+module Amplify = Externals_Amplify;
+module AppSync = Externals_AppSync;
