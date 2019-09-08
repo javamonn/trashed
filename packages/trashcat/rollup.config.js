@@ -114,13 +114,15 @@ const config = {
         'js-cookie': ['get', 'set', 'remove'],
         '@aws-amplify/auth': ['currentSession'],
         '@aws-amplify/core': ['configure'],
-        'aws-sdk/dist/aws-sdk': ['util'],
       },
     }),
     postcss({
       plugins: [require('tailwindcss')],
     }),
   ],
+  watch: {
+    include: 'src/**.*.bs.js',
+  },
 };
 
 module.exports = config;
