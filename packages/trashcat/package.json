@@ -8,6 +8,7 @@
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
+    "graphql:sync-schema": "./node_modules/.bin/send-introspection-query https://ewxf7cgpvrcvngjo66kv4avc7q.appsync-api.us-east-1.amazonaws.com/graphql",
     "rollup:start": "rollup -c -w",
     "serve": "node ./static-server.js",
     "start": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\""
