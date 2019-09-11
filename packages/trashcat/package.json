@@ -8,7 +8,7 @@
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
-    "graphql:sync-schema": "./node_modules/.bin/send-introspection-query https://ewxf7cgpvrcvngjo66kv4avc7q.appsync-api.us-east-1.amazonaws.com/graphql",
+    "graphql:sync-schema": "./scripts/graphql-sync-schema.sh",
     "rollup:start": "rollup -c -w",
     "serve": "node ./static-server.js",
     "start": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\""
@@ -49,6 +49,7 @@
     "re-classnames": "^4.0.0",
     "reason-apollo": "^0.17.0",
     "reason-apollo-hooks": "^2.5.1",
-    "reason-react": "^0.7.0"
+    "reason-react": "^0.7.0",
+    "uuid": "^3.3.3"
   }
 }

@@ -101,7 +101,6 @@ let cleanupPhase = (~full=false, p) => {
   PhaseState.(
     switch (p) {
     | PhaseGetUserMedia => ()
-    | PhaseGetGeolocation(_) => ()
     | PhaseError(_) => ()
     | PhaseComplete(_) => ()
     | PhaseInitialized(_) when !full => ()
@@ -127,6 +126,7 @@ let cleanupPhase = (~full=false, p) => {
         ->GetGeolocation.objectUrlGet
         ->Webapi.Url.revokeObjectURL;
       ();
+    | PhaseGetGeolocation(_) => ()
     | PhaseReview(review) =>
       let _ = review->Review.objectUrlGet->Webapi.Url.revokeObjectURL;
       ();
@@ -263,6 +263,11 @@ let make = (~mimeType, ~onFile) => {
           ->phaseComplete
           ->PhaseState.setPhase
           ->dispatchPhaseAction;
+        let _ =
+          onFile(
+            ~file=review->Review.dataGet,
+            ~coordinates=review->Review.coordinatesGet,
+          );
         ();
       | _ => ()
       }

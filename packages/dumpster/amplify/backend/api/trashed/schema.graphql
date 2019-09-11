@@ -8,11 +8,11 @@ input S3ObjectInput {
   bucket: String!
   key: String!
   region: String!
-  localUri: String
-  mimeType: String
+  localUri: String!
+  mimeType: String!
 }
 
-type Item @model {
+type Item @model(mutations: {create: null, update: null}) {
   id: ID!
   file: S3Object!
 }
@@ -20,4 +20,8 @@ type Item @model {
 input CreateItemInput {
   id: ID!
   file: S3ObjectInput!
+}
+
+type Mutation {
+  createItem(input: CreateItemInput!): Item
 }

@@ -161,7 +161,7 @@
 						]
 					},
 					"S3DeploymentBucket": "trashed-production-20190824131356-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/76c81bb8545514bd39fcbc9f5904ca3c2840f7b5",
+					"S3DeploymentRootKey": "amplify-appsync-files/9eba0554eebf1cac74d659cfba1d02d585e05b7d",
 					"env": "production"
 				}
 			}
