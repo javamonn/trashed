@@ -22,6 +22,14 @@ const buildAlias = ({to, prop, global_, default_}) =>
     ? defaultShim(to)
     : `require("${to}")${prop ? prop : ''}`;
 
+/**
+ * aws-sdk has numerous nasty circular dependencies, so we avoid the
+ * problem entirely by using the full browser build.
+ *
+ * Other packages do not play nicely with rollup's default export semantics,
+ * so we wrap the require statement.
+ */
+
 const REQUIRE_ALIAS = [
   {
     from: 'aws-sdk/clients/s3',
@@ -58,6 +66,14 @@ const REQUIRE_ALIAS = [
   {},
 );
 
+/**
+ * Some bucklescript dependencies bind directly to modules (`import * as Foo, 
+ * Foo()`), which rollup does not like. Rewrite import the default.
+ */
+const IMPORT_ALIAS = {
+  'import * as GraphqlTag from \"graphql-tag\"': 'import GraphqlTag from \"graphql-tag\"'
+}
+
 const config = {
   input: './src/Index.bs.js',
   output: {
@@ -74,6 +90,7 @@ const config = {
       delimiters: ['', ''],
       values: {
         'process.env.NODE_ENV': JSON.stringify('development'),
+        ...IMPORT_ALIAS,
         ...REQUIRE_ALIAS,
       },
     }),
@@ -96,6 +113,7 @@ const config = {
           'useState',
           'createContext',
           'useContext',
+          'useMemo',
           'Component',
         ],
         bowser: ['getParser'],
@@ -119,10 +137,7 @@ const config = {
     postcss({
       plugins: [require('tailwindcss')],
     }),
-  ],
-  watch: {
-    include: 'src/**.*.bs.js',
-  },
+  ]
 };
 
 module.exports = config;

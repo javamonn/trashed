@@ -6,6 +6,7 @@ module Client = {
     [@bs.as "type"]
     type_: string,
     jwtToken: unit => Js.Promise.t(Externals_Amplify.Auth.JwtToken.t),
+    mandatorySignIn: bool,
   };
 
   [@bs.deriving abstract]

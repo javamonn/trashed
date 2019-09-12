@@ -11,6 +11,10 @@ module Config = {
       appSyncAuthenticationType: string,
       [@bs.as "aws_appsync_graphqlEndpoint"]
       appSyncGraphqlEndpoint: string,
+      [@bs.as "aws_user_files_s3_bucket"]
+      s3ItemVideoUploadBucket: string,
+      [@bs.as "aws_user_files_s3_bucket_region"]
+      s3ItemVideoUploadBucketRegion: string,
     };
 };
 
@@ -29,8 +33,12 @@ module Auth = {
     [@bs.send] external getIdToken: t => CognitoIdToken.t = "getIdToken";
   };
 
-  [@bs.module "@aws-amplify/auth"]
-  external currentSession: unit => Js.Promise.t(CognitoUserSession.t) =
+  type t;
+
+  [@bs.module "@aws-amplify/auth"] external inst: t = "default";
+
+  [@bs.send]
+  external currentSession: t => Js.Promise.t(CognitoUserSession.t) =
     "currentSession";
 };
 

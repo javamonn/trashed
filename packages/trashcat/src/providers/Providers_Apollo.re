@@ -2,16 +2,19 @@ open Externals;
 
 let clientAuth =
   AppSync.Client.authOptions(
-    ~type_=Amplify.(config->Config.appSyncAuthenticationTypeGet), ~jwtToken=() =>
-    Amplify.(
-      Auth.currentSession()
-      |> Js.Promise.then_(s =>
-           s
-           ->Auth.CognitoUserSession.getIdToken
-           ->Auth.CognitoIdToken.getJwtToken
-           ->Js.Promise.resolve
-         )
-    )
+    ~type_=Amplify.(config->Config.appSyncAuthenticationTypeGet),
+    ~jwtToken=
+      () =>
+        Amplify.(
+          Auth.(inst->currentSession)
+          |> Js.Promise.then_(s =>
+               s
+               ->Auth.CognitoUserSession.getIdToken
+               ->Auth.CognitoIdToken.getJwtToken
+               ->Js.Promise.resolve
+             )
+        ),
+    ~mandatorySignIn=false,
   );
 let clientOptions =
   AppSync.Client.options(
