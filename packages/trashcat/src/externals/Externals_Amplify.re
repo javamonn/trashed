@@ -33,6 +33,10 @@ module Auth = {
     [@bs.send] external getIdToken: t => CognitoIdToken.t = "getIdToken";
   };
 
+  module Credentials = {
+    type t;
+  }
+
   type t;
 
   [@bs.module "@aws-amplify/auth"] external inst: t = "default";
@@ -40,6 +44,10 @@ module Auth = {
   [@bs.send]
   external currentSession: t => Js.Promise.t(CognitoUserSession.t) =
     "currentSession";
+
+  [@bs.send]
+  external currentCredentials: t => Js.Promise.t(Credentials.t) =
+    "currentCredentials";
 };
 
 [@bs.module "../aws-exports"] external config: Config.t = "default";

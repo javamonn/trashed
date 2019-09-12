@@ -14,13 +14,20 @@ let clientAuth =
                ->Js.Promise.resolve
              )
         ),
+    ~credentials=() => Amplify.Auth.(inst->currentCredentials),
+    ~complexObjectCredentials=() => Amplify.Auth.(inst->currentCredentials),
     ~mandatorySignIn=false,
   );
+
+/**
+ * FIXME: https://github.com/awslabs/aws-mobile-appsync-sdk-js/issues/450#issuecomment-522264166
+ */
 let clientOptions =
   AppSync.Client.options(
     ~url=Amplify.(config->Config.appSyncGraphqlEndpointGet),
     ~region=Amplify.(config->Config.appSyncRegionGet),
     ~auth=clientAuth,
+    ~disableOffline=true
   );
 
 let client = AppSync.Client.make(clientOptions);

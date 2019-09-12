@@ -6,6 +6,9 @@ module Client = {
     [@bs.as "type"]
     type_: string,
     jwtToken: unit => Js.Promise.t(Externals_Amplify.Auth.JwtToken.t),
+    credentials: unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
+    complexObjectCredentials:
+      unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
     mandatorySignIn: bool,
   };
 
@@ -14,6 +17,7 @@ module Client = {
     url: string,
     region: string,
     auth: authOptions,
+    disableOffline: bool,
   };
 
   [@bs.new] [@bs.module "aws-appsync"] external make: options => t = "default";

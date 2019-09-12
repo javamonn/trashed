@@ -80,6 +80,7 @@ const config = {
     dir: BUILD_DIR,
     entryFileNames: '[name].mjs',
     format: 'esm',
+    sourcemap: false
   },
   preserveModules: true,
   plugins: [
