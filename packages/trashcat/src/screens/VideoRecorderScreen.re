@@ -26,7 +26,7 @@ module CreateItemMutation =
 let make = () => {
   let (createItemMutation, _s, _f) = CreateItemMutation.use();
 
-  let handleFile = (~file, ~coordinates) => {
+  let handleFile = (~file, ~location) => {
     let _ =
       createItemMutation(
         ~variables=
@@ -38,6 +38,10 @@ let make = () => {
                 "mimeType": file->File._type,
                 "localUri": file->Webapi.Url.createObjectURL,
                 "key": Externals.UUID.makeV4(),
+              },
+              "location": {
+                "lat": location->Geolocation.latitudeGet,
+                "lon": location->Geolocation.longitudeGet
               },
               "id": Externals.UUID.makeV4(),
             },

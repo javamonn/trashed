@@ -12,14 +12,26 @@ input S3ObjectInput {
   mimeType: String!
 }
 
+type Location {
+  lat: Float!
+  lon: Float!
+}
+
+input LocationInput {
+  lat: Float!
+  lon: Float!
+}
+
 type Item @model(mutations: {create: null, update: null}) {
   id: ID!
   file: S3Object!
+  location: Location!
 }
 
 input CreateItemInput {
   id: ID!
   file: S3ObjectInput!
+  location: LocationInput!
 }
 
 type Mutation {

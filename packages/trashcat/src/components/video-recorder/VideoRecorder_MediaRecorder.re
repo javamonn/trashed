@@ -266,7 +266,7 @@ let make = (~mimeType, ~onFile) => {
         let _ =
           onFile(
             ~file=review->Review.dataGet,
-            ~coordinates=review->Review.coordinatesGet,
+            ~location=review->Review.coordinatesGet,
           );
         ();
       | _ => ()

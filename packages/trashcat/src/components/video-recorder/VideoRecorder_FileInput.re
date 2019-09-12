@@ -103,7 +103,7 @@ let make = (~mimeType, ~onFile) => {
                 let _ =
                   onFile(
                     ~file=getGeolocation->GetGeolocation.dataGet,
-                    ~coordinates=position->Geolocation.coordsGet,
+                    ~location=position->Geolocation.coordsGet,
                   );
                 ();
               | _ => ()
