@@ -1,4 +1,4 @@
-type S3Object {
+type S3Object @aws_iam {
   bucket: String!
   key: String!
   region: String!
@@ -8,11 +8,11 @@ input S3ObjectInput {
   bucket: String!
   key: String!
   region: String!
-  localUri: String!
-  mimeType: String!
+  localUri: String
+  mimeType: String
 }
 
-type Location {
+type Location @aws_iam {
   lat: Float!
   lon: Float!
 }
@@ -22,18 +22,10 @@ input LocationInput {
   lon: Float!
 }
 
-type Item @model(mutations: {create: null, update: null}) {
+type Item @model
+  @auth(rules: [{allow: public, provider: iam, operations: [create, read]}])
+{
   id: ID!
   file: S3Object!
   location: Location!
-}
-
-input CreateItemInput {
-  id: ID!
-  file: S3ObjectInput!
-  location: LocationInput!
-}
-
-type Mutation {
-  createItem(input: CreateItemInput!): Item @aws_iam @aws_cognito_user_pools
 }

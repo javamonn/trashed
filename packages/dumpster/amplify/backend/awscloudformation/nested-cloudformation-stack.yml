@@ -151,6 +151,7 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
+					"CreateAPIKey": 0,
 					"AppSyncApiName": "trashed",
 					"DynamoDBBillingMode": "PAY_PER_REQUEST",
 					"DynamoDBEnableServerSideEncryption": "false",
@@ -160,8 +161,11 @@
 							"Outputs.UserPoolId"
 						]
 					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
 					"S3DeploymentBucket": "trashed-production-20190824131356-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/00dd94c780433b13213c139be9bc4f06722b4ddd",
+					"S3DeploymentRootKey": "amplify-appsync-files/935e4885cfec84e591cc91da3e8d62b423e26be7",
 					"env": "production"
 				}
 			}
