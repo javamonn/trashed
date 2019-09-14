@@ -38,7 +38,7 @@ let make = () => {
                   Amplify.(config->Config.s3ItemVideoUploadBucketRegionGet),
                 "mimeType": file->File._type,
                 "localUri": file->Webapi.Url.createObjectURL,
-                "key": Externals.UUID.makeV4(),
+                "key": "public/" ++ Externals.UUID.makeV4(),
               },
               "location": {
                 "lat": location->Geolocation.latitudeGet,

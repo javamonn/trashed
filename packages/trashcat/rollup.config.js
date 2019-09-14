@@ -13,13 +13,25 @@ const DIST_DIR = path.resolve(__dirname, 'dist');
 const BUILD_DIR = path.resolve(DIST_DIR, './build');
 
 const globalShim = (r, p) => `(require("${r}"), global.${p})`;
-const defaultShim = r => `({ default: require("${r}") })`;
+const defaultShim = ({ to, namedExports }) => `({ 
+  default: require("${to}"),
+   ${Object.keys(namedExports || {})
+     .reduce((acc, k) => {
+       acc += `${k}: require("${namedExports[k].path}")${
+         namedExports[k].prop
+           ? `.${namedExports[k].prop}`
+           : ''},`;
+      return acc;
+    },
+    ""
+   )}
+})`.replace('\n', '');
 
-const buildAlias = ({to, prop, global_, default_}) =>
+const buildAlias = ({to, prop, global_, default_, namedExports}) =>
   global_
     ? globalShim(to, global_) + (prop ? prop : '')
     : default_
-    ? defaultShim(to)
+    ? defaultShim({ to, namedExports })
     : `require("${to}")${prop ? prop : ''}`;
 
 /**
@@ -51,6 +63,9 @@ const REQUIRE_ALIAS = [
     from: 'apollo-client',
     to: 'apollo-client',
     default_: true,
+    namedExports: {
+      'ApolloError': { path: 'apollo-client/errors/ApolloError', prop: 'ApolloError' }
+    }
   },
   {
     from: 'redux-thunk',
@@ -65,6 +80,8 @@ const REQUIRE_ALIAS = [
   }),
   {},
 );
+
+console.log(REQUIRE_ALIAS)
 
 /**
  * Some bucklescript dependencies bind directly to modules (`import * as Foo, 

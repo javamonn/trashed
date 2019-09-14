@@ -6,10 +6,6 @@ module Client = {
     [@bs.as "type"]
     type_: string,
     jwtToken: unit => Js.Promise.t(Externals_Amplify.Auth.JwtToken.t),
-    credentials: unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
-    complexObjectCredentials:
-      unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
-    mandatorySignIn: bool,
   };
 
   [@bs.deriving abstract]
@@ -18,6 +14,10 @@ module Client = {
     region: string,
     auth: authOptions,
     disableOffline: bool,
+    mandatorySignIn: bool,
+    credentials: unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
+    complexObjectsCredentials:
+      unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
   };
 
   [@bs.new] [@bs.module "aws-appsync"] external make: options => t = "default";

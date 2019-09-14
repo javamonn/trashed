@@ -28,6 +28,9 @@ require('http')
           fileServer.serve(request, response);
         }
       })
+      .addListener('error', () => {
+        res.send(500);
+      })
       .resume();
   })
   .listen(8080);

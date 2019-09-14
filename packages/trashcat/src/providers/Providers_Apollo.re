@@ -14,9 +14,6 @@ let clientAuth =
                ->Js.Promise.resolve
              )
         ),
-    ~credentials=() => Amplify.Auth.(inst->currentCredentials),
-    ~complexObjectCredentials=() => Amplify.Auth.(inst->currentCredentials),
-    ~mandatorySignIn=false,
   );
 
 /**
@@ -27,7 +24,10 @@ let clientOptions =
     ~url=Amplify.(config->Config.appSyncGraphqlEndpointGet),
     ~region=Amplify.(config->Config.appSyncRegionGet),
     ~auth=clientAuth,
-    ~disableOffline=true
+    ~disableOffline=true,
+    ~credentials=() => Amplify.Auth.(inst->currentCredentials),
+    ~complexObjectsCredentials=() => Amplify.Auth.(inst->currentCredentials),
+    ~mandatorySignIn=false,
   );
 
 let client = AppSync.Client.make(clientOptions);
