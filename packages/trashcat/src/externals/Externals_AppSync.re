@@ -5,8 +5,16 @@ module Client = {
   type authOptions = {
     [@bs.as "type"]
     type_: string,
+    [@bs.optional]
     jwtToken: unit => Js.Promise.t(Externals_Amplify.Auth.JwtToken.t),
+    [@bs.optional]
+    credentials: unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
   };
+
+  let authWithCognitoUserPools = (~jwtToken) =>
+    authOptions(~type_="AMAZON_COGNITO_USER_POOLS", ~jwtToken, ());
+  let authWithIAM = (~credentials) =>
+    authOptions(~type_="AWS_IAM", ~credentials, ());
 
   [@bs.deriving abstract]
   type options = {
@@ -15,7 +23,6 @@ module Client = {
     auth: authOptions,
     disableOffline: bool,
     mandatorySignIn: bool,
-    credentials: unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
     complexObjectsCredentials:
       unit => Js.Promise.t(Externals_Amplify.Auth.Credentials.t),
   };

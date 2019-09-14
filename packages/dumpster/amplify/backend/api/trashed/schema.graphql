@@ -35,5 +35,5 @@ input CreateItemInput {
 }
 
 type Mutation {
-  createItem(input: CreateItemInput!): Item
+  createItem(input: CreateItemInput!): Item @aws_iam @aws_cognito_user_pools
 }

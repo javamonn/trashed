@@ -1,19 +1,21 @@
 open Externals;
 
-let clientAuth =
-  AppSync.Client.authOptions(
-    ~type_=Amplify.(config->Config.appSyncAuthenticationTypeGet),
-    ~jwtToken=
-      () =>
-        Amplify.(
-          Auth.(inst->currentSession)
-          |> Js.Promise.then_(s =>
-               s
-               ->Auth.CognitoUserSession.getIdToken
-               ->Auth.CognitoIdToken.getJwtToken
-               ->Js.Promise.resolve
-             )
-        ),
+let authenticatedClientAuthOptions =
+  AppSync.Client.authWithCognitoUserPools(~jwtToken=() =>
+    Amplify.(
+      Auth.(inst->currentSession)
+      |> Js.Promise.then_(s =>
+           s
+           ->Auth.CognitoUserSession.getIdToken
+           ->Auth.CognitoIdToken.getJwtToken
+           ->Js.Promise.resolve
+         )
+    )
+  );
+
+let unauthenticatedClientAuthOptions =
+  AppSync.Client.authWithIAM(~credentials=() =>
+    Amplify.Auth.(inst->currentCredentials)
   );
 
 /**
@@ -23,9 +25,8 @@ let clientOptions =
   AppSync.Client.options(
     ~url=Amplify.(config->Config.appSyncGraphqlEndpointGet),
     ~region=Amplify.(config->Config.appSyncRegionGet),
-    ~auth=clientAuth,
+    ~auth=unauthenticatedClientAuthOptions,
     ~disableOffline=true,
-    ~credentials=() => Amplify.Auth.(inst->currentCredentials),
     ~complexObjectsCredentials=() => Amplify.Auth.(inst->currentCredentials),
     ~mandatorySignIn=false,
   );
