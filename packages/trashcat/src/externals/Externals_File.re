@@ -8,4 +8,5 @@ type blobOptions = {
 
 [@bs.new] external makeBlob: (array(t), blobOptions) => t = "Blob";
 
-external stringToFile: string => t = "%identity";
+external fromString: string => t = "%identity";
+external toString: t => string = "%identity";

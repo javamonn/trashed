@@ -115,10 +115,11 @@ const config = {
     polyfill(['./polyfill.js']),
     resolve({
       browser: true,
-      dedupe: ['apollo-cache-inmemory'],
+      dedupe: ['apollo-cache-inmemory', 'apollo-client'],
     }),
     commonjs({
       ignoreGlobal: true,
+      sourcemap: false,
       include: 'node_modules/**',
       namedExports: {
         'react-dom': ['render', 'hydrate'],

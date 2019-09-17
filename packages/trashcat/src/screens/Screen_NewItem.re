@@ -1,10 +1,6 @@
 open Lib;
 open Externals;
 
-let videoS3Bucket = "foo";
-let videoS3Region = "us-east-1";
-let videoMimeType = "video/webm";
-
 module CreateItemMutationConfig = [%graphql
   {|
   mutation CreateItem($input: CreateItemInput!) {
@@ -37,7 +33,7 @@ let make = () => {
                 "region":
                   Amplify.(config->Config.s3ItemVideoUploadBucketRegionGet),
                 "mimeType": file->File._type->Js.Option.some,
-                "localUri": file->Webapi.Url.createObjectURL->Js.Option.some,
+                "localUri": file->File.toString->Js.Option.some,
                 "key": "public/" ++ Externals.UUID.makeV4(),
               },
               "location": {
@@ -55,8 +51,8 @@ let make = () => {
 
   switch (Constants.browser->Bowser.getBrowserName) {
   | Some(`Safari) =>
-    <VideoRecorder.FileInput mimeType=videoMimeType onFile=handleFile />
+    <VideoRecorder.FileInput mimeType="video/webm" onFile=handleFile />
   | _ =>
-    <VideoRecorder.MediaRecorder mimeType=videoMimeType onFile=handleFile />
+    <VideoRecorder.MediaRecorder mimeType="video/webm" onFile=handleFile />
   };
 };

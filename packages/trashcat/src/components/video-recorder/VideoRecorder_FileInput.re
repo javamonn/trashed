@@ -71,7 +71,7 @@ let make = (~mimeType, ~onFile) => {
           ->Webapi.Dom.HtmlElement.ofElement
           ->Belt.Option.map(HtmlInputElement.ofHtmlElement)
           ->Belt.Option.map(Webapi.Dom.HtmlInputElement.value)
-          ->Belt.Option.map(File.stringToFile)
+          ->Belt.Option.map(File.fromString)
           ->Belt.Option.map(f =>
               PhaseState.(
                 GetGeolocation.make(~data=f)

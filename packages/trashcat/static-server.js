@@ -16,8 +16,14 @@ require('http')
             200,
             {'Content-Type': 'application/javascript'},
             request,
-            response,
-          );
+            response
+          )
+            .addListener('error', (err) => { 
+              console.error(err) 
+              response.writeHead(500)
+              response.end()
+            });
+
         } else if (
           !request.url.includes('/build/') &&
           !request.url.includes('/images')
@@ -29,7 +35,8 @@ require('http')
         }
       })
       .addListener('error', () => {
-        res.send(500);
+        response.writeHead(500);
+        response.end()
       })
       .resume();
   })

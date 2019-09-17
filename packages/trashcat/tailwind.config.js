@@ -7,6 +7,7 @@ module.exports = {
         primary: c('#000')
           .alpha(0.87)
           .css(),
+        brandPrimary: c('#93B5C6').css()
       },
     },
   },

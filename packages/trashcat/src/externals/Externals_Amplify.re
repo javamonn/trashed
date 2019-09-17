@@ -35,7 +35,7 @@ module Auth = {
 
   module Credentials = {
     type t;
-  }
+  };
 
   type t;
 
@@ -48,6 +48,14 @@ module Auth = {
   [@bs.send]
   external currentCredentials: t => Js.Promise.t(Credentials.t) =
     "currentCredentials";
+};
+
+module Storage = {
+  type t;
+
+  [@bs.module "@aws-amplify/storage"] external inst: t = "default";
+
+  [@bs.send] external get: (t, string) => Js.Promise.t(string) = "get";
 };
 
 [@bs.module "../aws-exports"] external config: Config.t = "default";
