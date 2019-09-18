@@ -156,23 +156,34 @@
 				"Name": "trashed452c5745PreSignup-production"
 			},
 			"lastPushDirHash": "UAufh5p4I1ukOvU3wmI6Qmp6EJQ="
+		},
+		"S3Triggerd81623e7": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
+		},
+		"S3Trigger63a2132c": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
 		}
 	},
 	"hosting": {},
 	"storage": {
-		"ItemVideoUpload": {
+		"trashcat": {
 			"service": "S3",
 			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
-				"logicalId": "storageItemVideoUpload"
-			},
-			"lastPushTimeStamp": "2019-09-14T19:58:52.253Z",
-			"output": {
-				"BucketName": "item-video-upload-production",
-				"Region": "us-east-1"
-			},
-			"lastPushDirHash": "9CUkMVxgkVAyYYHS8wD23gPNhOU="
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "S3Trigger63a2132c",
+					"attributes": [
+						"Name",
+						"Arn",
+						"LambdaExecutionRole"
+					]
+				}
+			]
 		}
 	}
 }
