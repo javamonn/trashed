@@ -1,3 +1,5 @@
+open Lib;
+
 module Config = {
   type t;
 
@@ -17,9 +19,18 @@ module MediaConvert = {
   [@bs.send] external createJob: (t, Js.t({..})) => jobResponse = "createJob";
 
   [@bs.send] external promise: t => Js.Promise.t(job) = "promise";
+
+  let service = make({"apiVersion": "2017-08-29"});
 };
 
 [@bs.deriving abstract]
 type t = {config: Config.t};
 
 [@bs.module "aws-sdk"] external inst: t = "default";
+
+/** Global configuration **/
+let _ = inst->configGet->Config.update({"region": Constants.awsRegion});
+let _ =
+  inst
+  ->configGet
+  ->Config.mediaconvert({"endpoint": Constants.awsMediaConvertEndpoint});

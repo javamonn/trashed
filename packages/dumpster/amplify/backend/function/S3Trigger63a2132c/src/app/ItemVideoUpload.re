@@ -1,5 +1,16 @@
-let mediaConvertUrl = "https://q25wbt2lc.mediaconvert.us-east-1.amazonaws.com";
+open Lib;
+open Externals;
 
-let handle = record => {
-  Js.Promise.resolve();
+let handle = s3Object => {
+  let job =
+    MediaConvertJob.make(
+      ~iamRole=Constants.awsMediaConvertIamRole,
+      ~sourceS3Object=s3Object,
+      ~destinationS3Object=
+        S3Object.make(
+          ~bucket="trashcat",
+          ~key="public/item-video" ++ s3Object->pathGet,
+        ),
+    );
+  ();
 };

@@ -1,3 +1,5 @@
+/** s3://<bucket>/<permissionsDir>/<categoryDir>/<path> */
+
 [@bs.deriving abstract]
 type t = {
   bucket: string,
