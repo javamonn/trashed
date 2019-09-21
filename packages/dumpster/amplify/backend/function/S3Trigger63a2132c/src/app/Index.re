@@ -1,3 +1,5 @@
+open Externals;
+
 module Lambda = {
   [@bs.deriving abstract]
   type event = {
@@ -14,20 +16,25 @@ let handler: Lambda.handler =
     let _ =
       event
       ->Lambda.recordsGet
-      ->Belt.Array.map(r =>
+      ->Belt.Array.map(r => {
+          let s3Object =
+            S3Object.make(
+              ~bucket=S3EventRecord.(r->s3Get->bucketGet->nameGet),
+              ~key=S3EventRecord.(r->s3Get->object_Get->keyGet),
+            );
           switch (
             S3EventRecord.(r->eventNameGet),
-            S3EventRecord.(r->s3Get->bucketGet->nameGet),
-            S3EventRecord.(r->s3Get->object_Get->keyGet->primaryDir),
+            s3Object->S3Object.bucketGet,
+            s3Object->S3Object.primaryDirGet,
           ) {
           | ("s3ObjectCreated:*", "trashcat", "public/item-video-uploads") =>
-            ItemVideoUpload.handle(r)
+            ItemVideoUpload.handle(s3Object)
           | ("s3ObjectRemoved:*", "trashcat", _) => Js.Promise.resolve()
           | (eventType, bucket, topDir) =>
             Js.log4("Unhandled event: ", eventType, bucket, topDir);
             Js.Promise.resolve();
-          }
-        )
+          };
+        })
       ->Js.Promise.all
       |> Js.Promise.then_(_ => {
            let _ = cb(Js.Nullable.null, event);
