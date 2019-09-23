@@ -165,7 +165,7 @@
 						"Ref": "UnauthRoleName"
 					},
 					"S3DeploymentBucket": "trashed-production-20190824131356-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/6a300e113dbff04ec594f472da4a845f6bd958a2",
+					"S3DeploymentRootKey": "amplify-appsync-files/a2690f70b9e9070cdf687ff6f1c84fa822519d60",
 					"env": "production"
 				}
 			}

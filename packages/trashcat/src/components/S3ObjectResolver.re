@@ -18,8 +18,8 @@ module S3Object = {
    * private, protected).
    */
   let storageKeyGet = inst =>
-    switch (Js.String.split("/", inst->keyGet)) {
-    | [|"public", key|] => key
+    switch (Js.String.split("/", inst->keyGet)->Array.to_list) {
+    | ["public", ...key] => key |> Array.of_list |> Js.Array.joinWith("/")
     | _ => inst->keyGet
     };
 };

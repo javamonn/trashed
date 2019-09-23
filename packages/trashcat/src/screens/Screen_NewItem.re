@@ -77,7 +77,7 @@ let make = () => {
                     "mimeType": file->File._type->Js.Option.some,
                     "localUri": file->File.toString->Js.Option.some,
                     "key":
-                      "public/item-video-upload" ++ Externals.UUID.makeV4(),
+                      "public/item-video-upload/" ++ Externals.UUID.makeV4(),
                   },
                   "cloudfrontUrl": None,
                 },
@@ -88,33 +88,34 @@ let make = () => {
             (),
           )##variables,
         (),
-      );
-
-    /**
-    let _ =
-      createItemMutation(
-        ~variables=
-          CreateItemMutationConfig.make(
-            ~input={
-              "file": {
-                "bucket": Amplify.(config->Config.s3ItemVideoUploadBucketGet),
-                "region":
-                  Amplify.(config->Config.s3ItemVideoUploadBucketRegionGet),
-                "mimeType": file->File._type->Js.Option.some,
-                "localUri": file->File.toString->Js.Option.some,
-                "key": "public/item-video-uploads" ++ Externals.UUID.makeV4(),
-              },
-              "location": {
-                "lat": location->Geolocation.latitudeGet,
-                "lon": location->Geolocation.longitudeGet,
-              },
-              "id": Externals.UUID.makeV4()->Js.Option.some,
-            },
-            (),
-          )##variables,
-        (),
-      );
-    **/
+      )
+      |> Js.Promise.then_(r =>
+           switch (r) {
+           | ReasonApolloHooks.Mutation.Data(data) =>
+             data##createVideo
+             ->Belt.Option.map(video =>
+                 createItemMutation(
+                   ~variables=
+                     CreateItemMutationConfig.make(
+                       ~input={
+                         "itemVideoId": video##id,
+                         "location": {
+                           "lat": location->Geolocation.latitudeGet,
+                           "lon": location->Geolocation.longitudeGet,
+                         },
+                         "id": Externals.UUID.makeV4()->Js.Option.some,
+                       },
+                       (),
+                     )##variables,
+                   (),
+                 )
+                 |> Js.Promise.then_(_r => Js.Promise.resolve())
+               )
+             ->Belt.Option.getWithDefault(Js.Promise.resolve())
+           | Error(_error) => Js.Promise.resolve()
+           | _ => Js.Promise.resolve()
+           }
+         );
     ();
   };
 

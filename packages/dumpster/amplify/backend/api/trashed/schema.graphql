@@ -21,7 +21,7 @@ enum VideoMimeType {
   MP4
 }
 
-type S3Object {
+type S3Object @aws_iam {
   bucket: String!
   key: String!
   region: String!
@@ -39,7 +39,7 @@ type MediaConvertJob @model {
   video: Video! @connection
 }
 
-type VideoS3Object {
+type VideoS3Object @aws_iam {
   file: S3Object!
   mimeType: VideoMimeType!
   cloudfrontUrl: String
