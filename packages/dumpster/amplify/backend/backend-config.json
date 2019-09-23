@@ -79,11 +79,6 @@
 			"providerPlugin": "awscloudformation",
 			"build": true
 		},
-		"S3Triggerd81623e7": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true
-		},
 		"S3Trigger63a2132c": {
 			"service": "Lambda",
 			"providerPlugin": "awscloudformation",

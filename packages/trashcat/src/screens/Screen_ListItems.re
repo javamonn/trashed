@@ -6,10 +6,13 @@ module ListItemsQueryConfig = [%graphql
       listItems {
         items {
           id
-          file {
-            bucket
-            key
-            region
+          video {
+            id
+            thumbnail {
+              bucket 
+              key
+              region
+            }
           }
           location {
             lat

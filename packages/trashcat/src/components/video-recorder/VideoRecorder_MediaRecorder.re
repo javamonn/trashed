@@ -138,7 +138,7 @@ let cleanupPhase = (~full=false, p) => {
 let make = (~mimeType, ~onFile) => {
   let ((phaseState, prevPhaseState), dispatchPhaseAction) =
     React.useReducer(
-      ((state, prevState), action) =>
+      ((state, _prevState), action) =>
         PhaseState.(
           switch (action) {
           | SetPhase(p) => (p, state)
@@ -177,7 +177,9 @@ let make = (~mimeType, ~onFile) => {
               let blob =
                 File.makeBlob(
                   recording->Recording.dataGet,
-                  File.blobOptions(~type_=mimeType),
+                  File.blobOptions(
+                    ~type_=mimeType->VideoSurface.mimeTypeToJs,
+                  ),
                 );
               let objectUrl = Webapi.Url.createObjectURL(blob);
               let nextPhaseState =
@@ -297,7 +299,10 @@ let make = (~mimeType, ~onFile) => {
          let recorder =
            MediaRecorder.make(
              stream,
-             MediaRecorder.options(~mimeType) |> Js.Nullable.return,
+             MediaRecorder.options(
+               ~mimeType=mimeType->VideoSurface.mimeTypeToJs,
+             )
+             |> Js.Nullable.return,
            );
          let _ =
            eventListeners->Belt.Array.reduce(recorder, (recorder, (ev, l)) =>

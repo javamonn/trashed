@@ -34,18 +34,23 @@ enum MediaConvertJobState {
 }
 
 type MediaConvertJob @model {
+  id: ID!
   state: MediaConvertJobState!
   video: Video! @connection
 }
 
-type VideoS3Object @model {
+type VideoS3Object {
   file: S3Object!
   mimeType: VideoMimeType!
   cloudfrontUrl: String
 }
 
-type Video @model {
-  files: [VideoS3Object!] @connection(name: "VideoS3Objects")
+type Video 
+  @model 
+  @auth(rules: [{allow: public, provider: iam, operations: [create, read]}])
+  {
+  id: ID!
+  files: [VideoS3Object!]!
   thumbnail: S3Object
   mediaConvertJob: MediaConvertJob @connection
 }
@@ -54,6 +59,6 @@ type Item
   @model
   @auth(rules: [{allow: public, provider: iam, operations: [create, read]}]) {
   id: ID!
-  video: Video! @connection(name: "ItemVideos")
+  video: Video! @connection
   location: Location!
 }

@@ -1,15 +1,41 @@
 open Lib;
 open Externals;
 
+module CreateItemVideoMutationConfig = [%graphql
+  {|
+  mutation CreateItemVideo($input: CreateVideoInput!) {
+    createVideo(input: $input) {
+      id
+      files {
+        file {
+          bucket
+          key
+          region
+        }
+        mimeType
+      }
+    }
+  }
+|}
+];
+module CreateItemVideoMutation =
+  ReasonApolloHooks.Mutation.Make(CreateItemVideoMutationConfig);
+
 module CreateItemMutationConfig = [%graphql
   {|
   mutation CreateItem($input: CreateItemInput!) {
     createItem(input: $input) {
       id
-      file {
-        bucket
-        key
-        region
+      video {
+        id
+        files {
+          file {
+            bucket
+            key
+            region
+          }
+          mimeType
+        }
       }
       location {
         lat
@@ -24,16 +50,47 @@ module CreateItemMutation =
 
 [@react.component]
 let make = () => {
+  let (createItemVideoMutation, _s, _f) = CreateItemVideoMutation.use();
   let (createItemMutation, _s, _f) = CreateItemMutation.use();
 
-  /**
-   * 1. Upload video to S3
-   * 2. Create VideoS3Object
-   * 3. Create Video
-   * 4. Create Item and Create MediaConvert
-   */
-
   let handleFile = (~file, ~location) => {
+    let _ =
+      createItemVideoMutation(
+        ~variables=
+          CreateItemVideoMutationConfig.make(
+            ~input={
+              "id": Externals.UUID.makeV4()->Js.Option.some,
+              "files": [|
+                {
+                  "mimeType":
+                    file
+                    ->File._type
+                    ->VideoSurface.mimeTypeFromJs
+                    ->Belt.Option.getWithDefault(`WEBM),
+                  "file": {
+                    "bucket":
+                      Amplify.(config->Config.s3ItemVideoUploadBucketGet),
+                    "region":
+                      Amplify.(
+                        config->Config.s3ItemVideoUploadBucketRegionGet
+                      ),
+                    "mimeType": file->File._type->Js.Option.some,
+                    "localUri": file->File.toString->Js.Option.some,
+                    "key":
+                      "public/item-video-upload" ++ Externals.UUID.makeV4(),
+                  },
+                  "cloudfrontUrl": None,
+                },
+              |],
+              "thumbnail": None,
+              "videoMediaConvertJobId": None,
+            },
+            (),
+          )##variables,
+        (),
+      );
+
+    /**
     let _ =
       createItemMutation(
         ~variables=
@@ -57,13 +114,13 @@ let make = () => {
           )##variables,
         (),
       );
+    **/
     ();
   };
 
   switch (Constants.browser->Bowser.getBrowserName) {
   | Some(`Safari) =>
-    <VideoRecorder.FileInput mimeType="video/webm" onFile=handleFile />
-  | _ =>
-    <VideoRecorder.MediaRecorder mimeType="video/webm" onFile=handleFile />
+    <VideoRecorder.FileInput mimeType=`WEBM onFile=handleFile />
+  | _ => <VideoRecorder.MediaRecorder mimeType=`WEBM onFile=handleFile />
   };
 };

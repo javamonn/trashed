@@ -5,10 +5,16 @@ module GetItemQueryConfig = [%graphql
     query GetItem($itemId: ID!) {
       getItem(id: $itemId) {
         id
-        file {
-          bucket
-          key
-          region
+        video {
+          id
+          files {
+            file {
+              bucket
+              key
+              region
+            }
+            mimeType
+          }
         }
         location {
           lat
@@ -47,10 +53,17 @@ let make = (~itemId) => {
     ->Belt.Option.map(item =>
         <div className={cn(["w-screen", "h-screen", "relative"])}>
           <S3ObjectResolver
-            s3Object={S3ObjectResolver.S3Object.fromJs(item##file)}
-            render={(~url) =>
+            s3Object={
+              item##video##files
+              ->Belt.Array.map(i => i##file->S3ObjectResolver.S3Object.fromJs)
+            }
+            render={(~result) =>
               <VideoSurface
-                src={VideoSurface.srcUrl(url)}
+                src={
+                  Belt.Array.zip(result, item##video##files)
+                  ->Belt.Array.map(((src, file)) => (src, file##mimeType))
+                  ->VideoSurface.srcElement
+                }
                 autoPlay=true
                 controls=true
               />

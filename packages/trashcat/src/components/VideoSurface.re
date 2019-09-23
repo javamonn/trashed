@@ -2,11 +2,14 @@ open Externals;
 open Lib.Styles;
 open Lib.Utils;
 
+[@bs.deriving jsConverter]
+type mimeType = [ | [@bs.as "video/webm"] `WEBM | [@bs.as "video/mp4"] `MP4];
+
 [@bs.deriving accessors]
 type src =
   | SrcObject(MediaStream.t)
   | SrcUrl(string)
-  | SrcElement(array((string, string)));
+  | SrcElement(array((string, mimeType)));
 
 [@react.component]
 let make = (~autoPlay=false, ~controls=false, ~src=?) => {
@@ -84,7 +87,9 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
     switch (src) {
     | Some(SrcElement(ss)) =>
       ss
-      ->Belt.Array.map(((src, type_)) => <source type_ src />)
+      ->Belt.Array.map(((src, type_)) =>
+          <source type_={type_->mimeTypeToJs} src />
+        )
       ->ReasonReact.array
     | _ => React.null
     };

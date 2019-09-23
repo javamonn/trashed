@@ -19,3 +19,4 @@ let doto1 = (f, inst, arg1) => {
 let wrapBs = (a, f) => f(. a);
 
 let apply = (f, a) => f(a);
+

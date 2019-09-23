@@ -28,7 +28,7 @@ module State = {
   [@bs.deriving accessors]
   type t =
     | Resolving
-    | Resolved(string)
+    | Resolved(array(string))
     | Error;
 
   [@bs.deriving accessors]
@@ -53,7 +53,11 @@ let make = (~s3Object, ~render) => {
     React.useEffect1(
       () => {
         let _ =
-          Amplify.Storage.(inst->get(s3Object->S3Object.storageKeyGet))
+          s3Object
+          |> Js.Array.map(s3Object =>
+               Amplify.Storage.(inst->get(s3Object->S3Object.storageKeyGet))
+             )
+          |> Js.Promise.all
           |> Js.Promise.then_(r => {
                let _ = r->State.resolved->State.setState->dispatch;
                Js.Promise.resolve();
@@ -71,6 +75,6 @@ let make = (~s3Object, ~render) => {
   switch (state) {
   | Resolving
   | Error => React.null
-  | Resolved(url) => render(~url)
+  | Resolved(result) => render(~result)
   };
 };
