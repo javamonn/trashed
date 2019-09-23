@@ -1,16 +1,23 @@
-/** s3://<bucket>/<permissionsDir>/<categoryDir>/<path> */
+/** s3://<bucket>/<permissionsPathPart>/<categoryPathPart>/<path> */
 
 [@bs.deriving abstract]
 type t = {
   bucket: string,
-  key: string,
+  key: string
 };
+
 let make = t;
 
-let primaryDirGet = o =>
+let primaryPathPartGet = o =>
   switch (Js.String.split("/", o->keyGet)->Array.to_list) {
-  | [topDir, subDir, ..._rest] => topDir ++ "/" ++ subDir
-  | _ => o->keyGet
+  | [permissionsPathPart, categoryPathPart, ..._namePathPart] => Some(permissionsPathPart ++ "/" ++ categoryPathPart)
+  | _ => None
+  };
+
+let namePathPartGet = o =>
+  switch (Js.String.split("/", o->keyGet)->Array.to_list) {
+  | [_permisssionsPathPart, _categoryPathPart, ...namePathPart] => Some(namePathPart)
+  | _ => None
   };
 
 let toString = o => "s3://" ++ o->bucketGet ++ "/" ++ o->keyGet;

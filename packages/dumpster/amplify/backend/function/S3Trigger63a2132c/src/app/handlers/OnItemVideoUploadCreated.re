@@ -1,4 +1,3 @@
-open Lib;
 open Externals;
 
 let handle = s3Object => {
@@ -9,8 +8,11 @@ let handle = s3Object => {
       ~destinationS3Object=
         S3Object.make(
           ~bucket="trashcat",
-          ~key="public/item-video" ++ s3Object->pathGet,
+          ~key="public/item-video" ++ s3Object->S3Object.namePathPartGet,
         ),
     );
-  ();
+  
+  /** FIXME: Should probably keep track of MediaConvert job state */
+  AWSSDK.MediaConvert.(service->createJob(job)->promise)
+    |> Js.Promise.then_((_job) => Js.Promise.resolve());
 };

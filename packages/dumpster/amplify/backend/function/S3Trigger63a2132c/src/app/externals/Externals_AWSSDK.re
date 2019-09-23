@@ -1,5 +1,3 @@
-open Lib;
-
 module Config = {
   type t;
 

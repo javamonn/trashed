@@ -28,7 +28,9 @@ let handler: Lambda.handler =
             s3Object->S3Object.primaryDirGet,
           ) {
           | ("s3ObjectCreated:*", "trashcat", "public/item-video-uploads") =>
-            ItemVideoUpload.handle(s3Object)
+            OnItemVideoUploadCreated.handle(s3Object)
+          | ("s3ObjectCreated:*", "trashcat", "public/item-video") =>
+            OnItemVideoCreated.handle(s3Object)
           | ("s3ObjectRemoved:*", "trashcat", _) => Js.Promise.resolve()
           | (eventType, bucket, topDir) =>
             Js.log4("Unhandled event: ", eventType, bucket, topDir);

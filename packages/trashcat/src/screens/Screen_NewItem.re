@@ -11,6 +11,10 @@ module CreateItemMutationConfig = [%graphql
         key
         region
       }
+      location {
+        lat
+        lon
+      }
     }
   }
 |}
@@ -21,6 +25,13 @@ module CreateItemMutation =
 [@react.component]
 let make = () => {
   let (createItemMutation, _s, _f) = CreateItemMutation.use();
+
+  /**
+   * 1. Upload video to S3
+   * 2. Create VideoS3Object
+   * 3. Create Video
+   * 4. Create Item and Create MediaConvert
+   */
 
   let handleFile = (~file, ~location) => {
     let _ =
