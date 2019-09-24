@@ -228,6 +228,33 @@
 				}
 			}
 		},
+		"functionDynamoDBStreamTrigger": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/DynamoDBStreamTrigger-cloudformation-template.json",
+				"Parameters": {
+					"apitrashedGraphQLAPIIdOutput": {
+						"Fn::GetAtt": [
+							"apitrashed",
+							"Outputs.GraphQLAPIIdOutput"
+						]
+					},
+					"apitrashedGraphQLAPIEndpointOutput": {
+						"Fn::GetAtt": [
+							"apitrashed",
+							"Outputs.GraphQLAPIEndpointOutput"
+						]
+					},
+					"storagetrashcatBucketName": {
+						"Fn::GetAtt": [
+							"storagetrashcat",
+							"Outputs.BucketName"
+						]
+					},
+					"env": "production"
+				}
+			}
+		},
 		"storagetrashcat": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {

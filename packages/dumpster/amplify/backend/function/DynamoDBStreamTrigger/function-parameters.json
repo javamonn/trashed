@@ -1,0 +1,18 @@
+{
+    "permissions": {
+        "api": {
+            "trashed": [
+                "create",
+                "read",
+                "update"
+            ]
+        },
+        "storage": {
+            "trashcat": [
+                "create",
+                "read",
+                "update"
+            ]
+        }
+    }
+}
