@@ -55,7 +55,9 @@ let make = (~s3Object, ~render) => {
         let _ =
           s3Object
           |> Js.Array.map(s3Object =>
-               Amplify.Storage.(inst->get(s3Object->S3Object.storageKeyGet))
+               AwsAmplify.Storage.(
+                 inst->get(s3Object->S3Object.storageKeyGet)
+               )
              )
           |> Js.Promise.all
           |> Js.Promise.then_(r => {

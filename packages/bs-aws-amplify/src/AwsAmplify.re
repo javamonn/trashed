@@ -58,8 +58,6 @@ module Storage = {
   [@bs.send] external get: (t, string) => Js.Promise.t(string) = "get";
 };
 
-[@bs.module "../aws-exports"] external config: Config.t = "default";
-
 type t;
 [@bs.module "@aws-amplify/core"] external inst: t = "default";
 [@bs.send] external configure: (t, Config.t) => unit = "configure";

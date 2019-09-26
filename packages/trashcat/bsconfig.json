@@ -19,6 +19,7 @@
     "reason-react",
     "re-classnames",
     "bs-webapi",
+    "bs-aws-amplify",
     "reason-apollo",
     "reason-apollo-hooks"
   ],

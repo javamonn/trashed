@@ -59,13 +59,14 @@ type t =
     dynamodb: VideoRecord.t,
   };
 
-/** FIXME: Table name changes across env */
 [@bs.deriving jsConverter]
 type tableName = [
-  | [@bs.as "Video-akkeqcns2fc5hn7ad3uu3euymy-production"] `VideoTable
+  | [@bs.as "Video"] `VideoTable
 ];
 
 let tableGet = inst =>
   (inst->eventSourceARNGet |> Js.String.split("/"))
   ->Belt.Array.get(1)
+  ->Belt.Option.map(Js.String.split("-"))
+  ->Belt.Option.flatMap(a => Belt.Array.get(a, 0))
   ->Belt.Option.flatMap(tableNameFromJs);

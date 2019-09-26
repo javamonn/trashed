@@ -6,3 +6,5 @@ let browser =
   ->Externals_Bowser.make
   ->Externals_Bowser.getBrowser;
 
+[@bs.module "../aws-exports"]
+external awsAmplifyConfig: AwsAmplify.Config.t = "default";

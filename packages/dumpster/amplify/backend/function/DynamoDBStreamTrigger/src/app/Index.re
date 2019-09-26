@@ -9,7 +9,6 @@ module Lambda = {
   type handler = (event, context, cb) => unit;
 };
 
-let handleMediaConvertSubmit = r => Js.Promise.resolve();
 let handleMediaConvertComplete = r => Js.Promise.resolve();
 
 let handler: Lambda.handler =
@@ -22,7 +21,7 @@ let handler: Lambda.handler =
             r->DynamoDBStreamRecord.eventNameGet,
             r->DynamoDBStreamRecord.tableGet,
           ) {
-          | ("INSERT", Some(`VideoTable)) => handleMediaConvertSubmit(r)
+          | ("INSERT", Some(`VideoTable)) => HandleMediaConvertSubmit.handle(r)
           | ("UPDATE", Some(`VideoTable)) => handleMediaConvertComplete(r)
           | _ => Js.Promise.resolve()
           }

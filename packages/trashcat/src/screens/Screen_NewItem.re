@@ -69,10 +69,10 @@ let make = () => {
                     ->Belt.Option.getWithDefault(`WEBM),
                   "file": {
                     "bucket":
-                      Amplify.(config->Config.s3ItemVideoUploadBucketGet),
+                      AwsAmplify.(Constants.awsAmplifyConfig->Config.s3ItemVideoUploadBucketGet),
                     "region":
-                      Amplify.(
-                        config->Config.s3ItemVideoUploadBucketRegionGet
+                      AwsAmplify.(
+                        Constants.awsAmplifyConfig->Config.s3ItemVideoUploadBucketRegionGet
                       ),
                     "mimeType": file->File._type->Js.Option.some,
                     "localUri": file->File.toString->Js.Option.some,

@@ -1,9 +1,10 @@
 open Externals;
+open Lib;
 
 %raw
 "import './app.pcss'";
 
-let _ = Amplify.(inst->configure(config));
+let _ = AwsAmplify.(inst->configure(Constants.awsAmplifyConfig));
 
 [@react.component]
 let make = () => {
