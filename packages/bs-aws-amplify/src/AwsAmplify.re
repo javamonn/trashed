@@ -3,8 +3,11 @@
  */
 module Config = {
   [@bs.deriving abstract]
-  type t =
-    pri {
+  type t = {
+      [@bs.as "aws_project_region"]
+      projectRegion: string,
+      [@bs.as "aws_user_pools_id"]
+      userPoolsId: string,
       [@bs.as "aws_appsync_region"]
       appSyncRegion: string,
       [@bs.as "aws_appsync_authenticationType"]
@@ -12,10 +15,11 @@ module Config = {
       [@bs.as "aws_appsync_graphqlEndpoint"]
       appSyncGraphqlEndpoint: string,
       [@bs.as "aws_user_files_s3_bucket"]
-      s3ItemVideoUploadBucket: string,
+      userFilesS3Bucket: string,
       [@bs.as "aws_user_files_s3_bucket_region"]
-      s3ItemVideoUploadBucketRegion: string,
+      userFilesS3BucketRegion: string,
     };
+  let make = t;
 };
 
 module Auth = {

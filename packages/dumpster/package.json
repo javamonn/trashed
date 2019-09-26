@@ -1,0 +1,14 @@
+{
+  "name": "dumpster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "aws-exports.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bs-aws-amplify": "^1.0.0"
+  }
+}

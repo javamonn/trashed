@@ -1,3 +1,8 @@
+open Externals;
+open Lib;
+
+let _ = AwsAmplify.(inst->configure(Constants.awsAmplifyConfig));
+
 module Lambda = {
   [@bs.deriving abstract]
   type event = {
@@ -21,7 +26,8 @@ let handler: Lambda.handler =
             r->DynamoDBStreamRecord.eventNameGet,
             r->DynamoDBStreamRecord.tableGet,
           ) {
-          | ("INSERT", Some(`VideoTable)) => HandleMediaConvertSubmit.handle(r)
+          | ("INSERT", Some(`VideoTable)) =>
+            HandleMediaConvertSubmit.handle(r)
           | ("UPDATE", Some(`VideoTable)) => handleMediaConvertComplete(r)
           | _ => Js.Promise.resolve()
           }

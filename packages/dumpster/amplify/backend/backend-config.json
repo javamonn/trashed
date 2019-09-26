@@ -1,128 +1,135 @@
 {
-	"auth": {
-		"trashed452c5745": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "trashed452c5745PostConfirmation",
-					"triggerProvider": "Cognito",
-					"attributes": [
-						"Arn",
-						"Name"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "trashed452c5745PreSignup",
-					"triggerProvider": "Cognito",
-					"attributes": [
-						"Arn",
-						"Name"
-					]
-				}
-			]
-		}
-	},
-	"api": {
-		"trashed": {
-			"service": "AppSync",
-			"providerPlugin": "awscloudformation",
-			"output": {
-				"authConfig": {
-					"additionalAuthenticationProviders": [
-						{
-							"authenticationType": "AWS_IAM"
-						}
-					],
-					"defaultAuthentication": {
-						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
-						"userPoolConfig": {
-							"userPoolId": "authtrashed452c5745"
-						}
-					}
-				}
-			}
-		}
-	},
-	"function": {
-		"rpc": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "auth",
-					"resourceName": "trashed452c5745",
-					"attributes": [
-						"UserPoolId"
-					]
-				},
-				{
-					"category": "api",
-					"resourceName": "trashed",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				}
-			]
-		},
-		"trashed452c5745PostConfirmation": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true
-		},
-		"trashed452c5745PreSignup": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true
-		},
-		"S3Trigger63a2132c": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true
-		},
-		"DynamoDBStreamTrigger": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "api",
-					"resourceName": "trashed",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				},
-				{
-					"category": "storage",
-					"resourceName": "trashcat",
-					"attributes": [
-						"BucketName"
-					]
-				}
-			]
-		}
-	},
-	"hosting": {},
-	"storage": {
-		"trashcat": {
-			"service": "S3",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "S3Trigger63a2132c",
-					"attributes": [
-						"Name",
-						"Arn",
-						"LambdaExecutionRole"
-					]
-				}
-			]
-		}
-	}
+    "auth": {
+        "trashed452c5745": {
+            "service": "Cognito",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": [
+                {
+                    "category": "function",
+                    "resourceName": "trashed452c5745PostConfirmation",
+                    "triggerProvider": "Cognito",
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ]
+                },
+                {
+                    "category": "function",
+                    "resourceName": "trashed452c5745PreSignup",
+                    "triggerProvider": "Cognito",
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ]
+                }
+            ]
+        }
+    },
+    "api": {
+        "trashed": {
+            "service": "AppSync",
+            "providerPlugin": "awscloudformation",
+            "output": {
+                "authConfig": {
+                    "additionalAuthenticationProviders": [
+                        {
+                            "authenticationType": "AWS_IAM"
+                        }
+                    ],
+                    "defaultAuthentication": {
+                        "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+                        "userPoolConfig": {
+                            "userPoolId": "authtrashed452c5745"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "function": {
+        "rpc": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true,
+            "dependsOn": [
+                {
+                    "category": "auth",
+                    "resourceName": "trashed452c5745",
+                    "attributes": [
+                        "UserPoolId"
+                    ]
+                },
+                {
+                    "category": "api",
+                    "resourceName": "trashed",
+                    "attributes": [
+                        "GraphQLAPIIdOutput",
+                        "GraphQLAPIEndpointOutput"
+                    ]
+                }
+            ]
+        },
+        "trashed452c5745PostConfirmation": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true
+        },
+        "trashed452c5745PreSignup": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true
+        },
+        "S3Trigger63a2132c": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true
+        },
+        "DynamoDBStreamTrigger": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true,
+            "dependsOn": [
+                {
+                    "category": "api",
+                    "resourceName": "trashed",
+                    "attributes": [
+                        "GraphQLAPIIdOutput",
+                        "GraphQLAPIEndpointOutput"
+                    ]
+                },
+                {
+                    "category": "storage",
+                    "resourceName": "trashcat",
+                    "attributes": [
+                        "BucketName"
+                    ]
+                },
+                {
+                    "category": "auth",
+                    "resourceName": "trashed452c5745",
+                    "attributes": [
+                        "UserPoolId"
+                    ]
+                }
+            ]
+        }
+    },
+    "hosting": {},
+    "storage": {
+        "trashcat": {
+            "service": "S3",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": [
+                {
+                    "category": "function",
+                    "resourceName": "S3Trigger63a2132c",
+                    "attributes": [
+                        "Name",
+                        "Arn",
+                        "LambdaExecutionRole"
+                    ]
+                }
+            ]
+        }
+    }
 }
