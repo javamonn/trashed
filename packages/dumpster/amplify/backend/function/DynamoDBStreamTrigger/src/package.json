@@ -5,12 +5,14 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "bs-platform": "^5.0.6"
+    "bs-platform": "^5.0.6",
+    "graphql_ppx": "^0.2.8"
   },
   "scripts": {
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
+    "graphql:sync-schema": "./scripts/graphql-sync-schema.sh && npm run bsb:clean",
     "start": "npm run bsb:start",
     "build": "NODE_ENV=production npm run bsb:build"
   }

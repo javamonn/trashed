@@ -27,7 +27,7 @@ let handler: Lambda.handler =
             r->DynamoDBStreamRecord.tableGet,
           ) {
           | ("INSERT", Some(`VideoTable)) =>
-            HandleMediaConvertSubmit.handle(r)
+            HandleMediaConvertSubmit.handle(r, cb)
           | ("UPDATE", Some(`VideoTable)) => handleMediaConvertComplete(r)
           | _ => Js.Promise.resolve()
           }

@@ -1,34 +1,67 @@
-module Field = {
-  type list('a) = {. "L": array('a)};
-  type string = {. "S": string};
-  type null = {. "N": bool};
-  type nullableString = {
-    .
-    "N": bool,
-    "S": string,
-  };
+module ArrayField = {
+  [@bs.deriving abstract]
+  type t('a) =
+    pri {
+      [@bs.as "L"]
+      array: array('a),
+    };
+
+  let get = arrayGet;
+};
+
+module StringField = {
+  [@bs.deriving abstract]
+  type t =
+    pri {
+      [@bs.as "S"]
+      string,
+    };
+  let get = stringGet;
+};
+
+module NullField = {
+  [@bs.deriving abstract]
+  type t =
+    pri {
+      [@bs.as "N"]
+      null: bool,
+    };
+  let get = nullGet;
+};
+
+module NullableStringField = {
+  [@bs.deriving abstract]
+  type t =
+    pri {
+      [@bs.as "N"]
+      null: bool,
+      [@bs.as "S"]
+      string,
+    };
+
+  let get = i => nullGet(i) ? None : Some(stringGet(i));
 };
 
 module VideoRecord = {
   type attributeMap = {
     .
     "files":
-      Field.list({
+      ArrayField.t({
         .
-        "cloudfrontUrl": Field.nullableString,
-        "mimeType": Field.string,
+        "cloudfrontUrl": NullableStringField.t,
+        "mimeType": StringField.t,
         "file": {
           .
-          "bucket": Field.string,
-          "key": Field.string,
-          "region": Field.string,
+          "bucket": StringField.t,
+          "key": StringField.t,
+          "region": StringField.t,
         },
       }),
-    "id": Field.string,
-    "createdAt": Field.string,
-    "updatedAt": Field.string,
-    "videoMediaConvertJobId": Field.nullableString,
-    "thumbnail": Field.null,
+    "id": StringField.t,
+    "createdAt": StringField.t,
+    "updatedAt": StringField.t,
+    "videoMediaConvertJobId": NullableStringField.t,
+    "thumbnail": NullField.t,
   };
 
   [@bs.deriving abstract]
@@ -60,9 +93,7 @@ type t =
   };
 
 [@bs.deriving jsConverter]
-type tableName = [
-  | [@bs.as "Video"] `VideoTable
-];
+type tableName = [ | [@bs.as "Video"] `VideoTable];
 
 let tableGet = inst =>
   (inst->eventSourceARNGet |> Js.String.split("/"))

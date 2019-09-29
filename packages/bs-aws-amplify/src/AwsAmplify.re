@@ -4,21 +4,21 @@
 module Config = {
   [@bs.deriving abstract]
   type t = {
-      [@bs.as "aws_project_region"]
-      projectRegion: string,
-      [@bs.as "aws_user_pools_id"]
-      userPoolsId: string,
-      [@bs.as "aws_appsync_region"]
-      appSyncRegion: string,
-      [@bs.as "aws_appsync_authenticationType"]
-      appSyncAuthenticationType: string,
-      [@bs.as "aws_appsync_graphqlEndpoint"]
-      appSyncGraphqlEndpoint: string,
-      [@bs.as "aws_user_files_s3_bucket"]
-      userFilesS3Bucket: string,
-      [@bs.as "aws_user_files_s3_bucket_region"]
-      userFilesS3BucketRegion: string,
-    };
+    [@bs.as "aws_project_region"]
+    projectRegion: string,
+    [@bs.as "aws_user_pools_id"]
+    userPoolsId: string,
+    [@bs.as "aws_appsync_region"]
+    appSyncRegion: string,
+    [@bs.as "aws_appsync_authenticationType"]
+    appSyncAuthenticationType: string,
+    [@bs.as "aws_appsync_graphqlEndpoint"]
+    appSyncGraphqlEndpoint: string,
+    [@bs.as "aws_user_files_s3_bucket"]
+    userFilesS3Bucket: string,
+    [@bs.as "aws_user_files_s3_bucket_region"]
+    userFilesS3BucketRegion: string,
+  };
   let make = t;
 };
 
@@ -60,6 +60,22 @@ module Storage = {
   [@bs.module "@aws-amplify/storage"] external inst: t = "default";
 
   [@bs.send] external get: (t, string) => Js.Promise.t(string) = "get";
+};
+
+module Api = {
+  type t;
+
+  [@bs.deriving abstract]
+  type graphqlOperation = {
+    query: string,
+    variables: Js.Json.t,
+  };
+
+  [@bs.module "@aws-amplify/api"] external inst: t = "default";
+
+  [@bs.send]
+  external graphql: (t, graphqlOperation) => Js.Promise.t(Js.Json.t) =
+    "graphql";
 };
 
 type t;

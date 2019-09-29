@@ -15,6 +15,7 @@
   "bs-dependencies": [
     "bs-aws-amplify" 
   ],
+  "ppx-flags": ["graphql_ppx/ppx"],
   "warnings": {
     "error": "+101"
   },
