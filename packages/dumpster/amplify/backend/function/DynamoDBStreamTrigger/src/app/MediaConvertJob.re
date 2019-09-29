@@ -1,5 +1,3 @@
-open Externals;
-
 let make = (~iamRole, ~destinationS3Object, ~sourceS3Object) => {
   "role": iamRole,
   "settings": {

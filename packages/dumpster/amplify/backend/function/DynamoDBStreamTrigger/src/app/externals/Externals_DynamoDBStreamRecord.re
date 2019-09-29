@@ -23,17 +23,27 @@ module NullField = {
   [@bs.deriving abstract]
   type t =
     pri {
-      [@bs.as "N"]
+      [@bs.as "NULL"]
       null: bool,
     };
   let get = nullGet;
+};
+
+module MapField = {
+  [@bs.deriving abstract]
+  type t('a) =
+    pri {
+      [@bs.as "M"]
+      map: 'a,
+    };
+  let get = mapGet;
 };
 
 module NullableStringField = {
   [@bs.deriving abstract]
   type t =
     pri {
-      [@bs.as "N"]
+      [@bs.as "NULL"]
       null: bool,
       [@bs.as "S"]
       string,
@@ -46,17 +56,20 @@ module VideoRecord = {
   type attributeMap = {
     .
     "files":
-      ArrayField.t({
-        .
-        "cloudfrontUrl": NullableStringField.t,
-        "mimeType": StringField.t,
-        "file": {
+      ArrayField.t(
+        MapField.t({
           .
-          "bucket": StringField.t,
-          "key": StringField.t,
-          "region": StringField.t,
-        },
-      }),
+          "cloudfrontUrl": NullableStringField.t,
+          "mimeType": StringField.t,
+          "file":
+            MapField.t({
+              .
+              "bucket": StringField.t,
+              "key": StringField.t,
+              "region": StringField.t,
+            }),
+        }),
+      ),
     "id": StringField.t,
     "createdAt": StringField.t,
     "updatedAt": StringField.t,

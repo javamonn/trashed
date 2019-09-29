@@ -33,11 +33,11 @@ module MediaConvert = {
 [@bs.deriving abstract]
 type t = {config: Config.t};
 
-[@bs.module "aws-sdk"] external inst: t = "default";
+[@bs.module] external inst: t = "aws-sdk";
 
 /** Global configuration **/
-let _ = inst->configGet->Config.update({"region": Constants.awsRegion});
+let _ = inst->configGet->Config.update({"region": Constants.Env.region});
 let _ =
   inst
   ->configGet
-  ->Config.mediaconvert({"endpoint": Constants.awsMediaConvertEndpoint});
+  ->Config.mediaconvert({"endpoint": Constants.Env.awsMediaConvertEndpoint});

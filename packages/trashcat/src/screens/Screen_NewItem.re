@@ -70,11 +70,11 @@ let make = () => {
                   "file": {
                     "bucket":
                       AwsAmplify.(
-                        Constants.awsAmplifyConfig->Config.s3ItemVideoUploadBucketGet
+                        Constants.awsAmplifyConfig->Config.userFilesS3BucketGet
                       ),
                     "region":
                       AwsAmplify.(
-                        Constants.awsAmplifyConfig->Config.s3ItemVideoUploadBucketRegionGet
+                        Constants.awsAmplifyConfig->Config.userFilesS3BucketRegionGet
                       ),
                     "mimeType": file->File._type->Js.Option.some,
                     "localUri": file->File.toString->Js.Option.some,

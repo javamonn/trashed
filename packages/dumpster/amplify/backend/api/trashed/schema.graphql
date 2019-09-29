@@ -33,11 +33,15 @@ enum MediaConvertJobState {
   COMPLETE
 }
 
-type MediaConvertJob @model {
+type MediaConvertJob
+  @model 
+  @auth(rules: [{allow: public, provider: iam, operations: [create, read, update]}])
+  {
   id: ID!
+  externalId: ID!
   state: MediaConvertJobState!
   video: Video! @connection
-  externalId: ID!
+  mediaConvertJobVideoId: ID!
 }
 
 type VideoS3Object @aws_iam {

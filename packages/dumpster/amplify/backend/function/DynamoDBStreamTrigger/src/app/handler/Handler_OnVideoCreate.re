@@ -14,11 +14,30 @@ type error = [
   | [@bs.as "GraphQL Error: API Error"] `GraphQL_APIError
 ];
 
-module CreateMediaConvertJobMutationConfig = [%graphql
+module CreateMediaConvertJobMutation = [%graphql
   {|
     mutation CreateMediaConvertJob($input: CreateMediaConvertJobInput!) {
       createMediaConvertJob(input: $input) {
         id
+      }
+    }
+  |}
+];
+
+module ListMediaConvertJobsQuery = [%graphql
+  {|
+    query ListMediaConvertJobs($mediaConvertJobVideoId: ID!) {
+      listMediaConvertJobs(
+        filter: {
+          mediaConvertJobVideoId: {
+            eq: $mediaConvertJobVideoId
+          }
+        },
+        limit: 1
+      ) {
+        items {
+          id
+        }
       }
     }
   |}
@@ -29,77 +48,106 @@ let handle = r => {
     r
     ->DynamoDBStreamRecord.dynamodbGet
     ->DynamoDBStreamRecord.VideoRecord.newImageGet;
-  switch (
-    video##videoMediaConvertJobId
-    ->DynamoDBStreamRecord.NullableStringField.get,
-    video##files->DynamoDBStreamRecord.ArrayField.get->Belt.Array.get(0),
-  ) {
-  | (None, Some(f)) =>
-    let s3Object =
-      S3Object.make(
-        ~key=f##file##key->DynamoDBStreamRecord.StringField.get,
-        ~bucket=f##file##bucket->DynamoDBStreamRecord.StringField.get,
-      );
-    switch (s3Object->S3Object.namePathPartGet) {
-    | Some(namePath) =>
-      let job =
-        MediaConvertJob.make(
-          ~iamRole=Constants.awsMediaConvertIamRole,
-          ~sourceS3Object=s3Object,
-          ~destinationS3Object=
-            S3Object.make(
-              ~bucket="trashcat",
-              ~key="public/item-video" ++ namePath,
-            ),
-        );
-      AWSSDK.MediaConvert.(service->createJob(job)->promise)
-      |> Js.Promise.then_(createdJob => {
-           let mutation =
-             CreateMediaConvertJobMutationConfig.make(
-               ~input={
-                 "state": `SUBMITTED,
-                 "mediaConvertJobVideoId":
-                   video##id->DynamoDBStreamRecord.StringField.get,
-                 "externalId": createdJob->AWSSDK.MediaConvert.Job.idGet,
-                 "id": None,
-               },
-               (),
+  let mediaConvertJobQuery =
+    ListMediaConvertJobsQuery.make(
+      ~mediaConvertJobVideoId=video##id->DynamoDBStreamRecord.StringField.get,
+      (),
+    );
+
+  AwsAmplify.Api.graphqlOperation(
+    ~query=mediaConvertJobQuery##query,
+    ~variables=mediaConvertJobQuery##variables,
+  )
+  |> AwsAmplify.Api.(graphql(inst))
+  |> Js.Promise.then_(r => {
+       let queryResult = r->ListMediaConvertJobsQuery.parse;
+       switch (
+         queryResult##listMediaConvertJobs->Belt.Option.flatMap(i => i##items),
+         video##files
+         ->DynamoDBStreamRecord.ArrayField.get
+         ->Belt.Array.get(0)
+         ->Belt.Option.map(DynamoDBStreamRecord.MapField.get),
+       ) {
+       | (None, Some(f)) =>
+         let s3Object =
+           S3Object.make(
+             ~key=
+               DynamoDBStreamRecord.(
+                 f##file->MapField.get->(f => f##key)->StringField.get
+               ),
+             ~bucket=
+               DynamoDBStreamRecord.(
+                 f##file->MapField.get->(f => f##bucket)->StringField.get
+               ),
+           );
+         switch (s3Object->S3Object.namePathPartGet) {
+         | Some(namePath) =>
+           let job =
+             MediaConvertJob.make(
+               ~iamRole=Constants.Env.awsMediaConvertIamRole,
+               ~sourceS3Object=s3Object,
+               ~destinationS3Object=
+                 S3Object.make(
+                   ~bucket="trashcat",
+                   ~key="public/item-video" ++ namePath,
+                 ),
              );
-           AwsAmplify.Api.(
-             graphqlOperation(
-               ~query=mutation##query,
-               ~variables=mutation##variables,
-             )
-             |> graphql(inst)
-           )
-           |> Js.Promise.then_(r => {
-                let _mutationResult =
-                  r->CreateMediaConvertJobMutationConfig.parse;
-                Js.Promise.resolve(Belt.Result.Ok());
+           AWSSDK.MediaConvert.(service->createJob(job)->promise)
+           |> Js.Promise.then_(createdJob => {
+                let mutation =
+                  CreateMediaConvertJobMutation.make(
+                    ~input={
+                      "state": `SUBMITTED,
+                      "mediaConvertJobVideoId":
+                        video##id->DynamoDBStreamRecord.StringField.get,
+                      "externalId": createdJob->AWSSDK.MediaConvert.Job.idGet,
+                      "id": None,
+                    },
+                    (),
+                  );
+                AwsAmplify.Api.(
+                  graphqlOperation(
+                    ~query=mutation##query,
+                    ~variables=mutation##variables,
+                  )
+                  |> graphql(inst)
+                )
+                |> Js.Promise.then_(r => {
+                     let _mutationResult =
+                       r->CreateMediaConvertJobMutation.parse;
+                     Js.Promise.resolve(Belt.Result.Ok());
+                   })
+                |> Js.Promise.catch(err => {
+                     Js.log(err);
+                     Js.Promise.resolve(
+                       Belt.Result.Error(`GraphQL_APIError->errorToJs),
+                     );
+                   });
               })
            |> Js.Promise.catch(_err =>
                 Js.Promise.resolve(
-                  Belt.Result.Error(`GraphQL_APIError->errorToJs),
+                  Belt.Result.Error(
+                    `MediaConvert_CreateJobFailure->errorToJs,
+                  ),
                 )
               );
-         })
-      |> Js.Promise.catch(_err =>
+         | None =>
            Js.Promise.resolve(
-             Belt.Result.Error(`MediaConvert_CreateJobFailure->errorToJs),
+             Belt.Result.Error(`InvalidItem_UnsupportedObjectPath->errorToJs),
            )
-         );
-    | None =>
-      Js.Promise.resolve(
-        Belt.Result.Error(`InvalidItem_UnsupportedObjectPath->errorToJs),
-      )
-    };
-  | (None, None) =>
-    Js.Promise.resolve(
-      Belt.Result.Error(`InvalidItem_MissingVideoSource->errorToJs),
-    )
-  | (Some(_videoMediaConvertJobId), _) =>
-    Js.Promise.resolve(
-      Belt.Result.Error(`InvalidItem_VideoAlreadyProcessed->errorToJs),
-    )
-  };
+         };
+       | (None, None) =>
+         Js.Promise.resolve(
+           Belt.Result.Error(`InvalidItem_MissingVideoSource->errorToJs),
+         )
+       | (Some(_videoMediaConvertJobId), _) =>
+         Js.Promise.resolve(
+           Belt.Result.Error(`InvalidItem_VideoAlreadyProcessed->errorToJs),
+         )
+       };
+     })
+  |> Js.Promise.catch(err => {
+       Js.log(err);
+       Js.Promise.resolve(Belt.Result.Error(`GraphQL_APIError->errorToJs));
+     });
 };

@@ -8,6 +8,8 @@ module Config = {
     projectRegion: string,
     [@bs.as "aws_user_pools_id"]
     userPoolsId: string,
+    [@bs.as "aws_user_pools_web_client_id"]
+    userPoolsWebClientId: string,
     [@bs.as "aws_appsync_region"]
     appSyncRegion: string,
     [@bs.as "aws_appsync_authenticationType"]

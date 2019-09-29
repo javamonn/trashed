@@ -36,7 +36,7 @@
 		"LambdaFunction": {
 			"Type": "AWS::Lambda::Function",
 			"Metadata": {
-				"aws:asset:path": "./src",
+				"aws:asset:path": "./src/dist",
 				"aws:asset:property": "Code"
 			},
 			"Properties": {
@@ -91,7 +91,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/DynamoDBStreamTrigger-4c484674324e66703633-build.zip"
+					"S3Key": "amplify-builds/DynamoDBStreamTrigger-687a5873686237544f45-build.zip"
 				}
 			}
 		},

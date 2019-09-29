@@ -16,7 +16,7 @@ module Lambda = {
 
 let handler: Lambda.handler =
   (event, _context, cb) => {
-    Js.log2("event", event);
+    Js.log2("event", Js.Json.stringifyAny(event));
     let _ =
       event
       ->Lambda.recordsGet
