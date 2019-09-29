@@ -37,6 +37,7 @@ type MediaConvertJob @model {
   id: ID!
   state: MediaConvertJobState!
   video: Video! @connection
+  externalId: ID!
 }
 
 type VideoS3Object @aws_iam {
@@ -52,7 +53,6 @@ type Video
   id: ID!
   files: [VideoS3Object!]!
   thumbnail: S3Object
-  mediaConvertJob: MediaConvertJob @connection
 }
 
 type Item

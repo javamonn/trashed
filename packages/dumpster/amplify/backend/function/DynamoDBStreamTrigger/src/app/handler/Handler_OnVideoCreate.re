@@ -3,15 +3,15 @@ open Lib;
 
 [@bs.deriving jsConverter]
 type error = [
-  | [@bs.as "Invalid Item: Video already processed."]
+  | [@bs.as "Invalid Item Error: Video already processed."]
     `InvalidItem_VideoAlreadyProcessed
-  | [@bs.as "Invalid Item: Missing video source."]
+  | [@bs.as "Invalid Item Error: Missing video source."]
     `InvalidItem_MissingVideoSource
-  | [@bs.as "Invalid Item: Unsupported object path."]
+  | [@bs.as "Invalid Item Error: Unsupported object path."]
     `InvalidItem_UnsupportedObjectPath
-  | [@bs.as "Media Convert: Failed to create job."]
+  | [@bs.as "Media Convert Error: Failed to create job."]
     `MediaConvert_CreateJobFailure
-  | [@bs.as "GraphQL: API Error"] `GraphQL_APIError
+  | [@bs.as "GraphQL Error: API Error"] `GraphQL_APIError
 ];
 
 module CreateMediaConvertJobMutationConfig = [%graphql
@@ -24,12 +24,6 @@ module CreateMediaConvertJobMutationConfig = [%graphql
   |}
 ];
 
-/**
- * FIXME: Can connection be one-way from MediaConvertJob? Else we have to
- * update Video with the created mediacConvertJobId as well.
- *
- * Store AWS MediaConvertJob ID on API MediaConvertJob
- */
 let handle = r => {
   let video =
     r
@@ -59,13 +53,14 @@ let handle = r => {
             ),
         );
       AWSSDK.MediaConvert.(service->createJob(job)->promise)
-      |> Js.Promise.then_(jobResult => {
+      |> Js.Promise.then_(createdJob => {
            let mutation =
              CreateMediaConvertJobMutationConfig.make(
                ~input={
                  "state": `SUBMITTED,
                  "mediaConvertJobVideoId":
                    video##id->DynamoDBStreamRecord.StringField.get,
+                 "externalId": createdJob->AWSSDK.MediaConvert.Job.idGet,
                  "id": None,
                },
                (),
@@ -78,27 +73,33 @@ let handle = r => {
              |> graphql(inst)
            )
            |> Js.Promise.then_(r => {
-                let mutationResult =
+                let _mutationResult =
                   r->CreateMediaConvertJobMutationConfig.parse;
                 Js.Promise.resolve(Belt.Result.Ok());
               })
            |> Js.Promise.catch(_err =>
-                Js.Promise.resolve(Belt.Result.Error(`GraphQL_APIError))
+                Js.Promise.resolve(
+                  Belt.Result.Error(`GraphQL_APIError->errorToJs),
+                )
               );
          })
-      |> Js.Promise.catch(err =>
+      |> Js.Promise.catch(_err =>
            Js.Promise.resolve(
-             Belt.Result.Error(`MediaConvert_CreateJobFailure),
+             Belt.Result.Error(`MediaConvert_CreateJobFailure->errorToJs),
            )
          );
     | None =>
       Js.Promise.resolve(
-        Belt.Result.Error(`InvalidItem_UnsupportedObjectPath),
+        Belt.Result.Error(`InvalidItem_UnsupportedObjectPath->errorToJs),
       )
     };
   | (None, None) =>
-    Js.Promise.resolve(Belt.Result.Error(`InvalidItem_MissingVideoSource))
+    Js.Promise.resolve(
+      Belt.Result.Error(`InvalidItem_MissingVideoSource->errorToJs),
+    )
   | (Some(_videoMediaConvertJobId), _) =>
-    Js.Promise.resolve(Belt.Result.Error(`InvalidItem_VideoAlreadyProcessed))
+    Js.Promise.resolve(
+      Belt.Result.Error(`InvalidItem_VideoAlreadyProcessed->errorToJs),
+    )
   };
 };

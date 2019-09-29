@@ -11,15 +11,21 @@ module Config = {
 module MediaConvert = {
   type t;
   type jobResponse;
-  type createdJob = {. "Id": string};
+
+  module Job = {
+    [@bs.deriving abstract]
+    type t = {
+      [@bs.as "Id"]
+      id: string,
+    };
+  };
 
   [@bs.new] [@bs.module "aws-sdk"]
   external make: {. "apiVersion": string} => t = "MediaConvert";
 
   [@bs.send] external createJob: (t, Js.t({..})) => jobResponse = "createJob";
 
-  [@bs.send]
-  external promise: jobResponse => Js.Promise.t(createdJob) = "promise";
+  [@bs.send] external promise: jobResponse => Js.Promise.t(Job.t) = "promise";
 
   let service = make({"apiVersion": "2017-08-29"});
 };
