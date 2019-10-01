@@ -84,12 +84,12 @@ let handle = r => {
          | Some(namePath) =>
            let job =
              MediaConvertJob.make(
-               ~iamRole=Constants.Env.awsMediaConvertIamRole,
+               ~iamRole=Constants.Env.mediaConvertIamRoleArn,
                ~sourceS3Object=s3Object,
                ~destinationS3Object=
                  S3Object.make(
-                   ~bucket="trashcat",
-                   ~key="public/item-video" ++ namePath,
+                   ~bucket=s3Object->S3Object.bucketGet,
+                   ~key="public/item-video/" ++ namePath,
                  ),
              );
            AWSSDK.MediaConvert.(service->createJob(job)->promise)
@@ -100,7 +100,10 @@ let handle = r => {
                       "state": `SUBMITTED,
                       "mediaConvertJobVideoId":
                         video##id->DynamoDBStreamRecord.StringField.get,
-                      "externalId": createdJob->AWSSDK.MediaConvert.Job.idGet,
+                      "externalId":
+                        createdJob
+                        ->AWSSDK.MediaConvert.Job.jobGet
+                        ->AWSSDK.MediaConvert.Job.idGet,
                       "id": None,
                     },
                     (),
@@ -124,13 +127,14 @@ let handle = r => {
                      );
                    });
               })
-           |> Js.Promise.catch(_err =>
+           |> Js.Promise.catch(err => {
+                Js.log(err);
                 Js.Promise.resolve(
                   Belt.Result.Error(
                     `MediaConvert_CreateJobFailure->errorToJs,
                   ),
-                )
-              );
+                );
+              });
          | None =>
            Js.Promise.resolve(
              Belt.Result.Error(`InvalidItem_UnsupportedObjectPath->errorToJs),

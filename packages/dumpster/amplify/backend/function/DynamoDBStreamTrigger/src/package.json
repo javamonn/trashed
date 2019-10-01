@@ -12,7 +12,8 @@
     "@glennsl/bs-json": "^5.0.1",
     "aws-sdk": "^2.538.0",
     "bs-platform": "^5.0.6",
-    "graphql_ppx": "^0.2.8"
+    "graphql_ppx": "^0.2.8",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "bsb:build": "bsb -make-world",

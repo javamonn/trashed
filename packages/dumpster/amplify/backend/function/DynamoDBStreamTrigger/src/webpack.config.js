@@ -13,12 +13,12 @@ module.exports = (env) => ({
       new webpack.EnvironmentPlugin(
         process.env.NODE_ENV === 'production' 
           ? [
-            'AWS_MEDIACONVERT_ENDPOINT',
+            'MEDIACONVERT_ENDPOINT',
             'AUTH_TRASHED452C5745_USERPOOLWEBCLIENTID'
           ]
           : [
-            'AWS_MEDIACONVERT_ENDPOINT',
-            'AWS_MEDIACONVERT_IAM_ROLE',
+            'MEDIACONVERT_ENDPOINT',
+            'MEDIACONVERT_IAM_ROLE_ARN',
             'AUTH_TRASHED452C5745_USERPOOLWEBCLIENTID',
             'AUTH_TRASHED452C5745_USERPOOLID',
             'API_TRASHED_GRAPHQLAPIENDPOINTOUTPUT',

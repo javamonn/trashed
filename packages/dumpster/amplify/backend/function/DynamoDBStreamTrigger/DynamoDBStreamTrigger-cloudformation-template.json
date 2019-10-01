@@ -78,6 +78,12 @@
 						},
 						"AUTH_TRASHED452C5745_USERPOOLID": {
 							"Ref": "authtrashed452c5745UserPoolId"
+						},
+						"MEDIACONVERT_IAM_ROLE_ARN": {
+							"Fn::GetAtt": [
+								"MediaConvertRole",
+								"Arn"
+							]
 						}
 					}
 				},
@@ -91,7 +97,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/DynamoDBStreamTrigger-687a5873686237544f45-build.zip"
+					"S3Key": "amplify-builds/DynamoDBStreamTrigger-6d68694f2f6748336c48-build.zip"
 				}
 			}
 		},
@@ -394,6 +400,86 @@
 				"MaximumBatchingWindowInSeconds": 0,
 				"StartingPosition": "TRIM_HORIZON"
 			}
+		},
+		"MediaConvertRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"trashedMediaConvertRole73cc0fd8",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"trashedMediaConvertRole73cc0fd8",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": [
+									"mediaconvert.amazonaws.com",
+									"mediaconvert.us-east-1.amazonaws.com"
+								]
+							},
+							"Action": [
+								"sts:AssumeRole"
+							]
+						}
+					]
+				}
+			}
+		},
+		"MediaConvertPolicy": {
+			"Type": "AWS::IAM::Policy",
+			"DependsOn": [
+				"MediaConvertRole"
+			],
+			"Properties": {
+				"PolicyName": "media-convert-policy",
+				"Roles": [
+					{
+						"Ref": "MediaConvertRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"sns:*",
+								"logs:*",
+								"cloudwatch:*",
+								"autoscaling:Describe*"
+							],
+							"Resource": [
+								"*"
+							]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"s3:*"
+							],
+							"Resource": [
+								"*"
+							]
+						}
+					]
+				}
+			}
 		}
 	},
 	"Outputs": {
@@ -418,6 +504,14 @@
 		"LambdaExecutionRole": {
 			"Value": {
 				"Ref": "LambdaExecutionRole"
+			}
+		},
+		"MediaConvertRoleArn": {
+			"Value": {
+				"Fn::GetAtt": [
+					"MediaConvertRole",
+					"Arn"
+				]
 			}
 		}
 	}

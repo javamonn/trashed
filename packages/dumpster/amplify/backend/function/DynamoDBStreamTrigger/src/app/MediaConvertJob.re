@@ -1,117 +1,90 @@
 let make = (~iamRole, ~destinationS3Object, ~sourceS3Object) => {
-  "role": iamRole,
-  "settings": {
-    "outputGroups": {
-      "customName": "File Group",
-      "name": "File Group",
-      "outputGroupSettings": {
-        "type": "FILE_GROUP_SETTINGS",
-        "fileGroupSettings": {
-          "destination": destinationS3Object->Externals.S3Object.toString,
-        },
-      },
-      "outputs": [|
-        {
-          "containerSettings": {
-            "container": "MP4",
-            "mp4Settings": {
-              "clsgAtom": "INCLUDE",
-              "freeSpaceBox": "EXCLUDE",
-              "moovPlacement": "PROGRESSIVE_DOWNLOAD",
-            },
+  "Role": iamRole,
+  "Settings": {
+    "OutputGroups": [|
+      {
+        "CustomName": "File Group",
+        "Name": "File Group",
+        "OutputGroupSettings": {
+          "Type": "FILE_GROUP_SETTINGS",
+          "FileGroupSettings": {
+            "Destination": destinationS3Object->Externals.S3Object.toString,
           },
-          "videoDescription": {
-            "scalingBehavior": "DEFAULT",
-            "sharpness": 50,
-            "codecSettings": {
-              "codec": "H_264",
-              "h264Settings": {
-                "interlaceMode": "PROGRESSIVE",
-                "numberReferenceFrames": 3,
-                "syntax": "DEFAULT",
-                "softness": 0,
-                "gopClosedCadence": 1,
-                "gopSize": 90,
-                "gopSizeUnits": "FRAMES",
-                "slices": 1,
-                "gopBReference": "DISABLED",
-                "slowPal": "DISABLED",
-                "spatialAdaptiveQuantization": "ENABLED",
-                "temporalAdaptiveQuantization": "ENABLED",
-                "flickerAdaptiveQuantization": "DISABLED",
-                "entropyEncoding": "CABAC",
-                "bitrate": 5000000,
-                "framerateControl": "SPECIFIED",
-                "rateControlMode": "CBR",
-                "codecProfile": "MAIN",
-                "telecine": "NONE",
-                "minIInterval": 0,
-                "adaptiveQuantization": "HIGH",
-                "codecLevel": "AUTO",
-                "fieldEncoding": "PAFF",
-                "sceneChangeDetect": "ENABLED",
-                "qualityTuningLevel": "SINGLE_PASS",
-                "framerateConversionAlgorithm": "DUPLICATE_DROP",
-                "unregisteredSeiTimecode": "DISABLED",
-                "parControl": "SPECIFIED",
-                "numberBFramesBetweenReferenceFrames": 2,
-                "repeatPps": "DISABLED",
-                "framerateNumerator": 30,
-                "framerateDenominator": 1,
-                "parNumerator": 1,
-                "parDenominator": 1,
+        },
+        "Outputs": [|
+          {
+            "ContainerSettings": {
+              "Container": "MP4",
+              "Mp4Settings": {
+                "CslgAtom": "INCLUDE",
+                "FreeSpaceBox": "EXCLUDE",
+                "MoovPlacement": "PROGRESSIVE_DOWNLOAD",
               },
             },
-          },
-          "audioDescriptions": [|
-            {
-              "audioTypeControl": "FOLLOW_INPUT",
-              "audioSourceName": "Audio Selector 1",
-              "languageCodeControl": "FOLLOW_INPUT",
-              "codecSettings": {
-                "codec": "AAC",
-                "aacSettings": {
-                  "audioDescriptionBroadcasterMix": "NORMAL",
-                  "rateControlMode": "CBR",
-                  "codecProfile": "LC",
-                  "codingMode": "CODING_MODE_2_0",
-                  "rawFormat": "NONE",
-                  "sampleRate": 48000,
-                  "specification": "MPEG4",
-                  "bitrate": 64000,
+            "VideoDescription": {
+              "ScalingBehavior": "DEFAULT",
+              "Sharpness": 50,
+              "CodecSettings": {
+                "Codec": "H_264",
+                "H264Settings": {
+                  "InterlaceMode": "PROGRESSIVE",
+                  "NumberReferenceFrames": 3,
+                  "Syntax": "DEFAULT",
+                  "Softness": 0,
+                  "GopClosedCadence": 1,
+                  "GopSize": 90,
+                  "GopSizeUnits": "FRAMES",
+                  "Slices": 1,
+                  "GopBReference": "DISABLED",
+                  "SlowPal": "DISABLED",
+                  "SpatialAdaptiveQuantization": "ENABLED",
+                  "TemporalAdaptiveQuantization": "ENABLED",
+                  "FlickerAdaptiveQuantization": "DISABLED",
+                  "EntropyEncoding": "CABAC",
+                  "Bitrate": 5000000,
+                  "FramerateControl": "SPECIFIED",
+                  "RateControlMode": "CBR",
+                  "CodecProfile": "MAIN",
+                  "Telecine": "NONE",
+                  "MinIInterval": 0,
+                  "AdaptiveQuantization": "HIGH",
+                  "CodecLevel": "AUTO",
+                  "FieldEncoding": "PAFF",
+                  "SceneChangeDetect": "ENABLED",
+                  "QualityTuningLevel": "SINGLE_PASS",
+                  "FramerateConversionAlgorithm": "DUPLICATE_DROP",
+                  "UnregisteredSeiTimecode": "DISABLED",
+                  "ParControl": "SPECIFIED",
+                  "NumberBFramesBetweenReferenceFrames": 2,
+                  "RepeatPps": "DISABLED",
+                  "FramerateNumerator": 30,
+                  "FramerateDenominator": 1,
+                  "ParNumerator": 1,
+                  "ParDenominator": 1,
                 },
               },
             },
-          |],
-        },
-      |],
-    },
-    "adAvailOffset": 0,
-    "inputs": [|
-      {
-        "audioSelectors": {
-          "Audio Selector 1": {
-            "offset": 0,
-            "defaultSelection": "NOT_DEFAULT",
-            "programSelection": 1,
-            "selectorType": "TRACK",
-            "tracks": [|1|],
           },
-        },
-        "videoSelector": {
-          "colorSpace": "FOLLOW",
-        },
-        "filterEnable": "AUTO",
-        "psiControl": "USE_PSI",
-        "filterStrength": 0,
-        "deblockFilter": "DISABLED",
-        "denoiseFilter": "DISABLED",
-        "timecodeSource": "EMBEDDED",
-        "fileInput": sourceS3Object->Externals.S3Object.toString,
+        |],
       },
     |],
-    "timecodeConfig": {
-      "source": "EMBEDDED",
+    "AdAvailOffset": 0,
+    "Inputs": [|
+      {
+        "VideoSelector": {
+          "ColorSpace": "FOLLOW",
+        },
+        "FilterEnable": "AUTO",
+        "PsiControl": "USE_PSI",
+        "FilterStrength": 0,
+        "DeblockFilter": "DISABLED",
+        "DenoiseFilter": "DISABLED",
+        "TimecodeSource": "EMBEDDED",
+        "FileInput": sourceS3Object->Externals.S3Object.toString,
+      },
+    |],
+    "TimecodeConfig": {
+      "Source": "EMBEDDED",
     },
   },
 };

@@ -14,20 +14,38 @@ module MediaConvert = {
 
   module Job = {
     [@bs.deriving abstract]
-    type t = {
+    type job = {
       [@bs.as "Id"]
       id: string,
+    };
+    [@bs.deriving abstract]
+    type t = {
+      [@bs.as "Job"]
+      job,
     };
   };
 
   [@bs.new] [@bs.module "aws-sdk"]
-  external make: {. "apiVersion": string} => t = "MediaConvert";
+  external make:
+    {
+      .
+      "apiVersion": string,
+      "region": string,
+      "endpoint": string,
+    } =>
+    t =
+    "MediaConvert";
 
   [@bs.send] external createJob: (t, Js.t({..})) => jobResponse = "createJob";
 
   [@bs.send] external promise: jobResponse => Js.Promise.t(Job.t) = "promise";
 
-  let service = make({"apiVersion": "2017-08-29"});
+  let service =
+    make({
+      "apiVersion": "2017-08-29",
+      "region": Constants.Env.region,
+      "endpoint": Constants.Env.mediaConvertEndpoint,
+    });
 };
 
 [@bs.deriving abstract]
@@ -37,7 +55,3 @@ type t = {config: Config.t};
 
 /** Global configuration **/
 let _ = inst->configGet->Config.update({"region": Constants.Env.region});
-let _ =
-  inst
-  ->configGet
-  ->Config.mediaconvert({"endpoint": Constants.Env.awsMediaConvertEndpoint});
