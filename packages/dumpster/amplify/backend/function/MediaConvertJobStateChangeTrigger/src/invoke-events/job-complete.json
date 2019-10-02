@@ -1,0 +1,21 @@
+{
+  "version": "0",
+  "id": "6c7d8bae-67b4-29b5-f822-24158d701594",
+  "detail-type": "MediaConvert Job State Change",
+  "source": "aws.mediaconvert",
+  "account": "046525304497",
+  "time": "2019-10-02T10:19:00Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:mediaconvert:us-east-1:046525304497:jobs/1570011535369-ky4uy8"
+  ],
+  "detail": {
+    "timestamp": 1570011540420,
+    "accountId": "046525304497",
+    "queue": "arn:aws:mediaconvert:us-east-1:046525304497:queues/Default",
+    "jobId": "1570011535369-ky4uy8",
+    "status": "COMPLETE",
+    "userMetadata": {},
+    "outputGroupDetails": []
+  }
+}
