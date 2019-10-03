@@ -1,0 +1,24 @@
+{
+  "name": "bs-aws-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/Index.bs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bsb:build": "bsb -make-world",
+    "bsb:start": "bsb -make-world -w",
+    "bsb:clean": "bsb -clean-world",
+    "start": "npm run bsb:start",
+    "build": "npm run bsb:build"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "aws-sdk": "^2.541.0",
+    "bs-platform": "^5.0.6"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.541.0",
+    "bs-platform": "^5.0.6"
+  }
+}
