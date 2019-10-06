@@ -92,7 +92,9 @@ let handle = r => {
                    ~key="public/item-video/" ++ namePath,
                  ),
              );
-           AWSSDK.MediaConvert.(service->createJob(job)->promise)
+           Constants.mediaConvertService
+           ->AWSSDK.MediaConvert.createJob(job)
+           ->AWSSDK.Request.promise
            |> Js.Promise.then_(createdJob => {
                 let mutation =
                   CreateMediaConvertJobMutation.make(

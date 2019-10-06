@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bs-aws-amplify": "^1.0.0"
+    "bs-aws-amplify": "^1.0.0",
+    "bs-aws-sdk": "^1.0.0"
   },
   "devDependencies": {}
 }

@@ -12,7 +12,7 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": ["bs-aws-amplify", "@glennsl/bs-json"],
+  "bs-dependencies": ["bs-aws-amplify", "bs-aws-sdk", "@glennsl/bs-json"],
   "ppx-flags": ["graphql_ppx/ppx"],
   "warnings": {
     "error": "+101"
