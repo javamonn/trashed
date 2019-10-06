@@ -12,13 +12,14 @@ module.exports = env => ({
   plugins: [
     new webpack.EnvironmentPlugin(
       process.env.NODE_ENV === 'production'
-        ? ['AUTH_TRASHED452C5745_USERPOOLWEBCLIENTID']
+        ? ['AUTH_TRASHED452C5745_USERPOOLWEBCLIENTID', 'MEDIACONVERT_ENDPOINT']
         : [
             'AUTH_TRASHED452C5745_USERPOOLWEBCLIENTID',
             'AUTH_TRASHED452C5745_USERPOOLID',
             'API_TRASHED_GRAPHQLAPIENDPOINTOUTPUT',
             'STORAGE_TRASHCAT_BUCKETNAME',
             'REGION',
+            'MEDIACONVERT_ENDPOINT',
           ],
     ),
   ],

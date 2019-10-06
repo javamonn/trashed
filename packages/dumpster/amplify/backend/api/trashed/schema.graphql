@@ -35,9 +35,10 @@ enum MediaConvertJobState {
 }
 
 type MediaConvertJob
-  @model 
-  @auth(rules: [{allow: public, provider: iam, operations: [create, read, update]}])
-  {
+  @model
+  @auth(
+    rules: [{allow: public, provider: iam, operations: [create, read, update]}]
+  ) {
   id: ID!
   externalId: ID!
   state: MediaConvertJobState!
@@ -48,14 +49,15 @@ type MediaConvertJob
 type VideoS3Object @aws_iam {
   file: S3Object!
   mimeType: VideoMimeType!
-  userUpload: Boolean! 
+  userUpload: Boolean!
   cloudfrontUrl: String
 }
 
-type Video 
-  @model 
-  @auth(rules: [{allow: public, provider: iam, operations: [create, read]}])
-  {
+type Video
+  @model
+  @auth(
+    rules: [{allow: public, provider: iam, operations: [create, read, update]}]
+  ) {
   id: ID!
   files: [VideoS3Object!]!
   thumbnail: S3Object

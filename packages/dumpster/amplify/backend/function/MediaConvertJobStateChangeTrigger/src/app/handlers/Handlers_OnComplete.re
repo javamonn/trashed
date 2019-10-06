@@ -11,6 +11,7 @@ type error = [
     `GraphQL_MutationError_UpdateMediaConvertJob
   | [@bs.as "Unable to get mediaConvertJob from AWS."]
     `AWS_UnableToGetMediaConvertJob
+  | [@bs.as "Unknown Error."] `Unknown_Error
 ];
 
 [@bs.deriving jsConverter]
@@ -66,8 +67,11 @@ let getMediaConvertJob = externalId => {
   |> Js.Promise.then_(r =>
        switch (
          r
-         ->ListMediaConvertJobsQuery.parse
-         ->(r => r##listMediaConvertJobs)
+         ->Js.Json.decodeObject
+         ->Belt.Option.flatMap(o => o->Js.Dict.get("data"))
+         ->Belt.Option.flatMap(d =>
+             d->ListMediaConvertJobsQuery.parse->(r => r##listMediaConvertJobs)
+           )
          ->Belt.Option.flatMap(r => r##items)
          ->Belt.Option.flatMap(r =>
              r->Belt.Array.get(0)->Belt.Option.flatMap(Utils.identity)
@@ -75,8 +79,9 @@ let getMediaConvertJob = externalId => {
        ) {
        | Some(item) => Belt.Result.Ok(item)->Js.Promise.resolve
        | None =>
+         Js.log(r->Js.Json.stringifyAny);
          Belt.Result.Error(`GraphQL_UnableToGetMediaConvertJob)
-         ->Js.Promise.resolve
+         ->Js.Promise.resolve;
        }
      );
 };
@@ -91,11 +96,13 @@ let getDestinationS3Object = jobId =>
           jobResponse
           ->jobGet
           ->settingsGet
-          ->outputsGet
+          ->outputGroupsGet
+          ->Utils.Array.flatMap(og => og->outputsGet)
           ->Belt.Array.map(o =>
               o->containerSettingsGet->containerGet->mimeTypeFromJs
             )
         );
+      /** FIXME: include extension in path */
       let destinationPaths =
         AWSSDK.MediaConvert.Job.(
           jobResponse
@@ -117,7 +124,13 @@ let getDestinationS3Object = jobId =>
           {
             "file": {
               "bucket": s3Object->S3Object.bucketGet,
-              "key": s3Object->S3Object.keyGet,
+              "key":
+                s3Object->S3Object.keyGet
+                ++ "."
+                ++ mimeType
+                   ->Belt.Option.getExn
+                   ->mimeTypeToJs
+                   ->Js.String.toLowerCase,
               "region": Constants.Env.region,
               "localUri": None,
               "mimeType": None,
@@ -129,7 +142,10 @@ let getDestinationS3Object = jobId =>
         )
       ->Js.Promise.resolve;
     })
-  ->Utils.Promise.asResult(_err => `AWS_UnableToGetMediaConvertJob);
+  ->Utils.Promise.asResult(err => {
+      Js.log(err);
+      `AWS_UnableToGetMediaConvertJob;
+    });
 
 let handle = jobId => {
   Js.Promise.all2((
@@ -147,9 +163,10 @@ let handle = jobId => {
               Some(mediaConvertJob##mediaConvertJobVideoId),
             "state": Some(`COMPLETE),
           })
-          ->Utils.Promise.asResult(_err =>
-              `GraphQL_MutationError_UpdateMediaConvertJob
-            );
+          ->Utils.Promise.asResult(err => {
+              Js.log(err);
+              `GraphQL_MutationError_UpdateMediaConvertJob;
+            });
         let pUpdateVideo =
           GraphQL.updateVideo({
             "id": mediaConvertJob##video##id,
@@ -173,11 +190,26 @@ let handle = jobId => {
               ->Js.Option.some,
             "thumbnail": None,
           })
-          ->Utils.Promise.asResult(_err => `GraphQL_MutationError_UpdateVideo);
+          ->Utils.Promise.asResult(err => {
+              Js.log(err);
+              `GraphQL_MutationError_UpdateVideo;
+            });
         Js.Promise.all2((pUpdateMediaConvertJob, pUpdateVideo))
         ->Utils.Promise.then_(p => p->Utils.Result.lift2->Js.Promise.resolve);
-      | Belt.Result.Error(e) as err => Js.Promise.resolve(err)
+      | Belt.Result.Error(e) as err =>
+        Js.log(e);
+        Js.Promise.resolve(err);
       }
     )
-  ->Utils.Promise.then_(r => r->Belt.Result.map(_ => ())->Js.Promise.resolve);
+  ->Utils.Promise.then_(r =>
+      switch (r) {
+      | Belt.Result.Ok(_) as ok => ok->Js.Promise.resolve
+      | Belt.Result.Error(e) =>
+        e->errorToJs->Utils.Result.error->Js.Promise.resolve
+      }
+    )
+  ->Utils.Promise.catch_(err => {
+      Js.log(err);
+      `Unknown_Error->errorToJs->Utils.Result.error->Js.Promise.resolve;
+    });
 };

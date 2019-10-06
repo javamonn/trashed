@@ -27,13 +27,6 @@ module MediaConvert = {
       [@bs.as "FileGroupSettings"]
       fileGroupSettings,
     };
-
-    [@bs.deriving abstract]
-    type outputGroup = {
-      [@bs.as "OutputGroupSettings"]
-      outputGroupSettings,
-    };
-
     [@bs.deriving abstract]
     type containerSettings = {
       [@bs.as "Container"]
@@ -47,11 +40,17 @@ module MediaConvert = {
     };
 
     [@bs.deriving abstract]
+    type outputGroup = {
+      [@bs.as "OutputGroupSettings"]
+      outputGroupSettings,
+      [@bs.as "Outputs"]
+      outputs: array(output),
+    };
+
+    [@bs.deriving abstract]
     type settings = {
       [@bs.as "OutputGroups"]
       outputGroups: array(outputGroup),
-      [@bs.as "Outputs"]
-      outputs: array(output),
     };
 
     [@bs.deriving abstract]
