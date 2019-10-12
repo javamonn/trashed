@@ -11,11 +11,26 @@ type error = [
     `GraphQL_MutationError_UpdateMediaConvertJob
   | [@bs.as "Unable to get mediaConvertJob from AWS."]
     `AWS_UnableToGetMediaConvertJob
+  | [@bs.as "Unable to parse trigger event."]
+    `AWS_UnableToParseMediaConvertOutputs
   | [@bs.as "Unknown Error."] `Unknown_Error
 ];
 
-[@bs.deriving jsConverter]
-type mimeType = [ | [@bs.as "WEBM"] `WEBM | [@bs.as "MP4"] `MP4];
+module MediaConvertOutput = {
+  [@bs.deriving jsConverter]
+  type objectType = [
+    | [@bs.as "full-video"] `FullVideo
+    | [@bs.as "clip-thumbnail"] `ClipThumbnail
+    | [@bs.as "clip-poster"] `ClipPoster
+  ];
+
+  [@bs.deriving abstract]
+  type t = {
+    objectType,
+    s3Object: S3Object.t,
+  };
+  let make = t;
+};
 
 module ListMediaConvertJobsQuery = [%graphql
   {|
@@ -44,11 +59,6 @@ module ListMediaConvertJobsQuery = [%graphql
               mimeType
               userUpload
               cloudfrontUrl
-            }
-            thumbnail {
-              bucket
-              key
-              region
             }
           }
         }
@@ -86,81 +96,45 @@ let getMediaConvertJob = externalId => {
      );
 };
 
-let getDestinationS3Object = jobId =>
-  Constants.mediaConvertService
-  ->AWSSDK.MediaConvert.(getJob(getJobParams(~id=jobId)))
-  ->AWSSDK.Request.promise
-  ->Utils.Promise.then_(jobResponse => {
-      let mimeTypes =
-        AWSSDK.MediaConvert.Job.(
-          jobResponse
-          ->jobGet
-          ->settingsGet
-          ->outputGroupsGet
-          ->Utils.Array.flatMap(og => og->outputsGet)
-          ->Belt.Array.map(o =>
-              o->containerSettingsGet->containerGet->mimeTypeFromJs
-            )
-        );
-      /** FIXME: include extension in path */
-      let destinationPaths =
-        AWSSDK.MediaConvert.Job.(
-          jobResponse
-          ->jobGet
-          ->settingsGet
-          ->outputGroupsGet
-          ->Belt.Array.map(og =>
-              og
-              ->outputGroupSettingsGet
-              ->fileGroupSettingsGet
-              ->destinationGet
-              ->S3Object.fromString
-              ->Js.Option.getExn
-            )
-        );
-      Belt.Array.zip(mimeTypes, destinationPaths)
-      ->Belt.Array.keep(((mimeType, _)) => Belt.Option.isSome(mimeType))
-      ->Belt.Array.map(((mimeType, s3Object)) =>
-          {
-            "file": {
-              "bucket": s3Object->S3Object.bucketGet,
-              "key":
-                s3Object->S3Object.keyGet
-                ++ "."
-                ++ mimeType
-                   ->Belt.Option.getExn
-                   ->mimeTypeToJs
-                   ->Js.String.toLowerCase,
-              "region": Constants.Env.region,
-              "localUri": None,
-              "mimeType": None,
-            },
-            "mimeType": mimeType->Belt.Option.getExn,
-            "userUpload": false,
-            "cloudfrontUrl": None,
-          }
-        )
-      ->Js.Promise.resolve;
-    })
-  ->Utils.Promise.asResult(err => {
-      Js.log(err);
-      `AWS_UnableToGetMediaConvertJob;
-    });
+let getMediaConvertOutputs = event =>
+  event
+  ->Lambda.Event.outputGroupDetailsGet
+  ->Belt.Array.get(0)
+  ->Belt.Option.map(ogd =>
+      ogd
+      ->Lambda.Event.outputDetailsGet
+      ->Belt.Array.map(od => {
+          let s3Object =
+            od
+            ->Lambda.Event.outputFilePathsGet
+            ->Belt.Array.get(0)
+            ->Belt.Option.flatMap(S3Object.fromString)
+            ->Belt.Option.getExn;
+          s3Object
+          ->S3Object.toString
+          ->Js.String2.split(".")
+          ->Belt.Array.get(0)
+          ->Belt.Option.flatMap(MediaConvertOutput.objectTypeFromJs)
+          ->Belt.Option.map(objectType =>
+              MediaConvertOutput.make(~objectType, ~s3Object)
+            );
+        })
+    )
+  ->Belt.Option.map(a => a->Belt.Array.keepMap(Utils.identity))
+  ->Utils.Result.fromOption(`AWS_UnableToParseMediaConvertOutputs);
 
-let handle = jobId => {
-  Js.Promise.all2((
-    getMediaConvertJob(jobId),
-    getDestinationS3Object(jobId),
-  ))
+let handle = eventDetail =>
+  eventDetail
+  ->Lambda.Event.jobIdGet
+  ->getMediaConvertJob
   ->Utils.Promise.then_(r =>
-      switch (r->Utils.Result.lift2) {
-      | Belt.Result.Ok((mediaConvertJob, videoObject)) =>
+      switch (Utils.Result.lift2((r, eventDetail->getMediaConvertOutputs))) {
+      | Belt.Result.Ok((job, outputs)) =>
         let pUpdateMediaConvertJob =
           GraphQL.updateMediaConvertJob({
-            "id": mediaConvertJob##id,
-            "externalId": Some(mediaConvertJob##externalId),
-            "mediaConvertJobVideoId":
-              Some(mediaConvertJob##mediaConvertJobVideoId),
+            "id": job##id,
+            "externalId": Some(job##externalId),
+            "mediaConvertJobVideoId": Some(job##mediaConvertJobVideoId),
             "state": Some(`COMPLETE),
           })
           ->Utils.Promise.asResult(err => {
@@ -168,42 +142,93 @@ let handle = jobId => {
               `GraphQL_MutationError_UpdateMediaConvertJob;
             });
         let pUpdateVideo =
-          GraphQL.updateVideo({
-            "id": mediaConvertJob##video##id,
-            "files":
-              mediaConvertJob##video##files
-              ->Belt.Array.map(f =>
-                  {
-                    "file": {
-                      "bucket": f##file##bucket,
-                      "key": f##file##key,
-                      "region": f##file##region,
-                      "localUri": None,
-                      "mimeType": None,
-                    },
-                    "mimeType": f##mimeType,
-                    "userUpload": f##userUpload,
-                    "cloudfrontUrl": f##cloudfrontUrl,
-                  }
-                )
-              ->Belt.Array.concat(videoObject)
-              ->Js.Option.some,
-            "thumbnail": None,
-          })
-          ->Utils.Promise.asResult(err => {
-              Js.log(err);
-              `GraphQL_MutationError_UpdateVideo;
-            });
+          outputs
+          ->Belt.Array.reduce(
+              {
+                "id": job##video##id,
+                "files":
+                  job##video##files
+                  ->Belt.Array.map(m =>
+                      {
+                        "file": {
+                          "key": m##file##key,
+                          "bucket": m##file##bucket,
+                          "region": m##file##region,
+                          "localUri": None,
+                          "mimeType": None,
+                        },
+                        "mimeType": m##mimeType,
+                        "userUpload": m##userUpload,
+                        "cloudfrontUrl": m##cloudfrontUrl,
+                      }
+                    )
+                  ->Js.Option.some,
+                "thumbnail": None,
+                "poster": None,
+              },
+              (video, output) =>
+              switch (output->MediaConvertOutput.objectTypeGet) {
+              | `FullVideo => {
+                  "id": video##id,
+                  "files":
+                    video##files
+                    ->Belt.Option.map(
+                        Belt.Array.concat([|
+                          {
+                            "file":
+                              output
+                              ->MediaConvertOutput.s3ObjectGet
+                              ->S3Object.toObjectInput,
+                            "mimeType":
+                              output
+                              ->MediaConvertOutput.s3ObjectGet
+                              ->S3Object.mimeTypeGet
+                              ->Belt.Option.flatMap(
+                                  fun
+                                  | `MP4 => Some(`MP4)
+                                  | _ => None,
+                                )
+                              ->Belt.Option.getExn,
+                            "userUpload": false,
+                            "cloudfrontUrl": None,
+                          },
+                        |]),
+                      ),
+                  "poster": video##poster,
+                  "thumbnail": video##thumbnail,
+                }
+              | `ClipThumbnail => {
+                  "id": video##id,
+                  "files": video##files,
+                  "poster": video##poster,
+                  "thumbnail":
+                    output
+                    ->MediaConvertOutput.s3ObjectGet
+                    ->S3Object.toObjectInput
+                    ->Js.Option.some,
+                }
+              | `ClipPoster => {
+                  "id": video##id,
+                  "files": video##files,
+                  "thumbnail": video##thumbnail,
+                  "poster":
+                    output
+                    ->MediaConvertOutput.s3ObjectGet
+                    ->S3Object.toObjectInput
+                    ->Js.Option.some,
+                }
+              }
+            )
+          ->GraphQL.updateVideo
+          ->Utils.Promise.asResult(err => `GraphQL_MutationError_UpdateVideo);
         Js.Promise.all2((pUpdateMediaConvertJob, pUpdateVideo))
         ->Utils.Promise.then_(p => p->Utils.Result.lift2->Js.Promise.resolve);
-      | Belt.Result.Error(e) as err =>
-        Js.log(e);
-        Js.Promise.resolve(err);
+      | Belt.Result.Error(e) as err => Js.Promise.resolve(err)
       }
     )
   ->Utils.Promise.then_(r =>
       switch (r) {
-      | Belt.Result.Ok(_) as ok => ok->Js.Promise.resolve
+      | Belt.Result.Ok(_) => Belt.Result.Ok()->Js.Promise.resolve
       | Belt.Result.Error(e) =>
         e->errorToJs->Utils.Result.error->Js.Promise.resolve
       }
@@ -212,4 +237,3 @@ let handle = jobId => {
       Js.log(err);
       `Unknown_Error->errorToJs->Utils.Result.error->Js.Promise.resolve;
     });
-};

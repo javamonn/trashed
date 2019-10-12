@@ -61,6 +61,7 @@ type Video
   id: ID!
   files: [VideoS3Object!]!
   thumbnail: S3Object
+  poster: S3Object
 }
 
 type Item

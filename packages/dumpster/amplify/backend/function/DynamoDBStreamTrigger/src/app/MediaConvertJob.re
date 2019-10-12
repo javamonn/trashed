@@ -13,6 +13,33 @@ let make = (~iamRole, ~destinationS3Object, ~sourceS3Object) => {
         },
         "Outputs": [|
           {
+            "NameModifier": "clip-poster",
+            "VideoDescription": {
+              "CodecSettings": {
+                "Codec": "FRAME_CAPTURE",
+                "FrameCaptureSettings": {
+                  "MaxCaptures": 1, 
+                  "Quality": 50
+                }
+              }
+            }
+          },
+          {
+            "NameModifier": "clip-thumbnail",
+            "VideoDescription": {
+              "CodecSettings": {
+                "Codec": "FRAME_CAPTURE",
+                "FrameCaptureSettings": {
+                  "MaxCaptures": 1, 
+                  "Quality": 50
+                }
+              }
+            },
+            "Height": 320
+            "Width": 320
+          },
+          {
+            "NameModifier": "full-video",
             "ContainerSettings": {
               "Container": "MP4",
               "Mp4Settings": {

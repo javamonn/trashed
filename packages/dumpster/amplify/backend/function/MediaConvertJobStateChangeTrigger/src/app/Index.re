@@ -1,35 +1,16 @@
 open Lib;
-
-module Event = {
-  [@bs.deriving abstract]
-  type detail =
-    pri {
-      jobId: string,
-      status: string,
-    };
-  [@bs.deriving abstract]
-  type t =
-    pri {
-      source: string,
-      detail,
-    };
-};
-
-module Lambda = {
-  type context;
-  type cb = (Js.Nullable.t(Js.Promise.error), Js.Json.t) => unit;
-  type handler = (Event.t, context, cb) => unit;
-};
+open Externals;
 
 let _ = AwsAmplify.(inst->configure(Constants.awsAmplifyConfig));
 
 let handler: Lambda.handler =
   (event, _context, cb) => {
-    let jobId = event->Event.detailGet->Event.jobIdGet;
-    let jobStatus = event->Event.detailGet->Event.statusGet;
+    let jobStatus = event->Lambda.Event.detailGet->Lambda.Event.statusGet;
     let p =
-      switch (jobStatus, jobId) {
-      | ("COMPLETE", jobId) => Handlers_OnComplete.handle(jobId)
+      switch (jobStatus) {
+      | "COMPLETE" =>
+        Handlers_OnComplete.handle(event->Lambda.Event.detailGet)
+      | _ => Belt.Result.Ok()->Js.Promise.resolve
       };
     let _ =
       p
@@ -49,7 +30,13 @@ let handler: Lambda.handler =
                    (
                      "event",
                      object_([
-                       ("jobId", string(jobId)),
+                       (
+                         "jobId",
+                         event
+                         ->Lambda.Event.detailGet
+                         ->Lambda.Event.jobIdGet
+                         ->string,
+                       ),
                        ("jobStatus", string(jobStatus)),
                      ]),
                    ),
