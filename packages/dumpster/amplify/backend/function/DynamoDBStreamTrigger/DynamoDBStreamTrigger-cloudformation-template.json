@@ -97,7 +97,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/DynamoDBStreamTrigger-707a7649786f417a4933-build.zip"
+					"S3Key": "amplify-builds/DynamoDBStreamTrigger-32394767456d6e757958-build.zip"
 				}
 			}
 		},
