@@ -97,7 +97,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/DynamoDBStreamTrigger-32394767456d6e757958-build.zip"
+					"S3Key": "amplify-builds/DynamoDBStreamTrigger-61736857537159597658-build.zip"
 				}
 			}
 		},
@@ -436,6 +436,46 @@
 							"Action": [
 								"sts:AssumeRole"
 							]
+						}
+					]
+				}
+			}
+		},
+		"LambdaMediaConvertResourcesPolicy": {
+			"Type": "AWS::IAM::Policy",
+			"DependsOn": [
+				"LambdaExecutionRole"
+			],
+			"Properties": {
+				"PolicyName": "lambda-execution-pass-role-media-convert",
+				"Roles": [
+					{
+						"Ref": "LambdaExecutionRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"mediaconvert:CreateJob"
+							],
+							"Resource": [
+								"*"
+							]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"iam:PassRole"
+							],
+							"Resource": {
+								"Fn::GetAtt": [
+									"MediaConvertRole",
+									"Arn"
+								]
+							}
 						}
 					]
 				}

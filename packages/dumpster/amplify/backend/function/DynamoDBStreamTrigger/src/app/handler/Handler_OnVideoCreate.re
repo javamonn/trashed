@@ -89,7 +89,7 @@ let handle = r => {
                ~destinationS3Object=
                  S3Object.make(
                    ~bucket=s3Object->S3Object.bucketGet,
-                   ~key="public/item-video/" ++ namePath ++ "/",
+                   ~key="public/item-video/",
                  ),
              );
            Constants.mediaConvertService

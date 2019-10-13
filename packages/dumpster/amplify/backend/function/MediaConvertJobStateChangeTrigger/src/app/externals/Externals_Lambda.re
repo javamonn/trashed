@@ -27,4 +27,4 @@ module Event = {
 
 type context;
 type cb = (Js.Nullable.t(Js.Promise.error), Js.Json.t) => unit;
-type handler = (Event.t, context, cb) => unit;
+type handler = (Event.t, context, cb) => Js.Promise.t(Js.Json.t);

@@ -110,8 +110,11 @@ let getMediaConvertOutputs = event =>
             ->Belt.Array.get(0)
             ->Belt.Option.flatMap(S3Object.fromString)
             ->Belt.Option.getExn;
-          s3Object
-          ->S3Object.toString
+
+          let keyParts = s3Object->S3Object.key->Js.String2.split("/");
+          let lastPath = keyParts[Js.Array.length(keyParts) - 1];
+
+          lastPath
           ->Js.String2.split(".")
           ->Belt.Array.get(0)
           ->Belt.Option.flatMap(MediaConvertOutput.objectTypeFromJs)
@@ -123,7 +126,8 @@ let getMediaConvertOutputs = event =>
   ->Belt.Option.map(a => a->Belt.Array.keepMap(Utils.identity))
   ->Utils.Result.fromOption(`AWS_UnableToParseMediaConvertOutputs);
 
-let handle = eventDetail =>
+let handle = eventDetail => {
+  Js.log("Handlers_OnComplete");
   eventDetail
   ->Lambda.Event.jobIdGet
   ->getMediaConvertJob
@@ -220,15 +224,17 @@ let handle = eventDetail =>
               }
             )
           ->GraphQL.updateVideo
-          ->Utils.Promise.asResult(err => `GraphQL_MutationError_UpdateVideo);
+          ->Utils.Promise.asResult(_err => `GraphQL_MutationError_UpdateVideo);
         Js.Promise.all2((pUpdateMediaConvertJob, pUpdateVideo))
         ->Utils.Promise.then_(p => p->Utils.Result.lift2->Js.Promise.resolve);
-      | Belt.Result.Error(e) as err => Js.Promise.resolve(err)
+      | Belt.Result.Error(_e) as err => Js.Promise.resolve(err)
       }
     )
   ->Utils.Promise.then_(r =>
       switch (r) {
-      | Belt.Result.Ok(_) => Belt.Result.Ok()->Js.Promise.resolve
+      | Belt.Result.Ok(r) =>
+        Js.log(Js.Json.stringifyAny(r));
+        Belt.Result.Ok()->Js.Promise.resolve;
       | Belt.Result.Error(e) =>
         e->errorToJs->Utils.Result.error->Js.Promise.resolve
       }
@@ -237,3 +243,4 @@ let handle = eventDetail =>
       Js.log(err);
       `Unknown_Error->errorToJs->Utils.Result.error->Js.Promise.resolve;
     });
+};

@@ -15,7 +15,7 @@ let make: (string, string, string) => Js.t('a) = [%raw
           },
           "Outputs": [
             {
-              "NameModifier": "clip-poster",
+              "NameModifier": "/clip-poster",
               "ContainerSettings": {
                 "Container": "RAW",
               },
@@ -28,7 +28,7 @@ let make: (string, string, string) => Js.t('a) = [%raw
               },
             },
             {
-              "NameModifier": "clip-thumbnail",
+              "NameModifier": "/clip-thumbnail",
               "ContainerSettings": {
                 "Container": "RAW",
               },
@@ -43,7 +43,7 @@ let make: (string, string, string) => Js.t('a) = [%raw
               },
             },
             {
-              "NameModifier": "full-video",
+              "NameModifier": "/full-video",
               "ContainerSettings":
                 {
                   "Container": "MP4",

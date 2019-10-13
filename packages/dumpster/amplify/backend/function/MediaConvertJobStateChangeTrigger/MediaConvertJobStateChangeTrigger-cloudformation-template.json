@@ -84,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/MediaConvertJobStateChangeTrigger-3634647771524d346a6a-build.zip"
+					"S3Key": "amplify-builds/MediaConvertJobStateChangeTrigger-634a6765765a48563551-build.zip"
 				}
 			}
 		},
@@ -165,6 +165,34 @@
 									}
 								]
 							}
+						}
+					]
+				}
+			}
+		},
+		"LambdaMediaConvertResourcesPolicy": {
+			"Type": "AWS::IAM::Policy",
+			"DependsOn": [
+				"LambdaExecutionRole"
+			],
+			"Properties": {
+				"PolicyName": "lambda-execution-pass-role-media-convert",
+				"Roles": [
+					{
+						"Ref": "LambdaExecutionRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"mediaconvert:GetJob"
+							],
+							"Resource": [
+								"*"
+							]
 						}
 					]
 				}
