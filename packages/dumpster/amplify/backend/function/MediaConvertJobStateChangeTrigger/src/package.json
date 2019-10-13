@@ -12,6 +12,7 @@
     "webpack:start": "webpack --watch",
     "webpack:build": "npm run bsb:clean && npm run bsb:build && webpack",
     "start": "concurrently -k -n \"bsb,webpack\" \"npm run bsb:start\" \"dotenv npm run webpack:start\"",
+    "build:development": "dotenv npm run webpack:build",
     "build": "NODE_ENV=production dotenv npm run webpack:build"
   },
   "devDependencies": {
