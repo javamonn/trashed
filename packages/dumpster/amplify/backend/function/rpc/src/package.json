@@ -9,8 +9,7 @@
     "express": "^4.15.2",
     "@glennsl/bs-json": "^4.0.0",
     "bs-express": "^0.12.0",
-    "bs-platform": "^5.0.6",
-    "twilio": "^3.33.1"
+    "bs-platform": "^5.0.6"
   },
   "devDependencies": {
     "dotenv": "^8.1.0",

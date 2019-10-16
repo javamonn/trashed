@@ -1,5 +1,5 @@
-const path = require('path')
-const webpack = require('webpack')
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   target: 'node',
@@ -7,14 +7,7 @@ module.exports = {
   entry: [path.resolve(__dirname, './index.js')],
   output: {
     filename: 'bundle.js',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
-  plugins: [
-    new webpack.EnvironmentPlugin([
-      'NODE_ENV',
-      'TWILIO_PHONE_NUMBER',
-      'TWILIO_SID',
-      'TWILIO_AUTH_TOKEN'
-    ])
-  ]
-}
+  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])],
+};

@@ -21,14 +21,11 @@ let _ =
 let _ =
   express->(
              Express.App.post(
-               ~path="/notifications/register-phone-number",
-               NotificationsRegisterPhoneNumber.handler,
+               ~path="/authentication/cloudfront-cookie",
+               CloudfrontCookie.handler,
              )
            );
 
-let _ =
-  express->(
-    Express.App.use(PathNotFoundMiddleware.make())
-  )
+let _ = express->(Express.App.use(PathNotFoundMiddleware.make()));
 
 let default = express;
