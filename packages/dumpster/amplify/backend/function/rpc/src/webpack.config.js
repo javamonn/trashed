@@ -9,5 +9,12 @@ module.exports = {
     filename: 'bundle.js',
     libraryTarget: 'umd',
   },
-  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])],
+  plugins: [
+    new webpack.EnvironmentPlugin([
+      'NODE_ENV',
+      'CLOUDFRONT_KEY_PAIR_ID',
+      'CLOUDFRONT_PRIVATE_KEY',
+      'CLOUDFRONT_DISTRIBUTION_ORIGIN',
+    ]),
+  ],
 };

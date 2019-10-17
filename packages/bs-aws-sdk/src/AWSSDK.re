@@ -6,6 +6,42 @@ module Config = {
   external mediaconvert: (t, {. "endpoint": string}) => unit = "mediaconvert";
 };
 
+module CloudFront = {
+  module Signer = {
+    type t;
+
+    /** keyPairId, privateKey */
+    [@bs.new] [@bs.module "aws-sdk"]
+    external make: (string, string) => t = "CloudFront.Signer";
+
+    module SignedCookie = {
+      [@bs.deriving abstract]
+      type t = {
+        [@bs.as "CloudFront-Policy"]
+        policy: string,
+        [@bs.as "CloudFront-Signature"]
+        signature: string,
+        [@bs.as "CloudFront-Key-Pair-Id"]
+        keyPairId: string,
+      };
+    };
+
+    [@bs.send]
+    external getSignedCookie:
+      (
+        t,
+        {
+          .
+          "expires": option(float),
+          "policy": option(string),
+          "url": option(string),
+        }
+      ) =>
+      Js.Promise.t(SignedCookie.t) =
+      "getSignedCookie";
+  };
+};
+
 module Request = {
   type t('a);
   [@bs.send] external promise: t('a) => Js.Promise.t('a) = "promise";

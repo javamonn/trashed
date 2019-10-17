@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@glennsl/bs-json": "^4.0.0",
     "aws-serverless-express": "^3.3.5",
     "body-parser": "^1.17.1",
-    "express": "^4.15.2",
-    "@glennsl/bs-json": "^4.0.0",
+    "bs-date-fns": "^0.1.6",
     "bs-express": "^0.12.0",
-    "bs-platform": "^5.0.6"
+    "bs-platform": "^5.0.6",
+    "express": "^4.15.2"
   },
   "devDependencies": {
     "dotenv": "^8.1.0",
