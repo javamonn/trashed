@@ -31,6 +31,8 @@ S src/components/video-recorder
 B lib/bs/src/components/video-recorder
 S src/lib
 B lib/bs/src/lib
+S src/hook
+B lib/bs/src/hook
 S src/providers
 B lib/bs/src/providers
 ####BSB GENERATED: NO EDIT}

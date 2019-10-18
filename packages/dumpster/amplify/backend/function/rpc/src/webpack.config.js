@@ -10,11 +10,15 @@ module.exports = {
     libraryTarget: 'umd',
   },
   plugins: [
-    new webpack.EnvironmentPlugin([
-      'NODE_ENV',
-      'CLOUDFRONT_KEY_PAIR_ID',
-      'CLOUDFRONT_PRIVATE_KEY',
-      'CLOUDFRONT_DISTRIBUTION_ORIGIN',
-    ]),
+    new webpack.EnvironmentPlugin(
+      process.env.NODE_ENV === 'production'
+        ? ['NODE_ENV', 'CLOUDFRONT_KEY_PAIR_ID', 'CLOUDFRONT_PRIVATE_KEY']
+        : [
+            'NODE_ENV',
+            'CLOUDFRONT_KEY_PAIR_ID',
+            'CLOUDFRONT_PRIVATE_KEY',
+            'CLOUDFRONT_DISTRIBUTION_ORIGIN',
+          ],
+    ),
   ],
 };

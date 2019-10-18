@@ -80,6 +80,15 @@ module Api = {
     "graphql";
 };
 
+module Cache = {
+  type t;
+
+  [@bs.module "@aws-amplify/cache"] external inst: t = "default";
+
+  [@bs.send] external getItem: (t, string) => Js.Json.t = "getItem";
+  [@bs.send] external setItem: (t, string, Js.Json.t) = "setItem";
+};
+
 type t;
 [@bs.module "@aws-amplify/core"] external inst: t = "default";
 [@bs.send] external configure: (t, Config.t) => unit = "configure";

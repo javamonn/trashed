@@ -13,4 +13,4 @@ module Bowser = Externals_Bowser;
 module UUID = Externals_UUID;
 
 module AppSync = Externals_AppSync;
-
+module S3Object = Externals_S3Object;

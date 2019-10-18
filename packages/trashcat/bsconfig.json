@@ -20,6 +20,7 @@
     "re-classnames",
     "bs-webapi",
     "bs-aws-amplify",
+    "bs-fetch",
     "reason-apollo",
     "reason-apollo-hooks"
   ],
