@@ -67,26 +67,47 @@ module Storage = {
 module Api = {
   type t;
 
+  [@bs.module "@aws-amplify/api"] external inst: t = "default";
+
+  /** graphql **/
+
   [@bs.deriving abstract]
   type graphqlOperation = {
     query: string,
     variables: Js.Json.t,
   };
 
-  [@bs.module "@aws-amplify/api"] external inst: t = "default";
-
   [@bs.send]
   external graphql: (t, graphqlOperation) => Js.Promise.t(Js.Json.t) =
     "graphql";
-};
 
-module Cache = {
-  type t;
+  /** rest **/
 
-  [@bs.module "@aws-amplify/cache"] external inst: t = "default";
+  [@bs.deriving abstract]
+  type response('a, 'b) = {
+    data: 'a,
+    status: int,
+    statusText: string,
+    headers: Js.t('b),
+  };
 
-  [@bs.send] external getItem: (t, string) => Js.Json.t = "getItem";
-  [@bs.send] external setItem: (t, string, Js.Json.t) = "setItem";
+  [@bs.send]
+  external post:
+    (
+      t,
+      string,
+      string,
+      option({
+        .
+        "body": Js.Json.t,
+        "headers": 'b,
+      })
+    ) =>
+    Js.Promise.t(response('a, 'b)) =
+    "post";
+
+  let post = (~apiName, ~path, ~options=?, ()) =>
+    post(inst, apiName, path, options);
 };
 
 type t;

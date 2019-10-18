@@ -117,9 +117,9 @@
 					]
 				}
 			],
-			"lastBuildTimeStamp": "2019-08-25T20:36:45.913Z",
-			"lastPackageTimeStamp": "2019-10-13T22:42:45.541Z",
-			"distZipFilename": "rpc-33394d4a3977642b6930-build.zip",
+			"lastBuildTimeStamp": "2019-10-18T16:32:47.103Z",
+			"lastPackageTimeStamp": "2019-10-18T16:33:34.992Z",
+			"distZipFilename": "rpc-6b774654477451354862-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/rpc-cloudformation-template.json",
 				"logicalId": "functionrpc"
@@ -138,8 +138,8 @@
 			"providerPlugin": "awscloudformation",
 			"build": true,
 			"lastBuildTimeStamp": "2019-10-01T10:44:41.741Z",
-			"lastPackageTimeStamp": "2019-10-13T22:42:43.918Z",
-			"distZipFilename": "trashed452c5745PostConfirmation-7870624f42786b544241-build.zip",
+			"lastPackageTimeStamp": "2019-10-18T16:33:39.690Z",
+			"distZipFilename": "trashed452c5745PostConfirmation-667975663834654d7849-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
 				"logicalId": "functiontrashed452c5745PostConfirmation"
@@ -157,8 +157,8 @@
 			"providerPlugin": "awscloudformation",
 			"build": true,
 			"lastBuildTimeStamp": "2019-08-25T20:36:47.731Z",
-			"lastPackageTimeStamp": "2019-10-13T22:42:20.716Z",
-			"distZipFilename": "trashed452c5745PreSignup-4b717146324474396137-build.zip",
+			"lastPackageTimeStamp": "2019-10-18T16:33:14.869Z",
+			"distZipFilename": "trashed452c5745PreSignup-4473523255356d703362-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
 				"logicalId": "functiontrashed452c5745PreSignup"
@@ -200,8 +200,8 @@
 				}
 			],
 			"lastBuildTimeStamp": "2019-10-13T14:27:27.840Z",
-			"lastPackageTimeStamp": "2019-10-13T22:41:57.804Z",
-			"distZipFilename": "DynamoDBStreamTrigger-61736857537159597658-build.zip",
+			"lastPackageTimeStamp": "2019-10-18T16:32:51.314Z",
+			"distZipFilename": "DynamoDBStreamTrigger-356c62634e652b2f2f57-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/DynamoDBStreamTrigger-cloudformation-template.json",
 				"logicalId": "functionDynamoDBStreamTrigger"
@@ -238,8 +238,8 @@
 				}
 			],
 			"lastBuildTimeStamp": "2019-10-13T14:27:40.899Z",
-			"lastPackageTimeStamp": "2019-10-13T22:41:57.661Z",
-			"distZipFilename": "MediaConvertJobStateChangeTrigger-634a6765765a48563551-build.zip",
+			"lastPackageTimeStamp": "2019-10-18T16:32:51.108Z",
+			"distZipFilename": "MediaConvertJobStateChangeTrigger-5a3278736934364d317a-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/MediaConvertJobStateChangeTrigger-cloudformation-template.json",
 				"logicalId": "functionMediaConvertJobStateChangeTrigger"

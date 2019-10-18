@@ -84,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/MediaConvertJobStateChangeTrigger-634a6765765a48563551-build.zip"
+					"S3Key": "amplify-builds/MediaConvertJobStateChangeTrigger-5a3278736934364d317a-build.zip"
 				}
 			}
 		},
