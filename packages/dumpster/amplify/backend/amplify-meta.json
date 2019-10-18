@@ -79,6 +79,20 @@
 			},
 			"lastPushTimeStamp": "2019-10-16T10:44:50.773Z",
 			"lastPushDirHash": "QzcYH5+idVQDZAnkrk9bI+KFIUM="
+		},
+		"apiRpc": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "rpc",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
 		}
 	},
 	"function": {

@@ -1,0 +1,34 @@
+{
+    "paths": [
+        {
+            "name": "/rpc",
+            "lambdaFunction": "rpc",
+            "privacy": {
+                "open": true
+            }
+        }
+    ],
+    "resourceName": "apiRpc",
+    "apiName": "apiRpc",
+    "functionArns": [
+        {
+            "lambdaFunction": "rpc"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "trashed-production-20190824131356-authRole",
+        "unAuthRoleName": "trashed-production-20190824131356-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "rpc",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
