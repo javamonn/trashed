@@ -15,6 +15,8 @@ S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-weba
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-webapi/lib/ocaml
 S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-aws-amplify/lib/ocaml
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-aws-amplify/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-fetch/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-fetch/lib/ocaml
 S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo/lib/ocaml
 B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo/lib/ocaml
 S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo-hooks/lib/ocaml
@@ -31,6 +33,8 @@ S src/components/video-recorder
 B lib/bs/src/components/video-recorder
 S src/lib
 B lib/bs/src/lib
+S src/service
+B lib/bs/src/service
 S src/hook
 B lib/bs/src/hook
 S src/providers

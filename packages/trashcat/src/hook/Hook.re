@@ -1,1 +1,1 @@
-module UseS3ObjectResolver = Hook_UseS3ObjectResolver;
+module S3ObjectResolver = Hook_S3ObjectResolver;

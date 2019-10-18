@@ -43,7 +43,6 @@
     "aws-appsync-react": "^2.0.0",
     "bowser": "^2.5.3",
     "bs-aws-amplify": "^1.0.0",
-    "bs-fetch": "^0.5.0",
     "bs-webapi": "^0.15.3",
     "ogv": "^1.6.1",
     "re-classnames": "^4.0.0",

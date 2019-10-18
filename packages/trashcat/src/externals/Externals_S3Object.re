@@ -7,6 +7,8 @@ type t = {
 
 let make = t;
 
+let fromJs = j => make(~bucket=j##bucket, ~key=j##key, ~region=j##region);
+
 let fromString = s =>
   switch (
     s
@@ -45,4 +47,4 @@ let mimeTypeGet = o =>
   | ".jpg" => Some(`JPEG)
   | _ => None
   };
-**/
+**/;
