@@ -38,6 +38,11 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.0",
+    "@aws-amplify/api": "^1.2.2",
+    "@aws-amplify/auth": "^1.4.2",
+    "@aws-amplify/core": "^1.2.2",
+    "@aws-amplify/pubsub": "^1.2.2",
+    "@aws-amplify/storage": "^1.2.2",
     "apollo-cache-inmemory": "^1.4.3",
     "aws-appsync": "^2.0.0",
     "aws-appsync-react": "^2.0.0",

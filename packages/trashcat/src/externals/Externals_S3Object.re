@@ -5,6 +5,16 @@ type t = {
   region: string,
 };
 
+/**
+ * Storage.get expects a key without the explicit level prefix (public,
+ * private, protected).
+ */
+let storageKeyGet = inst =>
+  switch (Js.String.split("/", inst->keyGet)->Array.to_list) {
+  | ["public", ...key] => key |> Array.of_list |> Js.Array.joinWith("/")
+  | _ => inst->keyGet
+  };
+
 let make = t;
 
 let fromJs = j => make(~bucket=j##bucket, ~key=j##key, ~region=j##region);

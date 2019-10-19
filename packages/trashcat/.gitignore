@@ -19,3 +19,4 @@ awsconfiguration.json
 amplify/backend
 
 .graphql_ppx_cache
+.merlin

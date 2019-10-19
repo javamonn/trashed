@@ -13,25 +13,22 @@ const DIST_DIR = path.resolve(__dirname, 'dist');
 const BUILD_DIR = path.resolve(DIST_DIR, './build');
 
 const globalShim = (r, p) => `(require("${r}"), global.${p})`;
-const defaultShim = ({ to, namedExports }) => `({ 
+const defaultShim = ({to, namedExports}) =>
+  `({ 
   default: require("${to}"),
-   ${Object.keys(namedExports || {})
-     .reduce((acc, k) => {
-       acc += `${k}: require("${namedExports[k].path}")${
-         namedExports[k].prop
-           ? `.${namedExports[k].prop}`
-           : ''},`;
-      return acc;
-    },
-    ""
-   )}
+   ${Object.keys(namedExports || {}).reduce((acc, k) => {
+     acc += `${k}: require("${namedExports[k].path}")${
+       namedExports[k].prop ? `.${namedExports[k].prop}` : ''
+     },`;
+     return acc;
+   }, '')}
 })`.replace('\n', '');
 
 const buildAlias = ({to, prop, global_, default_, namedExports}) =>
   global_
     ? globalShim(to, global_) + (prop ? prop : '')
     : default_
-    ? defaultShim({ to, namedExports })
+    ? defaultShim({to, namedExports})
     : `require("${to}")${prop ? prop : ''}`;
 
 /**
@@ -64,8 +61,11 @@ const REQUIRE_ALIAS = [
     to: 'apollo-client',
     default_: true,
     namedExports: {
-      'ApolloError': { path: 'apollo-client/errors/ApolloError', prop: 'ApolloError' }
-    }
+      ApolloError: {
+        path: 'apollo-client/errors/ApolloError',
+        prop: 'ApolloError',
+      },
+    },
   },
   {
     from: 'redux-thunk',
@@ -81,15 +81,16 @@ const REQUIRE_ALIAS = [
   {},
 );
 
-console.log(REQUIRE_ALIAS)
+console.log(REQUIRE_ALIAS);
 
 /**
- * Some bucklescript dependencies bind directly to modules (`import * as Foo, 
+ * Some bucklescript dependencies bind directly to modules (`import * as Foo,
  * Foo()`), which rollup does not like. Rewrite import the default.
  */
 const IMPORT_ALIAS = {
-  'import * as GraphqlTag from \"graphql-tag\"': 'import GraphqlTag from \"graphql-tag\"'
-}
+  'import * as GraphqlTag from "graphql-tag"':
+    'import GraphqlTag from "graphql-tag"',
+};
 
 const config = {
   input: './src/Index.bs.js',
@@ -97,7 +98,7 @@ const config = {
     dir: BUILD_DIR,
     entryFileNames: '[name].mjs',
     format: 'esm',
-    sourcemap: false
+    sourcemap: false,
   },
   preserveModules: true,
   plugins: [
@@ -115,7 +116,16 @@ const config = {
     polyfill(['./polyfill.js']),
     resolve({
       browser: true,
-      dedupe: ['apollo-cache-inmemory', 'apollo-client'],
+      dedupe: [
+        'apollo-cache-inmemory',
+        'apollo-client',
+        '@aws-amplify/api',
+        '@aws-amplify/storage',
+        '@aws-amplfiy/auth',
+        '@aws-amplify/cache',
+        '@aws-amplify/core',
+        '@aws-amplify/pubsub',
+      ],
     }),
     commonjs({
       ignoreGlobal: true,
@@ -136,7 +146,6 @@ const config = {
           'Component',
         ],
         bowser: ['getParser'],
-        ogv: ['OGVPlayer', 'OGVLoader'],
         'prop-types': [
           'object',
           'func',
@@ -156,7 +165,7 @@ const config = {
     postcss({
       plugins: [require('tailwindcss')],
     }),
-  ]
+  ],
 };
 
 module.exports = config;

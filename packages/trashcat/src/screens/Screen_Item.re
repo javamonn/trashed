@@ -53,7 +53,7 @@ let make = (~itemId) => {
     ->Belt.Option.map(i => i##video##files);
 
   let s3Objects =
-    Hook.S3ObjectResolver.useMany(
+    Hook.S3ObjectResolver.use(
       files->Belt.Option.map(i =>
         i->Belt.Array.map(i => i##file->S3Object.fromJs)
       ),
