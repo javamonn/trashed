@@ -50,7 +50,6 @@ type VideoS3Object @aws_iam {
   file: S3Object!
   mimeType: VideoMimeType!
   userUpload: Boolean!
-  cloudfrontUrl: String
 }
 
 type Video

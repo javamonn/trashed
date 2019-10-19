@@ -165,7 +165,34 @@
 						"Ref": "UnauthRoleName"
 					},
 					"S3DeploymentBucket": "trashed-production-20190824131356-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/f8df7cf333082b25b15cc81db9dc757168504420",
+					"S3DeploymentRootKey": "amplify-appsync-files/f9e9b6f7b62524befb0801face533bf62beb0811",
+					"env": "production"
+				}
+			}
+		},
+		"apiapiRpc": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/apiRpc-cloudformation-template.json",
+				"Parameters": {
+					"authRoleName": {
+						"Ref": "AuthRoleName"
+					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
+					"functionrpcName": {
+						"Fn::GetAtt": [
+							"functionrpc",
+							"Outputs.Name"
+						]
+					},
+					"functionrpcArn": {
+						"Fn::GetAtt": [
+							"functionrpc",
+							"Outputs.Arn"
+						]
+					},
 					"env": "production"
 				}
 			}
