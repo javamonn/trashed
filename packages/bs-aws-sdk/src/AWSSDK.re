@@ -11,8 +11,8 @@ module CloudFront = {
     type t;
 
     /** keyPairId, privateKey */
-    [@bs.new] [@bs.module "aws-sdk"]
-    external make: (string, string) => t = "CloudFront.Signer";
+    [@bs.new] [@bs.scope "CloudFront"] [@bs.module "aws-sdk"]
+    external make: (string, string) => t = "Signer";
 
     module SignedCookie = {
       [@bs.deriving abstract]
@@ -37,7 +37,7 @@ module CloudFront = {
           "url": option(string),
         }
       ) =>
-      Js.Promise.t(SignedCookie.t) =
+      SignedCookie.t =
       "getSignedCookie";
   };
 };

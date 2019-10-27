@@ -1,0 +1,101 @@
+{
+  "resource": "/rpc/{proxy+}",
+  "path": "/rpc/authentication/cloudfront-cookie",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "false",
+    "CloudFront-Is-Mobile-Viewer": "true",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "MX",
+    "content-type": "application/x-www-form-urlencoded",
+    "Host": "5kks7lgsej.execute-api.us-east-1.amazonaws.com",
+    "origin": "http://localhost:8080",
+    "pragma": "no-cache",
+    "Referer": "http://localhost:8080/item/09f31c56-8d25-4f32-8cec-b4871fa7c6fe",
+    "User-Agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Mobile Safari/537.36",
+    "Via": "2.0 8b0319344ec6822f8be651492ac6dff1.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "3eCSD7O1SYaOEKJvSw-sMBoZ_fGuTU5RjX8pR36iJq4seUTvp0p5zg==",
+    "x-amz-date": "20191020T141709Z",
+    "x-amz-security-token": "AgoJb3JpZ2luX2VjEMf//////////wEaCXVzLWVhc3QtMSJHMEUCIQDB6IGGNJWL+ws8nS+Zin43YWXbtaWnqyu4LgKfeo4JkwIgWZF1YDjp2pDFQEMplX4sfy20IAk22xi68vYCuz6/WCcq7AYIv///////////ARAAGgwwNDY1MjUzMDQ0OTciDEdrb6iqK+diu8CcBSrABsk5KT0jh7MZF9T1F5UW19JkiHFJlv35ankMZO9BfIMzdBNu5i6iX5pEA+5R2wVH9dOkY8dc48E5NDHfeFiexrv/mAVXFQb7gQMuhlDn7RFon5qvYWdPm6TK6Hi+O5+OwXSwW4tskJGsIJ94WYCR4YjEJDV0CBTlg2zVGs5JLwxZG839BC20IKAuhh9cRO1TnX2h5q2SZzmb0LxU8NJYpw8pOTifaZAyFV3BOaYwrioTB+Nv8eyQT7U+JD5WUEjep2qxoHiy0lTpWblz5b5MhRzv3tWYYvAOuXR8U0TrMIlEkP2MxF/a32PFZv0OT8aZOx6zThcromxcgH8xSX/aHvcK8UOdFnBUumsQecFwRPEJz0z6hPLNDHoxdRYDfHT2HQO/XtoDokvMmAU+Et/dO3vHk9e3mbL2EA7/OrqP1pfTiQIjJ0U+9E/V2WtsfEBgHxVIYtcUf3CFv7V89UZEiJZIkDB+jEEe99Y2rvJA6RvZ20LjFSQX7ovgT93YXRjKo4ZkuU9CyIOgvjuIsUcD0bPa87rJ8DVkSxBlzhJ2LobapHT7Ss9TncsL0C7eVgiJPhO8gS2BpgpbFWqT2StrM4JU5f/eImVBSGD7aBCgVTJVzFdce3GceSEm2kJkS9xAPYaWAcHbeNwzc1l1z/8uBRUZHPoptsYQgMEfWl5OUV38SNeyeyYGQzUwv1nXD9D2xu2LI81THuhKkgF8OV60iP64fimhpk6P/fETF/z6dmDzWFj8RE2f94m/zVJkuEUziOPgQ+KUOTJ88u1OQitrD4s3msVasi+8wIZVHxu2Mj1TKpYtyygoZzni4lWe89+ZwpAzAmCX4wCGehUbuiS+OizTRffXRYJ+ckF30SAQIvBk6NU1mazmNQ2cO//TdbJTmuX/b1U+YxXQ605uuWKatsCT81bQglR3cMCJKCLipWU7OS1kGVlL0Zidsra/KeBzGNcXuIlW8aVfhHHikE231Qgkg4eHOOGPwN1g62yShLORIlahDDs09YkOWP97J/NfWxBbl/m9Pv60QMQQk4sZJ8cdsc6/YYzAm0w/5SGIL+wWjLP9i5xWzmrPMSdRwhRzkA3VrZfg0ap7Yn3T0uxI9YQw5Nix7QU6tAHvVdCueoBALp3OwSTw5G0hIgtGEjqQGWjWog8kYa6fDBJu7FrdnohZAIRK7n44G6gx10IQ1/heE61GZyfXXvfYwq1R9jR/yqiZxjfCrnwuVlxMpMwQKnyys5UQzRtZ7aF7TC4pGTEX9PIm+vTPS2MAAqu5h0acTIv9ba4LbuysNunSng1VG3X4TcsxqLOZkyAGRiUCZ3kZMT3rOLbbem1P5rPmtWgGaRr5zt8nsQLhfVjW744=",
+    "X-Amzn-Trace-Id": "Root=1-5dac6c66-092ed85952b89258466dc926",
+    "X-Forwarded-For": "200.57.230.61, 70.132.11.95",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept": ["application/json, text/plain, */*"],
+    "Accept-Encoding": ["gzip, deflate, br"],
+    "Accept-Language": ["en-US,en;q=0.9"],
+    "cache-control": ["no-cache"],
+    "CloudFront-Forwarded-Proto": ["https"],
+    "CloudFront-Is-Desktop-Viewer": ["false"],
+    "CloudFront-Is-Mobile-Viewer": ["true"],
+    "CloudFront-Is-SmartTV-Viewer": ["false"],
+    "CloudFront-Is-Tablet-Viewer": ["false"],
+    "CloudFront-Viewer-Country": ["MX"],
+    "content-type": ["application/x-www-form-urlencoded"],
+    "Host": ["5kks7lgsej.execute-api.us-east-1.amazonaws.com"],
+    "origin": ["http://localhost:8080"],
+    "pragma": ["no-cache"],
+    "Referer": [
+      "http://localhost:8080/item/09f31c56-8d25-4f32-8cec-b4871fa7c6fe"
+    ],
+    "User-Agent": [
+      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Mobile Safari/537.36"
+    ],
+    "Via": ["2.0 8b0319344ec6822f8be651492ac6dff1.cloudfront.net (CloudFront)"],
+    "X-Amz-Cf-Id": ["3eCSD7O1SYaOEKJvSw-sMBoZ_fGuTU5RjX8pR36iJq4seUTvp0p5zg=="],
+    "x-amz-date": ["20191020T141709Z"],
+    "x-amz-security-token": [
+      "AgoJb3JpZ2luX2VjEMf//////////wEaCXVzLWVhc3QtMSJHMEUCIQDB6IGGNJWL+ws8nS+Zin43YWXbtaWnqyu4LgKfeo4JkwIgWZF1YDjp2pDFQEMplX4sfy20IAk22xi68vYCuz6/WCcq7AYIv///////////ARAAGgwwNDY1MjUzMDQ0OTciDEdrb6iqK+diu8CcBSrABsk5KT0jh7MZF9T1F5UW19JkiHFJlv35ankMZO9BfIMzdBNu5i6iX5pEA+5R2wVH9dOkY8dc48E5NDHfeFiexrv/mAVXFQb7gQMuhlDn7RFon5qvYWdPm6TK6Hi+O5+OwXSwW4tskJGsIJ94WYCR4YjEJDV0CBTlg2zVGs5JLwxZG839BC20IKAuhh9cRO1TnX2h5q2SZzmb0LxU8NJYpw8pOTifaZAyFV3BOaYwrioTB+Nv8eyQT7U+JD5WUEjep2qxoHiy0lTpWblz5b5MhRzv3tWYYvAOuXR8U0TrMIlEkP2MxF/a32PFZv0OT8aZOx6zThcromxcgH8xSX/aHvcK8UOdFnBUumsQecFwRPEJz0z6hPLNDHoxdRYDfHT2HQO/XtoDokvMmAU+Et/dO3vHk9e3mbL2EA7/OrqP1pfTiQIjJ0U+9E/V2WtsfEBgHxVIYtcUf3CFv7V89UZEiJZIkDB+jEEe99Y2rvJA6RvZ20LjFSQX7ovgT93YXRjKo4ZkuU9CyIOgvjuIsUcD0bPa87rJ8DVkSxBlzhJ2LobapHT7Ss9TncsL0C7eVgiJPhO8gS2BpgpbFWqT2StrM4JU5f/eImVBSGD7aBCgVTJVzFdce3GceSEm2kJkS9xAPYaWAcHbeNwzc1l1z/8uBRUZHPoptsYQgMEfWl5OUV38SNeyeyYGQzUwv1nXD9D2xu2LI81THuhKkgF8OV60iP64fimhpk6P/fETF/z6dmDzWFj8RE2f94m/zVJkuEUziOPgQ+KUOTJ88u1OQitrD4s3msVasi+8wIZVHxu2Mj1TKpYtyygoZzni4lWe89+ZwpAzAmCX4wCGehUbuiS+OizTRffXRYJ+ckF30SAQIvBk6NU1mazmNQ2cO//TdbJTmuX/b1U+YxXQ605uuWKatsCT81bQglR3cMCJKCLipWU7OS1kGVlL0Zidsra/KeBzGNcXuIlW8aVfhHHikE231Qgkg4eHOOGPwN1g62yShLORIlahDDs09YkOWP97J/NfWxBbl/m9Pv60QMQQk4sZJ8cdsc6/YYzAm0w/5SGIL+wWjLP9i5xWzmrPMSdRwhRzkA3VrZfg0ap7Yn3T0uxI9YQw5Nix7QU6tAHvVdCueoBALp3OwSTw5G0hIgtGEjqQGWjWog8kYa6fDBJu7FrdnohZAIRK7n44G6gx10IQ1/heE61GZyfXXvfYwq1R9jR/yqiZxjfCrnwuVlxMpMwQKnyys5UQzRtZ7aF7TC4pGTEX9PIm+vTPS2MAAqu5h0acTIv9ba4LbuysNunSng1VG3X4TcsxqLOZkyAGRiUCZ3kZMT3rOLbbem1P5rPmtWgGaRr5zt8nsQLhfVjW744="
+    ],
+    "X-Amzn-Trace-Id": ["Root=1-5dac6c66-092ed85952b89258466dc926"],
+    "X-Forwarded-For": ["200.57.230.61, 70.132.11.95"],
+    "X-Forwarded-Port": ["443"],
+    "X-Forwarded-Proto": ["https"]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "authentication/cloudfront-cookie"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "dr7bm4",
+    "resourcePath": "/rpc/{proxy+}",
+    "httpMethod": "POST",
+    "extendedRequestId": "B3Xf9FDQIAMFTzw=",
+    "requestTime": "20/Oct/2019:14:17:10 +0000",
+    "path": "/production/rpc/authentication/cloudfront-cookie",
+    "accountId": "046525304497",
+    "protocol": "HTTP/1.1",
+    "stage": "production",
+    "domainPrefix": "5kks7lgsej",
+    "requestTimeEpoch": 1571581030012,
+    "requestId": "caf2b39b-e7ef-4590-954a-9b41026acf33",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "200.57.230.61",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Mobile Safari/537.36",
+      "user": null
+    },
+    "domainName": "5kks7lgsej.execute-api.us-east-1.amazonaws.com",
+    "apiId": "5kks7lgsej"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

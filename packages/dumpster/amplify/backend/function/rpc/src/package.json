@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@glennsl/bs-json": "^4.0.0",
-    "aws-serverless-express": "^3.3.5",
+    "aws-serverless-express": "git+https://github.com/zoellner/aws-serverless-express.git",
     "body-parser": "^1.17.1",
     "bs-date-fns": "^0.1.6",
     "bs-express": "^0.12.0",

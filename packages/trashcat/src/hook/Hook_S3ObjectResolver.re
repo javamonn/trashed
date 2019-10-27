@@ -20,8 +20,8 @@ module CloudFrontResolver = {
     | Unauthenticated =>
       let p =
         AwsAmplify.Api.post(
-          ~apiName="rpc",
-          ~path="/authentication/cloudfront-cookie",
+          ~apiName="apiRpc",
+          ~path="/rpc/authentication/cloudfront-cookie",
           (),
         )
         |> Js.Promise.then_(_response => Js.Promise.resolve());
@@ -55,9 +55,12 @@ module State = {
     | SetState(t('a));
 };
 
+/**
 let resolver =
   Constants.Env.nodeEnv === "production"
     ? CloudFrontResolver.resolve : S3Resolver.resolve;
+**/
+let resolver = CloudFrontResolver.resolve;
 
 let use = s3Objects => {
   let (state, dispatch) =

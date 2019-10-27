@@ -21,7 +21,7 @@ let _ =
 let _ =
   express->(
              Express.App.post(
-               ~path="/authentication/cloudfront-cookie",
+               ~path="/rpc/authentication/cloudfront-cookie",
                CloudfrontCookie.handler,
              )
            );
