@@ -206,6 +206,9 @@
                         },
                         "Access-Control-Allow-Headers": {
                           "type": "string"
+                        },
+                        "Set-Cookie": {
+                          "type": "string"
                         }
                       }
                     }
@@ -364,7 +367,7 @@
         
         
         
-      "DeploymentAPIGWapiRpc": {
+      "DeploymentAPIGWapiRpca665fd27": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",

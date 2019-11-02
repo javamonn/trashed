@@ -1,0 +1,51 @@
+{
+  "Description": "Route 53 resource stack creation.",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "trashcatCloudfrontDistributionOrigin": {
+      "Type": "String"
+    }
+  },
+  "Conditions": {
+    "ShouldSuffixDNSWithEnv": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "env"
+            },
+            "production"
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "TrashcatCDNRecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": 
+        "Type": "CNAME",
+        "Name": {
+          "Fn::If": [
+            "ShouldSuffixDNSWithEnv",
+            {
+              "Fn::Join": [
+                "trashcat-cdn-",
+                {
+                  "Ref": "env"
+                }
+              ]
+            },
+            "trashcat-cdn"
+          ]
+        },
+        "Value": {
+          "Ref": "trashcatCloudfrontDistributionOrigin"
+        }
+      }
+    }
+  }
+}

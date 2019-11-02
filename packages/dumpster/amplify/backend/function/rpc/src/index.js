@@ -7,9 +7,8 @@ const app = require('./app/Index.bs.js').default;
 
 const server = awsServerlessExpress.createServer(app);
 
-exports.handler = (event, context) => {
+exports.handler = (event, context) =>
   awsServerlessExpress.proxy(server, event, context, {
     apiGatewayEventWhitelist: [],
     apiGatewayContextWhitelist: [],
   });
-};

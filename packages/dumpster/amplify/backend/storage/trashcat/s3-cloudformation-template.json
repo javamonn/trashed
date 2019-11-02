@@ -642,6 +642,7 @@
             }
           ],
           "Enabled": "true",
+          "HttpVersion": "http2",
           "DefaultCacheBehavior": {
             "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
             "CachedMethods": ["GET", "HEAD", "OPTIONS"],

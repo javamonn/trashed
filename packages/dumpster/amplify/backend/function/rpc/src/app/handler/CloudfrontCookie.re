@@ -1,7 +1,5 @@
 open Lib;
 
-Js.log2("cloudfrontPrivateKey", Constants.Env.cloudfrontPrivateKey);
-
 let signer =
   AWSSDK.CloudFront.Signer.make(
     Constants.Env.cloudfrontKeyPairId,
@@ -42,7 +40,6 @@ let handler =
         "expires": None,
         "url": None,
       });
-    Js.log2("signedCookie", signedCookie);
     Express.Response.(
       response
       |> cookie(

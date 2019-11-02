@@ -24,7 +24,7 @@
     "bsb:clean": "bsb -clean-world",
     "start": "npm run bsb:start",
     "webpack:build": "npm run bsb:clean && npm run bsb:build && webpack",
-    "build": "NODE_ENV=production dotenv npm run webpack:build"
+    "build": "NODE_ENV=development dotenv npm run webpack:build"
   },
   "author": "",
   "license": "ISC"
