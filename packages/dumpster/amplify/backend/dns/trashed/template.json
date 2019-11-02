@@ -4,7 +4,10 @@
     "env": {
       "Type": "String"
     },
-    "trashcatCloudfrontDistributionOrigin": {
+    "storageTrashcatCdnName": {
+      "Type": "String"
+    },
+    "storagetrashcatCloudfrontDistributionDomainName": {
       "Type": "String"
     }
   },
@@ -33,17 +36,22 @@
             "ShouldSuffixDNSWithEnv",
             {
               "Fn::Join": [
-                "trashcat-cdn-",
+                {
+                  "Ref": "storageTrashcatCdnName"
+                },
+                "-",
                 {
                   "Ref": "env"
                 }
               ]
             },
-            "trashcat-cdn"
+            {
+              "Ref": "storageTrashcatCdnName"
+            }
           ]
         },
         "Value": {
-          "Ref": "trashcatCloudfrontDistributionOrigin"
+          "Ref": "storagetrashcatCloudfrontDomainName"
         }
       }
     }

@@ -2,7 +2,16 @@
     "dns": {
       "trashed": {
           "service": "Route53",
-          "providerPlugin": "awscloudformation"
+          "providerPlugin": "awscloudformation",
+          "dependsOn": [
+            {
+              "category": "storage",
+              "resourceName": "trashcat",
+              "attributes": [
+                "CloudfrontDistributionDomainName"
+              ]
+            }
+          ]
       }
     },
     "auth": {

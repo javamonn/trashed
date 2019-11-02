@@ -31,5 +31,8 @@
     "s3PermissionsGuestPublic": "s3:PutObject,s3:GetObject",
     "s3PermissionsGuestUploads": "s3:PutObject",
     "GuestAllowList": "ALLOW",
-    "triggerFunction": "NONE"
+    "triggerFunction": "NONE",
+
+    "cloudfrontDistributionAlias": "trashcat-cdn.trashed.today",
+    "cloudfrontAcmCertificateArn": "arn:aws:acm:us-east-1:046525304497:certificate/9b07daf0-c0df-49ef-a933-24294bdd35ec"
 }

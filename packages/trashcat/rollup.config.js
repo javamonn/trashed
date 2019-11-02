@@ -92,6 +92,13 @@ const IMPORT_ALIAS = {
     'import GraphqlTag from "graphql-tag"',
 };
 
+const ENV = {
+  'process.env.NODE_ENV': JSON.stringify('development'),
+  'process.env.CLOUDFRONT_DISTRIBUTION_ORIGIN': JSON.stringify(
+    'd116w8mfsoyqpv.cloudfront.net',
+  ),
+};
+
 const config = {
   input: './src/Index.bs.js',
   output: {
@@ -108,7 +115,7 @@ const config = {
     replace({
       delimiters: ['', ''],
       values: {
-        'process.env.NODE_ENV': JSON.stringify('development'),
+        ...ENV,
         ...IMPORT_ALIAS,
         ...REQUIRE_ALIAS,
       },

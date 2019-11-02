@@ -70,6 +70,12 @@
     },
     "triggerFunction": {
       "Type": "String"
+    },
+    "cloudfrontDistributionAlias": {
+      "Type": "String"
+    },
+    "cloudfrontAcmCertificateArn": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -629,6 +635,11 @@
     "CloudfrontDistribution": {
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
+        "Aliases": [
+          {
+            "Ref": "cloudfrontDistributionAlias"
+          }
+        ],
         "DistributionConfig": {
           "Origins": [
             {
@@ -660,7 +671,9 @@
           },
           "PriceClass": "PriceClass_100",
           "ViewerCertificate": {
-            "CloudFrontDefaultCertificate": "true"
+            "AcmCertificateArn": {
+              "Ref": "cloudfrontAcmCertificateArn"
+            }
           }
         }
       }
@@ -676,6 +689,14 @@
     "Region": {
       "Value": {
         "Ref": "AWS::Region"
+      }
+    },
+    "CloudfrontDistributionDomainName":  {
+      "Value": {
+        "Fn::GetAtt": [
+          "CloudfrontDistribution",
+          "DomainName"
+        ]
       }
     }
   }
