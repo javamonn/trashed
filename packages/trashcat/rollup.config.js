@@ -81,8 +81,6 @@ const REQUIRE_ALIAS = [
   {},
 );
 
-console.log(REQUIRE_ALIAS);
-
 /**
  * Some bucklescript dependencies bind directly to modules (`import * as Foo,
  * Foo()`), which rollup does not like. Rewrite import the default.
@@ -92,8 +90,10 @@ const IMPORT_ALIAS = {
     'import GraphqlTag from "graphql-tag"',
 };
 
+
+console.log(`Building with NODE_ENV=${process.env.NODE_ENV}`)
 const ENV = {
-  'process.env.NODE_ENV': JSON.stringify('development'),
+  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
   'process.env.CLOUDFRONT_DISTRIBUTION_ORIGIN': JSON.stringify(
     'd116w8mfsoyqpv.cloudfront.net',
   ),
@@ -103,11 +103,11 @@ const config = {
   input: './src/Index.bs.js',
   output: {
     dir: BUILD_DIR,
-    entryFileNames: '[name].mjs',
+    entryFileNames: process.env.NODE_ENV !== 'production' ? '[name].mjs' : '[name]-[hash].mjs',
     format: 'esm',
     sourcemap: false,
   },
-  preserveModules: true,
+  preserveModules: process.env.NODE_ENV !== 'production',
   plugins: [
     cleaner({targets: [BUILD_DIR]}),
     json(),

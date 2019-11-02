@@ -9,6 +9,9 @@
     },
     "storagetrashcatCloudfrontDistributionDomainName": {
       "Type": "String"
+    },
+    "route53HostedZoneId": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -29,20 +32,24 @@
     "TrashcatCDNRecordSet": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
-        "HostedZoneId": 
+        "HostedZoneId": {
+          "Ref": "route53HostedZoneId"  
+        },
         "Type": "CNAME",
         "Name": {
           "Fn::If": [
             "ShouldSuffixDNSWithEnv",
             {
               "Fn::Join": [
-                {
-                  "Ref": "storageTrashcatCdnName"
-                },
                 "-",
-                {
-                  "Ref": "env"
-                }
+                [
+                  {
+                    "Ref": "storageTrashcatCdnName"
+                  },
+                  {
+                    "Ref": "env"
+                  }
+                ]
               ]
             },
             {

@@ -10,8 +10,11 @@
     "bsb:clean": "bsb -clean-world",
     "graphql:sync-schema": "./scripts/graphql-sync-schema.sh && npm run bsb:clean",
     "rollup:start": "rollup -c -w",
+    "rollup:build": "rollup -c",
+    "html:build": "./scripts/build-html.js",
     "serve": "node ./static-server.js",
-    "start": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\""
+    "build": "npm run bsb:clean && npm run bsb:build && npm run rollup:build && npm run html:build",
+    "start": "npm run build && concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\""
   },
   "author": "",
   "license": "ISC",

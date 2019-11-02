@@ -635,12 +635,12 @@
     "CloudfrontDistribution": {
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
-        "Aliases": [
-          {
-            "Ref": "cloudfrontDistributionAlias"
-          }
-        ],
         "DistributionConfig": {
+          "Aliases": [
+            {
+              "Ref": "cloudfrontDistributionAlias"
+            }
+          ],
           "Origins": [
             {
               "DomainName": {
@@ -673,7 +673,8 @@
           "ViewerCertificate": {
             "AcmCertificateArn": {
               "Ref": "cloudfrontAcmCertificateArn"
-            }
+            },
+            "SslSupportMethod": "sni-only"
           }
         }
       }

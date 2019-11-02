@@ -68,6 +68,23 @@
 				}
 			}
 		},
+		"dnstrashed": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/dns/template.json",
+				"Parameters": {
+					"storageTrashcatCdnName": "trashcat-cdn",
+					"route53HostedZoneId": "Z1HJH8Q98D00QO",
+					"storagetrashcatCloudfrontDistributionDomainName": {
+						"Fn::GetAtt": [
+							"storagetrashcat",
+							"Outputs.CloudfrontDistributionDomainName"
+						]
+					},
+					"env": "production"
+				}
+			}
+		},
 		"authtrashed452c5745": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -336,6 +353,8 @@
 					"s3PermissionsGuestUploads": "s3:PutObject",
 					"GuestAllowList": "ALLOW",
 					"triggerFunction": "NONE",
+					"cloudfrontDistributionAlias": "trashcat-cdn.trashed.today",
+					"cloudfrontAcmCertificateArn": "arn:aws:acm:us-east-1:046525304497:certificate/9b07daf0-c0df-49ef-a933-24294bdd35ec",
 					"env": "production"
 				}
 			}
