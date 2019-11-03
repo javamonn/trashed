@@ -23,7 +23,7 @@ AWS_CONFIG="{\
 }"
 
 amplify env import \
-  --name trashed \
+  --name production \
   --config $PROVIDER_CONFIG \
   --awsInfo $AWS_CONFIG \
   --yes

@@ -1,5 +1,5 @@
 {
-	"trashed": {
+	"production": {
 		"awscloudformation": {
 			"Region": "us-east-1",
 			"DeploymentBucketName": "trashed-production-20190824131356-deployment",
