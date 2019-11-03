@@ -16,7 +16,11 @@ node_modules/
 aws-exports.js
 awsconfiguration.json
 
-amplify/backend
+amplify/backend/api
+amplify/backend/auth
+amplify/backend/dns
+amplify/backend/storage
+amplify/backend/function
 
 .graphql_ppx_cache
 .merlin
