@@ -33,32 +33,45 @@
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
         "HostedZoneId": {
-          "Ref": "route53HostedZoneId"  
+          "Ref": "route53HostedZoneId"
         },
-        "Type": "CNAME",
+        "Type": "A",
         "Name": {
           "Fn::If": [
             "ShouldSuffixDNSWithEnv",
             {
               "Fn::Join": [
-                "-",
+                "",
                 [
                   {
                     "Ref": "storageTrashcatCdnName"
                   },
+                  "-",
                   {
                     "Ref": "env"
-                  }
+                  },
+                  ".trashed.today"
                 ]
               ]
             },
             {
-              "Ref": "storageTrashcatCdnName"
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "storageTrashcatCdnName"
+                  },
+                  ".trashed.today"
+                ]
+              ]
             }
           ]
         },
-        "Value": {
-          "Ref": "storagetrashcatCloudfrontDomainName"
+        "AliasTarget": {
+          "DNSName": {
+            "Ref": "storagetrashcatCloudfrontDistributionDomainName"
+          },
+          "HostedZoneId": "Z2FDTNDATAQYW2"
         }
       }
     }

@@ -1,6 +1,5 @@
 let make = () =>
   Express.Middleware.from((_next, _request, response) => {
-    Js.log("path not found middleware");
     Express.Response.(
       response
       |> status(StatusCode.NotFound)

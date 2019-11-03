@@ -1,8 +1,8 @@
 let make = () =>
   Express.Middleware.from((next, _request, response) => {
-    Js.log("CORSMiddleware");
     response
     |> Express.Response.setHeader("access-control-allow-origin", "*")
+    |> Express.Response.setHeader("access-control-max-age", "86400")
     |> Express.Response.setHeader(
          "access-control-allow-headers",
          "Origin, X-Requested-With, Content-Type, Accept",
