@@ -1,3 +1,5 @@
 {
-    "bucketName": "trashcat-hosting"
+  "bucketName": "trashcat-hosting",
+  "cloudfrontDistributionAlias": "trashed.today",
+  "cloudfrontAcmCertificateArn": "arn:aws:acm:us-east-1:046525304497:certificate/9b07daf0-c0df-49ef-a933-24294bdd35ec"
 }
