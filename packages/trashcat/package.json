@@ -14,7 +14,9 @@
     "html:build": "./scripts/build-html.js",
     "serve": "node ./static-server.js",
     "build": "npm run bsb:clean && npm run bsb:build && npm run rollup:build && npm run html:build",
-    "start": "npm run build && concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\""
+    "build:production": "NODE_ENV=production npm run build",
+    "start": "npm run build && concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run rollup:start\" \"npm run serve\"",
+    "deploy": "npm run build && amplify publish -y -c"
   },
   "author": "",
   "license": "ISC",
