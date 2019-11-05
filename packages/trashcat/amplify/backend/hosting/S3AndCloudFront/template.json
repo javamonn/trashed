@@ -7,6 +7,12 @@
     },
     "bucketName": {
       "Type": "String"
+    },
+    "cloudfrontDistributionAlias": {
+      "Type": "String"
+    },
+    "cloudfrontAcmCertificateArn": {
+      "Type": "String"
     }
   },
   "Conditions": {
