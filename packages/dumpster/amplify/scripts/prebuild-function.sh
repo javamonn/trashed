@@ -12,7 +12,7 @@ DYNAMODB_STREAM_TRIGGER_SRC_DIR="$FUNCTION_DIR/DynamoDBStreamTrigger/src"
 MEDIA_CONVERT_JOB_STATE_CHANGE_TRIGGER="$FUNCTION_DIR/MediaConvertJobStateChangeTrigger/src"
 
 # Install depedencies for each of the functions.
-(cd $RPC_SRC_DIR && npm install)
+(cd $RPC_SRC_DIR && npm install && npm link bs-express)
 (cd $PRE_SIGNUP_SRC_DIR && npm install)
 (cd $POST_CONFIRMATION_SRC_DIR && npm install)
 (cd $DYNAMODB_STREAM_TRIGGER_SRC_DIR && npm install)

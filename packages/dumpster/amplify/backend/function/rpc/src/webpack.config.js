@@ -17,12 +17,14 @@ module.exports = {
             'CLOUDFRONT_KEY_PAIR_ID',
             'CLOUDFRONT_PRIVATE_KEY',
             'CLOUDFRONT_DISTRIBUTION_ORIGIN',
+            'DOMAIN',
           ]
         : [
             'NODE_ENV',
             'CLOUDFRONT_KEY_PAIR_ID',
             'CLOUDFRONT_PRIVATE_KEY',
             'CLOUDFRONT_DISTRIBUTION_ORIGIN',
+            'DOMAIN',
           ],
     ),
   ],

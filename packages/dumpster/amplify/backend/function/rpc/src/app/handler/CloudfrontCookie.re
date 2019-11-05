@@ -46,6 +46,7 @@ let handler =
            ~name="CloudFront-Policy",
            ~secure=true,
            ~httpOnly=true,
+           ~domain=Constants.Env.domain,
            signedCookie
            ->AWSSDK.CloudFront.Signer.SignedCookie.policyGet
            ->Json.Encode.string,
@@ -54,6 +55,7 @@ let handler =
            ~name="CloudFront-Signature",
            ~secure=true,
            ~httpOnly=true,
+           ~domain=Constants.Env.domain,
            signedCookie
            ->AWSSDK.CloudFront.Signer.SignedCookie.signatureGet
            ->Json.Encode.string,
@@ -62,6 +64,7 @@ let handler =
            ~name="CloudFront-Key-Pair-Id",
            ~secure=true,
            ~httpOnly=true,
+           ~domain=Constants.Env.domain,
            signedCookie
            ->AWSSDK.CloudFront.Signer.SignedCookie.keyPairIdGet
            ->Json.Encode.string,
