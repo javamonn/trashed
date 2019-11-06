@@ -19,7 +19,9 @@
                 "trashed452c5745": {},
                 "trashed": {},
                 "trashed452c5745PostConfirmation": {},
-                "trashed452c5745PreSignup": {}
+                "trashed452c5745PreSignup": {},
+                "DynamoDBStreamTrigger": {},
+                "MediaConvertJobStateChangeTrigger": {}
             }
         }
     }

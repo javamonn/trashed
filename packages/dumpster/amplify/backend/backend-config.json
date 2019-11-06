@@ -1,176 +1,153 @@
 {
-	"dns": {
-		"trashed": {
-			"service": "Route53",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "trashcat",
-					"attributes": [
-						"CloudfrontDistributionDomainName"
-					]
-				}
-			]
-		}
-	},
-	"auth": {
-		"trashed452c5745": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "trashed452c5745PostConfirmation",
-					"triggerProvider": "Cognito",
-					"attributes": [
-						"Arn",
-						"Name"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "trashed452c5745PreSignup",
-					"triggerProvider": "Cognito",
-					"attributes": [
-						"Arn",
-						"Name"
-					]
-				}
-			]
-		}
-	},
-	"api": {
-		"trashed": {
-			"service": "AppSync",
-			"providerPlugin": "awscloudformation",
-			"output": {
-				"authConfig": {
-					"additionalAuthenticationProviders": [
-						{
-							"authenticationType": "AWS_IAM"
-						}
-					],
-					"defaultAuthentication": {
-						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
-						"userPoolConfig": {
-							"userPoolId": "authtrashed452c5745"
-						}
-					}
-				}
-			}
-		},
-		"apiRpc": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "rpc",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			]
-		}
-	},
-	"function": {
-		"rpc": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "auth",
-					"resourceName": "trashed452c5745",
-					"attributes": [
-						"UserPoolId"
-					]
-				},
-				{
-					"category": "api",
-					"resourceName": "trashed",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				}
-			]
-		},
-		"trashed452c5745PostConfirmation": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true
-		},
-		"trashed452c5745PreSignup": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true
-		},
-		"DynamoDBStreamTrigger": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "api",
-					"resourceName": "trashed",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				},
-				{
-					"category": "storage",
-					"resourceName": "trashcat",
-					"attributes": [
-						"BucketName"
-					]
-				},
-				{
-					"category": "auth",
-					"resourceName": "trashed452c5745",
-					"attributes": [
-						"UserPoolId"
-					]
-				}
-			]
-		},
-		"MediaConvertJobStateChangeTrigger": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "api",
-					"resourceName": "trashed",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				},
-				{
-					"category": "storage",
-					"resourceName": "trashcat",
-					"attributes": [
-						"BucketName"
-					]
-				}
-			]
-		}
-	},
-	"hosting": {
-		"S3AndCloudFront": {
-			"service": "S3AndCloudFront",
-			"providerPlugin": "awscloudformation"
-		}
-	},
-	"storage": {
-		"trashcat": {
-			"service": "S3",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": []
-		}
-	}
+  "dns": {
+    "trashed": {
+      "service": "Route53",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "trashcat",
+          "attributes": ["CloudfrontDistributionDomainName"]
+        },
+        {
+          "category": "hosting",
+          "resourceName": "S3AndCloudFront",
+          "attributes": ["CloudFrontDomainName"]
+        }
+      ]
+    }
+  },
+  "auth": {
+    "trashed452c5745": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "trashed452c5745PostConfirmation",
+          "triggerProvider": "Cognito",
+          "attributes": ["Arn", "Name"]
+        },
+        {
+          "category": "function",
+          "resourceName": "trashed452c5745PreSignup",
+          "triggerProvider": "Cognito",
+          "attributes": ["Arn", "Name"]
+        }
+      ]
+    }
+  },
+  "api": {
+    "trashed": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authtrashed452c5745"
+            }
+          }
+        }
+      }
+    },
+    "apiRpc": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "rpc",
+          "attributes": ["Name", "Arn"]
+        }
+      ]
+    }
+  },
+  "function": {
+    "rpc": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true,
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "trashed452c5745",
+          "attributes": ["UserPoolId"]
+        },
+        {
+          "category": "api",
+          "resourceName": "trashed",
+          "attributes": ["GraphQLAPIIdOutput", "GraphQLAPIEndpointOutput"]
+        }
+      ]
+    },
+    "trashed452c5745PostConfirmation": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true
+    },
+    "trashed452c5745PreSignup": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true
+    },
+    "DynamoDBStreamTrigger": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true,
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "trashed",
+          "attributes": ["GraphQLAPIIdOutput", "GraphQLAPIEndpointOutput"]
+        },
+        {
+          "category": "storage",
+          "resourceName": "trashcat",
+          "attributes": ["BucketName"]
+        },
+        {
+          "category": "auth",
+          "resourceName": "trashed452c5745",
+          "attributes": ["UserPoolId"]
+        }
+      ]
+    },
+    "MediaConvertJobStateChangeTrigger": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true,
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "trashed",
+          "attributes": ["GraphQLAPIIdOutput", "GraphQLAPIEndpointOutput"]
+        },
+        {
+          "category": "storage",
+          "resourceName": "trashcat",
+          "attributes": ["BucketName"]
+        }
+      ]
+    }
+  },
+  "hosting": {
+    "S3AndCloudFront": {
+      "service": "S3AndCloudFront",
+      "providerPlugin": "awscloudformation"
+    }
+  },
+  "storage": {
+    "trashcat": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
+  }
 }
