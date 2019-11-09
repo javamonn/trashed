@@ -1,8 +1,11 @@
 {
-    "authRoleName": {
-        "Ref": "AuthRoleName"
-    },
-    "unauthRoleName": {
-        "Ref": "UnauthRoleName"
-    }
+  "authRoleName": {
+    "Ref": "AuthRoleName"
+  },
+  "unauthRoleName": {
+    "Ref": "UnauthRoleName"
+  },
+
+  "domainName": "trashcat-rpc.trashed.today",
+  "acmCertificateArn": "arn:aws:acm:us-east-1:046525304497:certificate/5919d660-3263-44e5-9260-072c2eb8d8f3"
 }

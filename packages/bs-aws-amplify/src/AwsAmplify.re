@@ -3,6 +3,13 @@
  */
 module Config = {
   [@bs.deriving abstract]
+  type cloudLogicCustom = {
+    name: string,
+    mutable endpoint: string,
+    region: string,
+  };
+
+  [@bs.deriving abstract]
   type t = {
     [@bs.as "aws_project_region"]
     projectRegion: string,
@@ -20,6 +27,8 @@ module Config = {
     userFilesS3Bucket: string,
     [@bs.as "aws_user_files_s3_bucket_region"]
     userFilesS3BucketRegion: string,
+    [@bs.as "aws_cloud_logic_custom"] [@bs.optional]
+    cloudLogicCustom: array(cloudLogicCustom),
   };
   let make = t;
 };

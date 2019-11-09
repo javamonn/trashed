@@ -96,6 +96,7 @@ const ENV = {
   'process.env.CLOUDFRONT_DISTRIBUTION_ORIGIN': JSON.stringify(
     'trashcat-cdn.trashed.today',
   ),
+  'process.env.RPC_ORIGIN': JSON.stringify('trashcat-rpc.trashed.today'),
 };
 
 const config = {
