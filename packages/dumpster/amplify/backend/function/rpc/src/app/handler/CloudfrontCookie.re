@@ -16,7 +16,7 @@ let makePolicy = timestamp =>
             (
               "Resource",
               string(
-                "https//"
+                "https://"
                 ++ Constants.Env.cloudfrontDistributionOrigin
                 ++ "/public/*",
               ),
@@ -26,7 +26,7 @@ let makePolicy = timestamp =>
               object_([
                 (
                   "DateLessThan",
-                  object_([("AWS:EpochTime", timestamp->float)]),
+                  object_([("AWS:EpochTime", timestamp->int)]),
                 ),
               ]),
             ),
@@ -39,9 +39,8 @@ let makePolicy = timestamp =>
 
 let handler =
   Express.Middleware.from((_next, _request, response) => {
-    let policy =
-      Js.Date.make() |> DateFns.addDays(14.) |> Js.Date.getTime |> makePolicy;
-    Js.log(policy);
+    let ms = Js.Date.make() |> DateFns.addDays(14.) |> Js.Date.getTime;
+    let policy = makePolicy(int_of_float(ms /. 1000.));
     let signedCookie =
       signer->AWSSDK.CloudFront.Signer.getSignedCookie({
         "policy": policy |> Js.Option.some,

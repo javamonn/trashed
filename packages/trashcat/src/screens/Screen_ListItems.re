@@ -70,7 +70,7 @@ let make = () => {
                        className={cn([
                          "flex-1",
                          "h-48",
-                         "bg-brandPrimary",
+                         "bg-brandBlue",
                          "mr-4"->Cn.ifTrue(idx < Belt.Array.length(row) - 1),
                        ])}
                        href={"/item/" ++ item##id}>

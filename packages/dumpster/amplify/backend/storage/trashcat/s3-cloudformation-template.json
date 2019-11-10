@@ -632,8 +632,47 @@
         }
       }
     },
+    "OriginAccessIdentity": {
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+          "Comment": ""
+        }
+      }
+    },
+    "CloudfrontBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "DependsOn": ["S3Bucket", "OriginAccessIdentity"],
+      "Properties": {
+        "Bucket": {"Ref": "S3Bucket"},
+        "PolicyDocument": {
+          "Id": "Grant read access to CloudFront Origin Access Identity.",
+          "Statement": [
+            {
+              "Sid": "OriginAccessIdentityRead",
+              "Effect": "Allow",
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": ["OriginAccessIdentity", "S3CanonicalUserId"]
+                }
+              },
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [{"Fn::GetAtt": ["S3Bucket", "Arn"]}, "/public/*"]
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
     "CloudfrontDistribution": {
       "Type": "AWS::CloudFront::Distribution",
+      "DependsOn": ["S3Bucket", "OriginAccessIdentity"],
       "Properties": {
         "DistributionConfig": {
           "Aliases": [
@@ -648,7 +687,17 @@
               },
               "Id": "S3BucketOrigin",
               "S3OriginConfig": {
-                "OriginAccessIdentity": ""
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "origin-access-identity/cloudfront/",
+                      {
+                        "Ref": "OriginAccessIdentity"
+                      }
+                    ]
+                  ]
+                }
               }
             }
           ],
@@ -692,12 +741,9 @@
         "Ref": "AWS::Region"
       }
     },
-    "CloudfrontDistributionDomainName":  {
+    "CloudfrontDistributionDomainName": {
       "Value": {
-        "Fn::GetAtt": [
-          "CloudfrontDistribution",
-          "DomainName"
-        ]
+        "Fn::GetAtt": ["CloudfrontDistribution", "DomainName"]
       }
     }
   }
