@@ -32,13 +32,13 @@ let make = () => {
           "py-4",
           "px-6",
         ])}>
-        <span className={cn(["text-xl", "font-bold", "mb-6"])}>
+        <span className={cn(["text-xl", "font-bold", "mb-8"])}>
           {React.string(
              "trashed helps you find and reclaim objects that have been thrown out.",
            )}
         </span>
         <span className={cn(["text-xl", "font-bold"])}>
-          {React.string("dumpster diving for the digital age.")}
+          {React.string("trashed is dumpster diving for the digital age.")}
         </span>
       </div>
       <div
