@@ -34,11 +34,11 @@ let make = () => {
         ])}>
         <span className={cn(["text-xl", "font-bold", "mb-6"])}>
           {React.string(
-             "trashed is a community that helps you find and reclaim trashed objects:",
+             "trashed helps you find and reclaim objects that have been thrown out.",
            )}
         </span>
         <span className={cn(["text-xl", "font-bold"])}>
-          {React.string("things that have been thrown out.")}
+          {React.string("dumpster diving for the digital age.")}
         </span>
       </div>
       <div
@@ -61,7 +61,7 @@ let make = () => {
       className={cn([
         "bg-brandBlue",
         "py-2",
-        "px-6",
+        "px-4",
         "flex",
         "justify-center",
         "items-center",
