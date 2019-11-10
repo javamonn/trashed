@@ -1,0 +1,72 @@
+input S3ObjectInput {
+  bucket: String!
+  key: String!
+  region: String!
+  localUri: String
+  mimeType: String
+}
+
+type Location @aws_iam {
+  lat: Float!
+  lon: Float!
+}
+
+input LocationInput {
+  lat: Float!
+  lon: Float!
+}
+
+enum VideoMimeType {
+  WEBM
+  MP4
+}
+
+type S3Object @aws_iam {
+  bucket: String!
+  key: String!
+  region: String!
+}
+
+enum MediaConvertJobState {
+  SUBMITTED
+  PROGRESSING
+  COMPLETE
+  ERRORED
+}
+
+type MediaConvertJob
+  @model
+  @auth(
+    rules: [{allow: public, provider: iam, operations: [create, read, update]}]
+  ) {
+  id: ID!
+  externalId: ID!
+  state: MediaConvertJobState!
+  video: Video! @connection
+  mediaConvertJobVideoId: ID!
+}
+
+type VideoS3Object @aws_iam {
+  file: S3Object!
+  mimeType: VideoMimeType!
+  userUpload: Boolean!
+}
+
+type Video
+  @model
+  @auth(
+    rules: [{allow: public, provider: iam, operations: [create, read, update]}]
+  ) {
+  id: ID!
+  files: [VideoS3Object!]!
+  thumbnail: S3Object
+  poster: S3Object
+}
+
+type Item
+  @model
+  @auth(rules: [{allow: public, provider: iam, operations: [create, read]}]) {
+  id: ID!
+  video: Video! @connection
+  location: Location!
+}

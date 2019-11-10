@@ -1,0 +1,51 @@
+{
+  "name": "@javamonn/landfill",
+  "version": "1.0.0",
+  "dependencies": {
+    "@material-ui/core": "^4.2.0",
+    "@material-ui/icons": "^4.2.1",
+    "aws-amplify": "^1.1.36",
+    "gatsby": "^2.13.6",
+    "gatsby-image": "^2.2.4",
+    "gatsby-plugin-manifest": "^2.2.1",
+    "gatsby-plugin-offline": "^2.2.1",
+    "gatsby-plugin-react-helmet": "^3.1.0",
+    "gatsby-plugin-sharp": "^2.2.3",
+    "gatsby-source-filesystem": "^2.1.2",
+    "gatsby-transformer-sharp": "^2.2.1",
+    "prop-types": "^15.6.4",
+    "re-classnames": "^4.0.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-helmet": "^5.2.1",
+    "reason-react": "^0.7.0",
+    "tachyons": "^4.11.1",
+    "typeface-abril-fatface": "0.0.72",
+    "typeface-lobster": "0.0.72",
+    "typeface-poppins": "0.0.72"
+  },
+  "keywords": [
+    "gatsby"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "gatsby:build": "gatsby build",
+    "gatsby:start": "gatsby develop",
+    "bsb:build": "bsb -make-world",
+    "bsb:start": "bsb -make-world -w",
+    "bsb:clean": "bsb -clean-world",
+    "start": "concurrently -k -n \"gatsby,bsb\" \"npm run gatsby:start\"  \"npm run bsb:start\"",
+    "build": "npm run bsb:build && npm run gatsby:build",
+    "format": "prettier --write \"src/**/*.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "bs-platform": "^5.0.6",
+    "concurrently": "^4.1.1",
+    "prettier": "^1.18.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+  }
+}

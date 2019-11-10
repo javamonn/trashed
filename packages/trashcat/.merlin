@@ -1,0 +1,42 @@
+####{BSB GENERATED: NO EDIT
+B lib/bs
+FLG -open Trashcat
+FLG -ppx /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/graphql_ppx/ppx
+FLG -ppx '/home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-platform/lib/bsppx.exe -bs-jsx 3'
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-platform/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-platform/lib/ocaml
+FLG -nostdlib -color always
+FLG -w -30-40+6+7+27+32..39+44+45+101
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-react/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-react/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/re-classnames/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/re-classnames/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-webapi/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-webapi/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-aws-amplify/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/bs-aws-amplify/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo/lib/ocaml
+S /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo-hooks/lib/ocaml
+B /home/daniel/Documents/javamonn/trashed/packages/trashcat/node_modules/reason-apollo-hooks/lib/ocaml
+S src
+B lib/bs/src
+S src/screens
+B lib/bs/src/screens
+S src/externals
+B lib/bs/src/externals
+S src/components
+B lib/bs/src/components
+S src/components/video-recorder
+B lib/bs/src/components/video-recorder
+S src/components/svg
+B lib/bs/src/components/svg
+S src/containers
+B lib/bs/src/containers
+S src/lib
+B lib/bs/src/lib
+S src/hook
+B lib/bs/src/hook
+S src/providers
+B lib/bs/src/providers
+####BSB GENERATED: NO EDIT}

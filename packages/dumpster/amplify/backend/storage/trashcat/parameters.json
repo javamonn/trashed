@@ -1,0 +1,34 @@
+{
+  "bucketName": "trashcat",
+  "authPolicyName": "s3_amplify_6ebe6f98",
+  "unauthPolicyName": "s3_amplify_6ebe6f98",
+  "authRoleName": {
+    "Ref": "AuthRoleName"
+  },
+  "unauthRoleName": {
+    "Ref": "UnauthRoleName"
+  },
+  "selectedGuestPermissions": ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
+  "selectedAuthenticatedPermissions": [
+    "s3:PutObject",
+    "s3:GetObject",
+    "s3:ListBucket"
+  ],
+  "s3PermissionsAuthenticatedPublic": "s3:PutObject,s3:GetObject",
+  "s3PublicPolicy": "Public_policy_d07b617b",
+  "s3PermissionsAuthenticatedUploads": "s3:PutObject",
+  "s3UploadsPolicy": "Uploads_policy_d07b617b",
+  "s3PermissionsAuthenticatedProtected": "s3:PutObject,s3:GetObject",
+  "s3ProtectedPolicy": "Protected_policy_a8c7229b",
+  "s3PermissionsAuthenticatedPrivate": "s3:PutObject,s3:GetObject",
+  "s3PrivatePolicy": "Private_policy_a8c7229b",
+  "AuthenticatedAllowList": "ALLOW",
+  "s3ReadPolicy": "read_policy_d07b617b",
+  "s3PermissionsGuestPublic": "s3:PutObject,s3:GetObject",
+  "s3PermissionsGuestUploads": "s3:PutObject",
+  "GuestAllowList": "ALLOW",
+  "triggerFunction": "NONE",
+
+  "cloudfrontDistributionAlias": "trashcat-cdn.trashed.today",
+  "cloudfrontAcmCertificateArn": "arn:aws:acm:us-east-1:046525304497:certificate/5919d660-3263-44e5-9260-072c2eb8d8f3"
+}

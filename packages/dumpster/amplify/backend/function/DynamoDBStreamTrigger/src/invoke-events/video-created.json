@@ -1,0 +1,67 @@
+{
+    "Records": [
+        {
+            "eventID": "dbf9b8914e3ea1f86766c9488282ea10",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1569780393,
+                "Keys": {
+                    "id": {
+                        "S": "80c4b538-88d8-47ce-92ef-ac024fe91954"
+                    }
+                },
+                "NewImage": {
+                    "createdAt": {
+                        "S": "2019-09-29T18:06:32.677Z"
+                    },
+                    "thumbnail": {
+                        "NULL": true
+                    },
+                    "__typename": {
+                        "S": "Video"
+                    },
+                    "files": {
+                        "L": [
+                            {
+                                "M": {
+                                    "file": {
+                                        "M": {
+                                            "bucket": {
+                                                "S": "trashcat-production"
+                                            },
+                                            "region": {
+                                                "S": "us-east-1"
+                                            },
+                                            "key": {
+                                                "S": "public/item-video-upload/3d38b7b6-db6b-49e3-920e-52dc23c6d9e9"
+                                            }
+                                        }
+                                    },
+                                    "cloudfrontUrl": {
+                                        "NULL": true
+                                    },
+                                    "mimeType": {
+                                        "S": "WEBM"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "id": {
+                        "S": "80c4b538-88d8-47ce-92ef-ac024fe91954"
+                    },
+                    "updatedAt": {
+                        "S": "2019-09-29T18:06:32.677Z"
+                    }
+                },
+                "SequenceNumber": "31238700000000015864562155",
+                "SizeBytes": 322,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:046525304497:table/Video-akkeqcns2fc5hn7ad3uu3euymy-production/stream/2019-09-23T00:28:32.455"
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "production": {
+        "awscloudformation": {
+            "AuthRoleName": "trashed-production-20190824131356-authRole",
+            "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "trashed-production-20190824131356-deployment",
+            "UnauthRoleName": "trashed-production-20190824131356-unauthRole",
+            "StackName": "trashed-production-20190824131356",
+            "StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0"
+        },
+        "categories": {
+            "auth": {
+                "trashed452c5745": {}
+            },
+            "function": {
+                "rpc": {},
+                "trashed452c5745": {},
+                "trashed": {},
+                "trashed452c5745PostConfirmation": {},
+                "trashed452c5745PreSignup": {},
+                "DynamoDBStreamTrigger": {},
+                "MediaConvertJobStateChangeTrigger": {}
+            }
+        }
+    }
+}

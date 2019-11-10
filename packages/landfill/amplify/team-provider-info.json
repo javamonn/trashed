@@ -1,0 +1,26 @@
+{
+	"production": {
+		"awscloudformation": {
+			"AuthRoleName": "landfill-production-20190824180508-authRole",
+			"UnauthRoleArn": "arn:aws:iam::046525304497:role/landfill-production-20190824180508-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::046525304497:role/landfill-production-20190824180508-authRole",
+			"Region": "us-east-1",
+			"DeploymentBucketName": "landfill-production-20190824180508-deployment",
+			"UnauthRoleName": "landfill-production-20190824180508-unauthRole",
+			"StackName": "landfill-production-20190824180508",
+			"StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/landfill-production-20190824180508/3cb7e720-c6bb-11e9-aff0-0eee516a945a"
+		}
+	},
+	"trashed": {
+		"awscloudformation": {
+			"Region": "us-east-1",
+			"DeploymentBucketName": "trashed-production-20190824131356-deployment",
+			"UnauthRoleName": "trashed-production-20190824131356-unauthRole",
+			"StackName": "trashed-production-20190824131356",
+			"StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0",
+			"AuthRoleName": "trashed-production-20190824131356-authRole",
+			"UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole"
+		}
+	}
+}

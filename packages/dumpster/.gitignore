@@ -1,0 +1,13 @@
+#amplify
+amplify/\#current-cloud-backend
+amplify/.config/local-*
+
+amplify/backend/awscloudformation
+
+amplify/backend/hosting
+
+build/
+dist/
+node_modules/
+aws-exports.js
+awsconfiguration.json

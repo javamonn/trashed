@@ -1,0 +1,348 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "API Gateway resource stack creation using Amplify CLI",
+  "Parameters": {
+    "authRoleName": {
+      "Type": "String"
+    },
+    "unauthRoleName": {
+      "Type": "String"
+    },
+    "env": {
+      "Type": "String"
+    },
+    "functionrpcName": {
+      "Type": "String",
+      "Default": "functionrpcName"
+    },
+    "functionrpcArn": {
+      "Type": "String",
+      "Default": "functionrpcArn"
+    },
+    "acmCertificateArn": {
+      "Type": "String"
+    },
+    "domainName": {
+      "Type": "String"
+    }
+  },
+  "Conditions": {
+    "ShouldNotCreateEnvResources": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "NONE"
+      ]
+    },
+    "ShouldCreateProdResources": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "production"
+      ]
+    }
+  },
+  "Resources": {
+    "DomainName": {
+      "Type": "AWS::ApiGateway::DomainName",
+      "Condition": "ShouldCreateProdResources",
+      "Properties": {
+        "DomainName": {
+          "Ref": "domainName"
+        },
+        "CertificateArn": {
+          "Ref": "acmCertificateArn"
+        }
+      }
+    },
+    "BasePathMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Condition": "ShouldCreateProdResources",
+      "Properties": {
+        "DomainName": {
+          "Ref": "DomainName"
+        },
+        "RestApiId": {
+          "Ref": "apiRpc"
+        },
+        "Stage": {
+          "Fn::If": [
+            "ShouldNotCreateEnvResources",
+            "Prod",
+            {
+              "Ref": "env"
+            }
+          ]
+        }
+      }
+    },
+    "apiRpc": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Description": "",
+        "Name": "apiRpc",
+        "Body": {
+          "swagger": "2.0",
+          "info": {
+            "version": "2018-05-24T17:52:00Z",
+            "title": "apiRpc"
+          },
+          "host": {
+            "Fn::Join": [
+              "",
+              [
+                "apigateway.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".amazonaws.com"
+              ]
+            ]
+          },
+          "basePath": {
+            "Fn::If": [
+              "ShouldNotCreateEnvResources",
+              "/Prod",
+              {
+                "Fn::Join": [
+                  "",
+                  [
+                    "/",
+                    {
+                      "Ref": "env"
+                    }
+                  ]
+                ]
+              }
+            ]
+          },
+          "schemes": ["https"],
+          "paths": {
+            "/rpc": {
+              "x-amazon-apigateway-any-method": {
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                  {
+                    "in": "body",
+                    "name": "RequestSchema",
+                    "required": false,
+                    "schema": {
+                      "$ref": "#/definitions/RequestSchema"
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/ResponseSchema"
+                    }
+                  }
+                },
+
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+
+                        {
+                          "Ref": "functionrpcArn"
+                        },
+
+                        "/invocations"
+                      ]
+                    ]
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "type": "aws_proxy"
+                }
+              }
+            },
+            "/rpc/{proxy+}": {
+              "x-amazon-apigateway-any-method": {
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                  {
+                    "in": "body",
+                    "name": "RequestSchema",
+                    "required": false,
+                    "schema": {
+                      "$ref": "#/definitions/RequestSchema"
+                    }
+                  }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/ResponseSchema"
+                    }
+                  }
+                },
+
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+
+                        {
+                          "Ref": "functionrpcArn"
+                        },
+
+                        "/invocations"
+                      ]
+                    ]
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "type": "aws_proxy"
+                }
+              }
+            }
+          },
+          "securityDefinitions": {
+            "sigv4": {
+              "type": "apiKey",
+              "name": "Authorization",
+              "in": "header",
+              "x-amazon-apigateway-authtype": "awsSigv4"
+            }
+          },
+          "definitions": {
+            "RequestSchema": {
+              "type": "object",
+              "required": ["request"],
+              "properties": {
+                "request": {
+                  "type": "string"
+                }
+              },
+              "title": "Request Schema"
+            },
+            "ResponseSchema": {
+              "type": "object",
+              "required": ["response"],
+              "properties": {
+                "response": {
+                  "type": "string"
+                }
+              },
+              "title": "Response Schema"
+            }
+          }
+        },
+        "FailOnWarnings": true
+      }
+    },
+
+    "functionrpcPermissionapiRpc": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "functionrpcName"
+        },
+
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "apiRpc"
+              },
+              "/*/*/*"
+            ]
+          ]
+        }
+      }
+    },
+
+    "DeploymentAPIGWapiRpca665fd27": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "Description": "The Development stage deployment of your API.",
+        "StageName": {
+          "Fn::If": [
+            "ShouldNotCreateEnvResources",
+            "Prod",
+            {
+              "Ref": "env"
+            }
+          ]
+        },
+        "RestApiId": {
+          "Ref": "apiRpc"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "RootUrl": {
+      "Description": "Root URL of the API gateway",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {"Ref": "apiRpc"},
+            ".execute-api.",
+            {"Ref": "AWS::Region"},
+            ".amazonaws.com/",
+            {"Fn::If": ["ShouldNotCreateEnvResources", "Prod", {"Ref": "env"}]}
+          ]
+        ]
+      }
+    },
+    "DistributionDomainName": {
+      "Value": {
+        "Fn::GetAtt": ["DomainName", "DistributionDomainName"]
+      }
+    },
+    "DistributionHostedZoneId": {
+      "Value": {
+        "Fn::GetAtt": ["DomainName", "DistributionHostedZoneId"]
+      }
+    },
+    "ApiName": {
+      "Description": "API Friendly name",
+      "Value": "apiRpc"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "Records": [
+    {
+      "eventID": "7a8d10d7345005d3ff43293441020572",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1570983692,
+        "Keys": {
+          "id": {
+            "S": "6f5c2d9c-dbf8-46e8-925b-e2ac6c866a74"
+          }
+        },
+        "OldImage": {
+          "createdAt": {
+            "S": "2019-09-23T03:33:29.569Z"
+          },
+          "thumbnail": {
+            "NULL": true
+          },
+          "__typename": {
+            "S": "Video"
+          },
+          "files": {
+            "L": [
+              {
+                "M": {
+                  "file": {
+                    "M": {
+                      "bucket": {
+                        "S": "trashcat-production"
+                      },
+                      "region": {
+                        "S": "us-east-1"
+                      },
+                      "key": {
+                        "S": "public/item-video-upload/7273294c-0ee0-4f05-b630-7ad6957d1168"
+                      }
+                    }
+                  },
+                  "cloudfrontUrl": {
+                    "NULL": true
+                  },
+                  "mimeType": {
+                    "S": "WEBM"
+                  }
+                }
+              }
+            ]
+          },
+          "id": {
+            "S": "6f5c2d9c-dbf8-46e8-925b-e2ac6c866a74"
+          },
+          "videoMediaConvertJobId": {
+            "NULL": true
+          },
+          "updatedAt": {
+            "S": "2019-09-23T03:33:29.569Z"
+          }
+        },
+        "SequenceNumber": "97669300000000001788766237",
+        "SizeBytes": 345,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:046525304497:table/Video-akkeqcns2fc5hn7ad3uu3euymy-production/stream/2019-09-23T00:28:32.455"
+    }
+  ]
+}

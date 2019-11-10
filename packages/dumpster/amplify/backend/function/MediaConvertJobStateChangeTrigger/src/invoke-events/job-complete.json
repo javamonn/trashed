@@ -1,0 +1,57 @@
+{
+  "version": "0",
+  "id": "21b1f797-8f1d-3c84-9298-d88a2a2f4be2",
+  "detail-type": "MediaConvert Job State Change",
+  "source": "aws.mediaconvert",
+  "account": "046525304497",
+  "time": "2019-10-13T21:17:50Z",
+  "region": "us-east-1",
+  "resources": [
+    "arn:aws:mediaconvert:us-east-1:046525304497:jobs/1571001465088-k4j3rc"
+  ],
+  "detail": {
+    "timestamp": 1571001470452,
+    "accountId": "046525304497",
+    "queue": "arn:aws:mediaconvert:us-east-1:046525304497:queues/Default",
+    "jobId": "1571001465088-k4j3rc",
+    "status": "COMPLETE",
+    "userMetadata": {},
+    "outputGroupDetails": [
+      {
+        "outputDetails": [
+          {
+            "outputFilePaths": [
+              "s3://trashcat-production/public/item-video/eddee048-397d-406e-a1c6-b31e11703171/clip-poster.0000000.jpg"
+            ],
+            "durationInMs": 5000,
+            "videoDetails": {
+              "widthInPx": 640,
+              "heightInPx": 480
+            }
+          },
+          {
+            "outputFilePaths": [
+              "s3://trashcat-production/public/item-video/eddee048-397d-406e-a1c6-b31e11703171/clip-thumbnail.0000000.jpg"
+            ],
+            "durationInMs": 5000,
+            "videoDetails": {
+              "widthInPx": 320,
+              "heightInPx": 320
+            }
+          },
+          {
+            "outputFilePaths": [
+              "s3://trashcat-production/public/item-video/eddee048-397d-406e-a1c6-b31e11703171/full-video.mp4"
+            ],
+            "durationInMs": 2133,
+            "videoDetails": {
+              "widthInPx": 640,
+              "heightInPx": 480
+            }
+          }
+        ],
+        "type": "FILE_GROUP"
+      }
+    ]
+  }
+}

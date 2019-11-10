@@ -1,0 +1,28 @@
+{
+  "name": "trashcat",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "package-specs": [
+    {
+      "module": "es6-global",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "bs-dependencies": [
+    "reason-react",
+    "re-classnames",
+    "bs-webapi",
+    "bs-aws-amplify",
+    "reason-apollo",
+    "reason-apollo-hooks"
+  ],
+  "ppx-flags": ["graphql_ppx/ppx"],
+  "refmt": 3
+}

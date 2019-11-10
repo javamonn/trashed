@@ -1,0 +1,20 @@
+{
+    "permissions": {
+        "auth": {
+            "trashed452c5745": [
+                "create",
+                "read",
+                "update",
+                "delete"
+            ]
+        },
+        "api": {
+            "trashed": [
+                "create",
+                "read",
+                "update",
+                "delete"
+            ]
+        }
+    }
+}

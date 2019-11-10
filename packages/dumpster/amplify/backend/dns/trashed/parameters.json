@@ -1,0 +1,5 @@
+{
+  "storageTrashcatCdnName": "trashcat-cdn",
+  "rpcTrashcatName": "trashcat-rpc",
+  "route53HostedZoneId": "Z1HJH8Q98D00QO"
+}
