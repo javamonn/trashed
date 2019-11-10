@@ -1,8 +1,8 @@
 open Lib.Styles;
 
 let renderLink = (~text) =>
-  <div className={cn(["flex", "flex-row", "my-2"])}>
-    <div className={cn(["border-white", "border-4", "w-24", "h-24"])} />
+  <div className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+    <div className={cn(["border-white", "border-4", "w-8", "h-8", "mr-4"])} />
     <div
       className={cn([
         "text-white",
@@ -11,6 +11,7 @@ let renderLink = (~text) =>
         "underline",
         "uppercase",
         "text-4xl",
+        "leading-none",
       ])}>
       {React.string(text)}
     </div>
