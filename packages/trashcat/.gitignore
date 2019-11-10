@@ -3,7 +3,7 @@ src/**/*.js
 .merlin
 .bsb.lock
 
-dist/build
+dist/js
 dist/index\.html
 
 #amplify

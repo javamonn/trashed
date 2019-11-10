@@ -23,5 +23,3 @@ awsAmplifyConfig
 ->Belt.Option.map(c =>
     c->AwsAmplify.Config.endpointSet("https://" ++ Env.rpcOrigin)
   );
-
-Js.log2("config", awsAmplifyConfig);

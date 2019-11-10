@@ -19,10 +19,17 @@ module CloudFrontResolver = {
     switch (authenticationState^) {
     | Unauthenticated =>
       let p =
-        AwsAmplify.Api.post(
-          ~apiName="apiRpc",
-          ~path="/rpc/authentication/cloudfront-cookie",
-          (),
+        AwsAmplify.Api.(
+          inst
+          |> post(
+               ~apiName="apiRpc",
+               ~path="/rpc/authentication/cloudfront-cookie",
+               ~options={
+                 "withCredentials": true,
+                 "body": None,
+                 "headers": None,
+               },
+             )
         )
         |> Js.Promise.then_(_response => Js.Promise.resolve());
       authenticationState := AuthenticationInProgress(p);

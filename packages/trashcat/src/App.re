@@ -1,4 +1,3 @@
-open Externals;
 open Lib;
 
 %raw

@@ -8,6 +8,16 @@
           "category": "storage",
           "resourceName": "trashcat",
           "attributes": ["CloudfrontDistributionDomainName"]
+        },
+        {
+          "category": "hosting",
+          "resourceName": "S3AndCloudFront",
+          "attributes": ["CloudFrontDomainName"]
+        },
+        {
+          "category": "api",
+          "resourceName": "apiRpc",
+          "attributes": ["DistributionDomainName", "DistributionHostedZoneId"]
         }
       ]
     }

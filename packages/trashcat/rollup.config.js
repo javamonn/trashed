@@ -57,6 +57,11 @@ const REQUIRE_ALIAS = [
     global_: 'AWS',
   },
   {
+    from: 'aws-sdk/browser',
+    to: 'aws-sdk/dist/aws-sdk.js',
+    global_: 'AWS',
+  },
+  {
     from: 'apollo-client',
     to: 'apollo-client',
     default_: true,
@@ -129,6 +134,7 @@ const config = {
       dedupe: [
         'apollo-cache-inmemory',
         'apollo-client',
+        'aws-sdk',
         '@aws-amplify/api',
         '@aws-amplify/storage',
         '@aws-amplfiy/auth',
@@ -168,6 +174,7 @@ const config = {
           'any',
         ],
         'js-cookie': ['get', 'set', 'remove'],
+        uuid: ['v4'],
         '@aws-amplify/auth': ['currentSession'],
         '@aws-amplify/core': ['configure'],
       },

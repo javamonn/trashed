@@ -4,15 +4,12 @@ const fs = require('fs');
 const path = require('path');
 
 const DIST_DIR = path.resolve(__dirname, '../dist');
-const JS_BUILD_DIR = path.resolve(DIST_DIR, './build');
+const JS_BUILD_DIR = path.resolve(DIST_DIR, './js');
 const SRC_DIR = path.resolve(__dirname, '../src');
 
 // Bundle entry should start with this prefix.
-const JS_BUNDLE_NAME = 'Index';
-const JS_BUNDLE_DIR =
-  process.env.NODE_ENV === 'production'
-    ? JS_BUILD_DIR
-    : path.join(JS_BUILD_DIR, 'trashcat/src');
+const JS_BUNDLE_NAME = 'bundle';
+const JS_BUNDLE_DIR = JS_BUILD_DIR;
 const HTML_TEMPLATE_PATH = path.join(SRC_DIR, 'index.html');
 
 const REPLACE = {
