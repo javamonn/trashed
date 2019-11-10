@@ -56,6 +56,8 @@ module Auth = {
 
   [@bs.module "@aws-amplify/auth"] external inst: t = "default";
 
+  [@bs.send] external configure: (t, Config.t) => unit = "configure";
+
   [@bs.send]
   external currentSession: t => Js.Promise.t(CognitoUserSession.t) =
     "currentSession";
@@ -69,6 +71,7 @@ module Storage = {
   type t;
 
   [@bs.module "@aws-amplify/storage"] external inst: t = "default";
+  [@bs.send] external configure: (t, Config.t) => unit = "configure";
 
   [@bs.send] external get: (t, string) => Js.Promise.t(string) = "get";
 };
@@ -77,6 +80,7 @@ module Api = {
   type t;
 
   [@bs.module "@aws-amplify/api"] external inst: t = "default";
+  [@bs.send] external configure: (t, Config.t) => unit = "configure";
 
   /** graphql **/
 
@@ -108,14 +112,15 @@ module Api = {
       string,
       option({
         .
-        "body": Js.Json.t,
-        "headers": 'b,
+        "body": option(Js.Json.t),
+        "headers": option('b),
+        "withCredentials": bool,
       })
     ) =>
     Js.Promise.t(response('a, 'b)) =
     "post";
 
-  let post = (~apiName, ~path, ~options=?, ()) =>
+  let post = (~apiName, ~path, ~options=?, inst) =>
     post(inst, apiName, path, options);
 };
 
