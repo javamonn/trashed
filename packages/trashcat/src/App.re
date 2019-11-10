@@ -10,6 +10,7 @@ let make = () => {
   let url = ReasonReactRouter.useUrl();
   switch (url.path) {
   | [] => <Screen.Landing />
+  | ["coming-soon"] => <Screen.ComingSoon />
   | ["item", "new"] =>
     <Providers.Apollo> <Screen.NewItem /> </Providers.Apollo>
   | ["item"] => <Providers.Apollo> <Screen.ListItems /> </Providers.Apollo>

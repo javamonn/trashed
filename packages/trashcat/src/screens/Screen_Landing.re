@@ -1,7 +1,7 @@
 open Lib.Styles;
 
-let renderLink = (~text) =>
-  <div className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+let renderLink = (~text, ~href) =>
+  <Link href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
     <div className={cn(["border-white", "border-4", "w-8", "h-8", "mr-4"])} />
     <div
       className={cn([
@@ -15,7 +15,7 @@ let renderLink = (~text) =>
       ])}>
       {React.string(text)}
     </div>
-  </div>;
+  </Link>;
 
 [@react.component]
 let make = () => {
@@ -34,7 +34,7 @@ let make = () => {
         ])}>
         <span className={cn(["text-xl", "font-bold", "mb-6"])}>
           {React.string(
-             "Trashed is a community that helps you find and replace trashed objects:",
+             "trashed is a community that helps you find and reclaim trashed objects:",
            )}
         </span>
         <span className={cn(["text-xl", "font-bold"])}>
@@ -51,9 +51,9 @@ let make = () => {
           "items-center",
         ])}>
         <div>
-          {renderLink(~text="App")}
-          {renderLink(~text="About")}
-          {renderLink(~text="Blog")}
+          {renderLink(~text="App", ~href="/coming-soon")}
+          {renderLink(~text="About", ~href="/coming-soon")}
+          {renderLink(~text="Blog", ~href="/coming-soon")}
         </div>
       </div>
     </div>
