@@ -14,8 +14,6 @@ let make = () => {
   | ["item", "new"] =>
     <Providers.Apollo> <Screen.NewItem /> </Providers.Apollo>
   | ["item"] => <Providers.Apollo> <Screen.ListItems /> </Providers.Apollo>
-  | ["item", itemId] =>
-    <Providers.Apollo> <Screen.Item itemId /> </Providers.Apollo>
   | _ => ReasonReact.string("Nothing here!")
   };
 };

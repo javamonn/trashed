@@ -34,7 +34,7 @@ type state =
   | Data(VideoSurface.src);
 
 [@react.component]
-let make = (~itemId) => {
+let make = (~itemId, ~style=?) => {
   let (query, _fullQuery) =
     GetItemQuery.use(
       ~variables=GetItemQueryConfig.make(~itemId, ())##variables,
@@ -75,6 +75,7 @@ let make = (~itemId) => {
   switch (state) {
   | Loading =>
     <div
+      ?style
       className={cn([
         "w-screen",
         "h-screen",
@@ -86,7 +87,7 @@ let make = (~itemId) => {
       <Progress />
     </div>
   | Data(src) =>
-    <div className={cn(["w-screen", "h-screen", "relative"])}>
+    <div ?style className={cn(["w-screen", "h-screen", "relative"])}>
       <VideoSurface src autoPlay=true />
     </div>
   | Error => React.string("Nothing here!")
