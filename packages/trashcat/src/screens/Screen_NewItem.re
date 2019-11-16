@@ -81,7 +81,7 @@ let make = () => {
                     "key":
                       "public/item-video-upload/" ++ Externals.UUID.makeV4(),
                   },
-                  "userUpload": true
+                  "userUpload": true,
                 },
               |],
               "poster": None,

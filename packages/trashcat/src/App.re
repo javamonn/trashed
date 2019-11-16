@@ -1,4 +1,5 @@
 open Lib;
+open Lib.Styles;
 
 %raw
 "import './app.pcss'";
@@ -12,15 +13,31 @@ let make = () => {
   switch (url.path) {
   | [] => <Screen.Landing />
   | ["coming-soon"] => <Screen.ComingSoon />
-  | ["item", "new"] =>
-    <Providers.Apollo> <Screen.NewItem /> </Providers.Apollo>
-  | ["item"] =>
+  | ["item", ...rest] =>
     let params = Webapi.Url.URLSearchParams.make(url.search);
+
+    let nextToken = Webapi.Url.URLSearchParams.get("nextToken", params);
+    let itemId = Webapi.Url.URLSearchParams.get("itemId", params);
+    let initialIdx =
+      switch (rest) {
+      | ["new"] => 0
+      | ["search"] => 2
+      | _ => 1
+      };
+
     <Providers.Apollo>
-      <Screen.ListItems
-        itemId=?{Webapi.Url.URLSearchParams.get("itemId", params)}
-        nextToken=?{Webapi.Url.URLSearchParams.get("nextToken", params)}
-      />
+      <ScrollSnapList.Container direction=ScrollSnapList.Horizontal initialIdx>
+        <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
+          <Screen.NewItem />
+        </ScrollSnapList.Item>
+        <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
+          <Screen.ListItems ?nextToken ?itemId />
+        </ScrollSnapList.Item>
+        <ScrollSnapList.Item
+          direction=ScrollSnapList.Horizontal
+          className={cn(["bg-brandBlue"])}
+        />
+      </ScrollSnapList.Container>
     </Providers.Apollo>;
   | _ => ReasonReact.string("Nothing here!")
   };

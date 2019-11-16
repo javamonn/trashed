@@ -1,45 +1,17 @@
 open Lib.Styles;
-open Externals;
 
 let renderItem = (~itemId, ~isActive) =>
-  <Container.Item
-    key=itemId
-    itemId
-    autoPlay={isActive}
-    style={
-      style()
-      ->unsafeStyle([
-          ("scrollSnapStop", "always"),
-          ("scrollSnapAlign", "start"),
-        ])
-    }
-  />;
+  <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Vertical>
+    <Container.Item key=itemId itemId autoPlay=isActive />
+  </ScrollSnapList.Item>;
 
 let renderPlaceholder = () =>
-  <div
-    style={
-      style()
-      ->unsafeStyle([
-          ("scrollSnapStop", "always"),
-          ("scrollSnapAlign", "start"),
-        ])
-    }
-    className={cn(["w-screen", "h-screen"])}
-  />;
+  <ScrollSnapList.Item direction=ScrollSnapList.Vertical />;
 
 let renderContainer = (~onScroll, ~children) =>
-  <div
-    onScroll
-    className={cn(["w-screen", "h-screen", "overflow-y-scroll"])}
-    style={
-      style()
-      ->unsafeStyle([
-          ("scrollSnapType", "y mandatory"),
-          ("scrollSnapStop", "always"),
-        ])
-    }>
+  <ScrollSnapList.Container direction=ScrollSnapList.Vertical onScroll>
     children
-  </div>;
+  </ScrollSnapList.Container>;
 
 let renderLoading = () =>
   <div
