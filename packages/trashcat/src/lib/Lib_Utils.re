@@ -20,3 +20,4 @@ let wrapBs = (a, f) => f(. a);
 
 let apply = (f, a) => f(a);
 
+let identity = x => x;

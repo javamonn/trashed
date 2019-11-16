@@ -1,3 +1,5 @@
+open Lib.Utils;
+
 module ListItemsQueryConfig = [%graphql
   {|
     query ListItems($limit: Int!, $nextToken: String)  {
@@ -40,11 +42,12 @@ let make =
       ~renderError,
       ~renderLoading,
       ~renderContainer,
+      ~renderPlaceholder,
       ~onChange,
       ~itemId=?,
       ~nextToken=?,
     ) => {
-  let (query, fullQuery) =
+  let (query, _fullQuery) =
     ListItemsQuery.use(
       ~variables=
         ListItemsQueryConfig.make(~limit=30, ~nextToken?, ())##variables,
@@ -54,7 +57,7 @@ let make =
   let _ =
     React.useEffect1(
       () => {
-        let (items, nextToken) =
+        let (items, newNextToken) =
           switch (query) {
           | Data(data) =>
             let items =
@@ -68,19 +71,18 @@ let make =
           };
         let _ =
           switch (query) {
-          | Data(data) =>
-            switch (itemId) {
-            | Some(itemId) => onChange(~nextToken, ~itemId=Some(itemId), ())
-            | None =>
-              onChange(
-                ~nextToken,
-                ~itemId=
-                  items
-                  ->Belt.Option.flatMap(items => items->Belt.Array.get(0))
-                  ->Belt.Option.map(item => item##id),
-                (),
-              )
-            }
+          | Data(_) =>
+            let newItemId =
+              switch (itemId) {
+              | Some(itemId) => Some(itemId)
+              | None =>
+                items
+                ->Belt.Option.flatMap(items => items->Belt.Array.get(0))
+                ->Belt.Option.map(item => item##id)
+              };
+            if (newItemId !== itemId || newNextToken !== nextToken) {
+              onChange(~nextToken=newNextToken, ~itemId=newItemId, ());
+            };
           | _ => ()
           };
         None;
@@ -101,12 +103,13 @@ let make =
         ->Belt.Array.getIndexBy(i => itemId === i##id)
         ->Belt.Option.getExn;
       let itemWindow =
-        [|
-          items->Belt.Array.get(itemIdx - 1),
-          items->Belt.Array.get(itemIdx),
-          items->Belt.Array.get(itemIdx + 1),
-        |]
-        ->Belt.Array.keepMap(i => i);
+        Belt.Array.makeBy(itemIdx + 2, idx =>
+          if (idx <= itemIdx + 1 && idx >= itemIdx - 1) {
+            items->Belt.Array.get(idx);
+          } else {
+            None;
+          }
+        );
       let handleScroll = ev => {
         let scrollTop = ReactEvent.UI.target(ev)##scrollTop;
         let windowHeight = Webapi.Dom.(window->Window.innerHeight);
@@ -118,13 +121,13 @@ let make =
         let _ =
           switch (
             activeIdx->Belt.Option.flatMap(idx =>
-              idx |> Belt.Array.get(itemWindow)
+              Belt.Array.get(itemWindow, idx)->Belt.Option.flatMap(identity)
             )
           ) {
-          | Some(item) =>
+          | Some(item) when item##id !== itemId =>
             let _ = onChange(~nextToken, ~itemId=Some(item##id), ());
             ();
-          | None => ()
+          | _ => ()
           };
         ();
       };
@@ -132,16 +135,20 @@ let make =
         ~onScroll=handleScroll,
         ~children=
           itemWindow
-          ->Belt.Array.map(i =>
-              renderItem(~itemId=i##id, ~isActive=i##id === itemId)
+          ->Belt.Array.map(item =>
+              switch (item) {
+              | Some(item) =>
+                renderItem(~itemId=item##id, ~isActive=item##id === itemId)
+              | None => renderPlaceholder()
+              }
             )
           ->React.array,
       );
-    | None => renderItem(~itemId)
+    | None => renderItem(~itemId, ~isActive=true)
     }
-  | (Some(itemId), _) => renderItem(~itemId)
-  | (None, Loading) => renderLoading()
-  | (None, Error(_))
-  | (None, Loading) => renderError()
+  | (Some(itemId), _) => renderItem(~itemId, ~isActive=true)
+  | (None, Loading)
+  | (None, Data(_)) => renderLoading()
+  | (None, Error(_)) => renderError()
   };
 };

@@ -8,6 +8,22 @@ external unsafeAsVideoElement: Dom.element => t = "%identity";
 
 [@bs.send] external play: t => unit = "play";
 
+[@bs.send] external pause: t => unit = "pause";
+
+[@bs.get]
+external readyState:
+  t =>
+  [@bs.int] [
+    | [@bs.as 0] `HaveNothing
+    | [@bs.as 1] `HaveMetadata
+    | [@bs.as 2] `HaveCurrentData
+    | [@bs.as 3] `HaveFutureData
+    | [@bs.as 4] `HaveEnoughData
+  ] =
+  "readyState";
+
+[@bs.get] external paused: t => bool = "paused";
+
 [@bs.set]
 external setSrcObject: (t, Js.Undefined.t(Externals_MediaStream.t)) => unit =
   "srcObject";
@@ -32,3 +48,4 @@ include Webapi.Dom.EventTarget.Impl({
 });
 
 let removeAttribute = doto1(flip2(removeAttribute));
+let hasAttribute = flip2(hasAttribute);
