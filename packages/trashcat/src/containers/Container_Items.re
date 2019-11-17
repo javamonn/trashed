@@ -133,6 +133,7 @@ let make =
       };
       renderContainer(
         ~onScroll=handleScroll,
+        ~itemIdx,
         ~children=
           itemWindow
           ->Belt.Array.map(item =>

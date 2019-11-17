@@ -1,5 +1,4 @@
 open Lib;
-open Lib.Styles;
 
 %raw
 "import './app.pcss'";
@@ -14,31 +13,19 @@ let make = () => {
   | [] => <Screen.Landing />
   | ["coming-soon"] => <Screen.ComingSoon />
   | ["item", ...rest] =>
-    let params = Webapi.Url.URLSearchParams.make(url.search);
-
-    let nextToken = Webapi.Url.URLSearchParams.get("nextToken", params);
-    let itemId = Webapi.Url.URLSearchParams.get("itemId", params);
-    let initialIdx =
+    let tab =
       switch (rest) {
-      | ["new"] => 0
-      | ["search"] => 2
-      | _ => 1
+      | ["new"] => Some(Screen.Item.Tab.New)
+      | ["feed"] => Some(Screen.Item.Tab.Feed)
+      | ["search"] => Some(Screen.Item.Tab.Search)
+      | _ => None
       };
 
-    <Providers.Apollo>
-      <ScrollSnapList.Container direction=ScrollSnapList.Horizontal initialIdx>
-        <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
-          <Screen.NewItem />
-        </ScrollSnapList.Item>
-        <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
-          <Screen.ListItems ?nextToken ?itemId />
-        </ScrollSnapList.Item>
-        <ScrollSnapList.Item
-          direction=ScrollSnapList.Horizontal
-          className={cn(["bg-brandBlue"])}
-        />
-      </ScrollSnapList.Container>
-    </Providers.Apollo>;
+    switch (tab) {
+    | Some(tab) =>
+      <Providers.Apollo> <Screen.Item tab url /> </Providers.Apollo>
+    | None => <Redirect to_="/item/feed" />
+    };
   | _ => ReasonReact.string("Nothing here!")
   };
 };

@@ -8,8 +8,9 @@ let renderItem = (~itemId, ~isActive) =>
 let renderPlaceholder = () =>
   <ScrollSnapList.Item direction=ScrollSnapList.Vertical />;
 
-let renderContainer = (~onScroll, ~children) =>
-  <ScrollSnapList.Container direction=ScrollSnapList.Vertical onScroll>
+let renderContainer = (~onScroll, ~itemIdx, ~children) =>
+  <ScrollSnapList.Container
+    direction=ScrollSnapList.Vertical onScroll initialIdx=itemIdx>
     children
   </ScrollSnapList.Container>;
 
@@ -28,7 +29,7 @@ let renderLoading = () =>
 let renderError = () => <Error />;
 
 [@react.component]
-let make = (~itemId=?, ~nextToken=?) => {
+let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch) => {
   <Container.Items
     renderItem
     renderPlaceholder
@@ -36,14 +37,14 @@ let make = (~itemId=?, ~nextToken=?) => {
     renderLoading
     renderError
     onChange={(~nextToken, ~itemId, ()) => {
-      let newSearch =
+      let _ =
         [|("nextToken", nextToken), ("itemId", itemId)|]
         ->Belt.Array.keepMap(((key, value)) =>
             value->Belt.Option.map(value => (key, value))
           )
         ->Webapi.Url.URLSearchParams.makeWithArray
-        ->Webapi.Url.URLSearchParams.toString;
-      let _ = ReasonReactRouter.replace("/item?" ++ newSearch);
+        ->Webapi.Url.URLSearchParams.toString
+        ->onReplaceUrlSearch;
       ();
     }}
     ?nextToken
