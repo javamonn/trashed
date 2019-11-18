@@ -386,49 +386,15 @@ let make = (~mimeType, ~onFile) => {
   PhaseState.(
     switch (phaseState) {
     | PhaseGetUserMedia =>
-      <div
-        className={cn([
-          "w-screen",
-          "h-screen",
-          "flex",
-          "justify-center",
-          "align-center",
-          "flex-col",
-        ])}>
-        <PermissionPrompt
-          renderPrompt={(~onClick) =>
-            <PermissionPrompt.Basic
-              text="Trashed needs to access to your camera to take videos of things."
-              onClick
-            />
-          }
-          onPrompt=handleGetUserMedia
-          onPermissionGranted=handleGetUserMediaGranted
-          permission=`Camera
-        />
-      </div>
+      <MediaRecorder_PhaseGetUserMedia
+        onGetUserMedia=handleGetUserMedia
+        onGetUserMediaGranted=handleGetUserMediaGranted
+      />
     | PhaseGetGeolocation(_) =>
-      <div
-        className={cn([
-          "w-screen",
-          "h-screen",
-          "flex",
-          "justify-center",
-          "align-center",
-          "flex-col",
-        ])}>
-        <PermissionPrompt
-          renderPrompt={(~onClick) =>
-            <PermissionPrompt.Basic
-              text="Trashed needs to access your location to know where things (and you) are."
-              onClick
-            />
-          }
-          onPrompt=handleGetGeolocation
-          onPermissionGranted=handleGetGeolocationGranted
-          permission=`Geolocation
-        />
-      </div>
+      <MediaRecorder_PhaseGetGeolocation
+        onGetGeolocation=handleGetGeolocation
+        onGetGeolocationGranted=handleGetGeolocationGranted
+      />
     | _ =>
       let controls =
         switch (phaseState) {

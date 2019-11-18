@@ -49,7 +49,7 @@ module CreateItemMutation =
   ReasonApolloHooks.Mutation.Make(CreateItemMutationConfig);
 
 [@react.component]
-let make = () => {
+let make = (~isActive) => {
   let (createItemVideoMutation, _s, _f) = CreateItemVideoMutation.use();
   let (createItemMutation, _s, _f) = CreateItemMutation.use();
 

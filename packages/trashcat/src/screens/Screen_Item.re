@@ -26,6 +26,8 @@ module Tab = {
     | "feed" => Some(Feed)
     | "search" => Some(Search)
     | _ => None;
+
+  let equal = (t1, t2) => pathOf(t1) === pathOf(t2);
 };
 
 [@react.component]
@@ -80,18 +82,18 @@ let make = (~tab, ~url) => {
     initialIdx={Tab.indexOf(tab)}
     onScroll=handleScroll>
     <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
-      <Screen_NewItem />
+      <Screen_NewItem isActive={Tab.equal(tab, New)} />
     </ScrollSnapList.Item>
     <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
       <Screen_ListItems
         ?nextToken
         ?itemId
         onReplaceUrlSearch=handleReplaceUrlSearch
+        isActive={Tab.equal(tab, Feed)}
       />
     </ScrollSnapList.Item>
-    <ScrollSnapList.Item
-      direction=ScrollSnapList.Horizontal
-      className={cn(["bg-brandBlue"])}
-    />
+    <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
+      <Screen_ComingSoon />
+    </ScrollSnapList.Item>
   </ScrollSnapList.Container>;
 };

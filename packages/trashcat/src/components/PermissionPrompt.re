@@ -12,8 +12,19 @@ type phase =
 type action =
   | SetPhase(phase);
 
+let defaultRenderPendingSystemPrompt = () => <Progress />;
+let defaultRenderUnknownPermissionStatus = () => <Progress />;
+
 [@react.component]
-let make = (~onPrompt, ~renderPrompt, ~onPermissionGranted, ~permission) => {
+let make =
+    (
+      ~onPrompt,
+      ~renderPrompt,
+      ~renderPendingSystemPrompt=defaultRenderPendingSystemPrompt,
+      ~renderUnknownPermissionStatus=defaultRenderUnknownPermissionStatus,
+      ~onPermissionGranted,
+      ~permission,
+    ) => {
   let (phase, dispatch) =
     React.useReducer(
       (_phase, action) =>
@@ -74,16 +85,13 @@ let make = (~onPrompt, ~renderPrompt, ~onPermissionGranted, ~permission) => {
     ();
   };
 
-  <div className={cn(["flex", "justify-center", "align-center"])}>
-    {switch (phase) {
-     | UnknownPermissionStatus => <Progress />
-     | PendingInternalPrompt => renderPrompt(~onClick=handleClick)
-     | PendingSystemPrompt => <Progress />
-     | PermissionGranted => <div> {React.string("Permission granted.")} </div>
-     | PermissionRejected =>
-       <div> {React.string("Permission rejected.")} </div>
-     }}
-  </div>;
+  switch (phase) {
+  | UnknownPermissionStatus => renderUnknownPermissionStatus()
+  | PendingInternalPrompt => renderPrompt(~onClick=handleClick)
+  | PendingSystemPrompt => renderPendingSystemPrompt()
+  | PermissionGranted => <div> {React.string("Permission granted.")} </div>
+  | PermissionRejected => <div> {React.string("Permission rejected.")} </div>
+  };
 };
 
 module Basic = {
