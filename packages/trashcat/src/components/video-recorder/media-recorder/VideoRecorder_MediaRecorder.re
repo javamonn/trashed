@@ -395,17 +395,17 @@ let make = (~mimeType, ~onFile) => {
         onGetGeolocation=handleGetGeolocation
         onGetGeolocationGranted=handleGetGeolocationGranted
       />
-    | _ =>
-      let controls =
-        switch (phaseState) {
-        | PhaseState.PhaseReview(_) => true
-        | _ => false
-        };
+    | PhaseInitialized(initialized) =>
+      <MediaRecorder_PhaseRecording
+        stream={stream->PhaseState.Initialized.streamGet}
+        mimeType
+      />
+    | PhaseReview =>
       <div
         className={cn(["w-screen", "h-screen", "relative"])}
         onTouchEnd=handleTouchEnd>
-        <VideoSurface ?src autoPlay=true controls />
-      </div>;
+        <VideoSurface ?src autoPlay=true controls=true />
+      </div>
     }
   );
 };
