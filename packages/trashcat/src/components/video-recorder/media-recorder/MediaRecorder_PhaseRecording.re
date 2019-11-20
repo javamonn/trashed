@@ -8,11 +8,19 @@ module State = {
   type t =
     | NotStarted
     | InProgress(array(File.t))
-    | Complete
+    | Complete(File.t)
     | Error;
 
+  let toString =
+    fun
+    | NotStarted => "not started"
+    | InProgress(_) => "in progress"
+    | Complete(_) => "complete"
+    | Error => "error";
+
   type action =
-    | SetState(t);
+    | SetState(t)
+    | RecorderEvent((MediaRecorder.Event.t, Dom.event));
 };
 
 module TimerProgress = {
@@ -34,22 +42,51 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
       )
     );
 
+  let (time, startTimer, stopTimer) = Hook.Timer.use(~interval=500);
+
   let (state, dispatch) =
     React.useReducer(
       (state, action) =>
-        switch (action) {
-        | State.SetState(newState) => newState
+        switch (action, state) {
+        | (State.SetState(newState), _) => newState
+        | (RecorderEvent((MediaRecorder.Event.Start, ev)), State.NotStarted) =>
+          State.InProgress([||])
+        | (RecorderEvent((MediaRecorder.Event.Start, ev)), _) => State.Error
+        | (
+            RecorderEvent((MediaRecorder.Event.DataAvailable, ev)),
+            State.InProgress(data),
+          ) =>
+          let eventData =
+            ev
+            ->MediaRecorder.Event.toDataAvailable
+            ->MediaRecorder.Event.dataGet;
+          let _ = Js.Array.push(eventData, data);
+          state;
+        | (
+            RecorderEvent((MediaRecorder.Event.Stop, ev)),
+            State.InProgress(data),
+          ) =>
+          if (time->TimerProgress.isComplete) {
+            let blob =
+              File.makeBlob(
+                data,
+                File.blobOptions(~type_=mimeType->VideoSurface.mimeTypeToJs),
+              );
+            Complete(blob);
+          } else {
+            NotStarted;
+          }
+        | (RecorderEvent((MediaRecorder.Event.Error, _)), ev) => Error
+        | _ => Error
         },
-      State.NotStarted,
+      NotStarted,
     );
-
-  let (time, startTimer, stopTimer) = Hook.Timer.use(~interval=500);
   let _ =
     React.useEffect1(
       () => {
         let _ =
           switch (state, TimerProgress.isComplete(time)) {
-          | (InProgress, true) =>
+          | (InProgress(_), true) =>
             let _ = recorder->MediaRecorder.stop;
             let _ = stopTimer();
             ();
@@ -63,49 +100,14 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
       [|time|],
     );
 
-  let handleRecorderEvent = (type_, ev) =>
-    switch (type_, state) {
-    | (MediaRecorder.Event.Start, State.NotStarted) =>
-      let _ = dispatch(State.(SetState(InProgress([||]))));
-      ();
-    | (MediaRecorder.Event.Start, _) =>
-      let _ = onError(`InvalidState);
-      let _ = dispatch(State.(SetState(Error)));
-      ();
-    | (MediaRecorder.Event.DataAvailable, State.InProgress(data)) =>
-      let eventData =
-        ev->MediaRecorder.Event.toDataAvailable->MediaRecorder.Event.dataGet;
-      let _ = Js.Array.push(eventData, data);
-      ();
-    | (MediaRecorder.Event.Stop, State.InProgress(data)) =>
-      if (inProgress->State.isRecordingComplete) {
-        let blob =
-          File.makeBlob(
-            data,
-            File.blobOptions(~type_=mimeType->VideoSurface.mimeTypeToJs),
-          );
-        let _ = onComplete(~blob);
-        let _ = dispatch(State.(SetState(Complete)));
-        ();
-      } else {
-        let _ = dispatch(State.(SetState(NotStarted)));
-        ();
-      }
-    | (MediaRecorder.Event.Error, _) =>
-      let _ = onError(`MediaRecorderError);
-      let _ = dispatch(State.(SetState(Error)));
-      ();
-    | _ =>
-      let _ = onError(`InvalidState);
-      let _ = dispatch(State.(SetState(Error)));
-      ();
-    };
+  Js.log2("state", state->State.toString);
 
   let handleTouchStart = _ev => {
     let browser = Lib.Constants.browser->Bowser.getBrowserName;
     switch (state, browser) {
     | (NotStarted, Some(`Safari)) =>
       let _ = recorder->MediaRecorder.start;
+      let _ = startTimer();
       let _ =
         MediaRecorder.dispatchEvent(
           Webapi.Dom.Event.make("start"),
@@ -114,6 +116,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
       ();
     | (NotStarted, _) =>
       let _ = recorder->MediaRecorder.start;
+      let _ = startTimer();
       ();
     | _ => ()
     };
@@ -123,6 +126,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     switch (state) {
     | InProgress(_) =>
       let _ = recorder->MediaRecorder.stop;
+      let _ = stopTimer();
       ();
     };
     ();
@@ -130,6 +134,10 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
 
   let _ =
     React.useEffect0(() => {
+      let handleRecorderEvent = (type_, ev) => {
+        let _ = dispatch(State.RecorderEvent((type_, ev)));
+        ();
+      };
       let eventListeners =
         MediaRecorder.Event.(
           [|
@@ -150,7 +158,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
           );
         let _ =
           switch (state) {
-          | InProgress => recorder->MediaRecorder.stop
+          | InProgress(_) => recorder->MediaRecorder.stop
           | _ => ()
           };
         ();
@@ -163,7 +171,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     onTouchStart=handleTouchStart
     onTouchEnd=handleTouchEnd>
     <div className={cn(["absolute", "inset-x-0", "top-0", "h-32", "p-8"])}>
-      <Progress value={TimerProgress.percent(time)} />
+      <Progress value={time->TimerProgress.percent->string_of_int} />
     </div>
     <VideoSurface src={stream->VideoSurface.srcObject} autoPlay=true />
   </div>;
