@@ -43,34 +43,9 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
                 switch (src) {
                 | Some(SrcObject(srcObject)) =>
                   let _ =
-                    videoElem
-                    ->setSrcObject(srcObject->Js.Undefined.return)
-                    ->setSrc(Js.undefined)
-                    ->removeAttribute("src");
+                    videoElem->setSrcObject(srcObject->Js.Undefined.return);
                   ();
-                | Some(SrcUrl(src)) =>
-                  let _ =
-                    videoElem
-                    ->setSrc(src->Js.Undefined.return)
-                    ->setSrcObject(Js.undefined)
-                    ->removeAttribute("srcObject");
-                  ();
-                | _ =>
-                  if (videoElem->hasAttribute("src")) {
-                    let _ =
-                      videoElem
-                      ->setSrc(Js.undefined)
-                      ->removeAttribute("src");
-                    ();
-                  };
-                  if (videoElem->hasAttribute("srcObject")) {
-                    let _ =
-                      videoElem
-                      ->setSrcObject(Js.undefined)
-                      ->removeAttribute("srcObject");
-                    ();
-                  };
-                  ();
+                | _ => ()
                 }
               );
             });
@@ -141,15 +116,25 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
     | _ => React.null
     };
 
-  <video
-    autoPlay
-    controls
-    loop={!controls}
-    preload="auto"
-    onError=handleError
-    onLoadedMetadata=handleLoadedMetadata
-    className={cn(["w-full", "h-full", "object-cover"])}
-    ref={videoRef->ReactDOMRe.Ref.domRef}>
-    children
-  </video>;
+  ReactDOMRe.createElementVariadic(
+    "video",
+    ~props=
+      ReactDOMRe.objToDOMProps({
+        "autoPlay": autoPlay,
+        "controls": controls,
+        "loop": !controls,
+        "preload": "auto",
+        "onError": handleError,
+        "onLoadedMetadata": handleLoadedMetadata,
+        "className": cn(["w-full", "h-full", "object-cover"]),
+        "ref": videoRef->ReactDOMRe.Ref.domRef,
+        "muted": true,
+        "src":
+          switch (src) {
+          | Some(SrcUrl(url)) => Some(url)
+          | _ => None
+          },
+      }),
+    [|children|],
+  );
 };

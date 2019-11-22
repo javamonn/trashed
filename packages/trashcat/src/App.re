@@ -9,6 +9,28 @@ let _ = AwsAmplify.(inst->configure(Constants.awsAmplifyConfig));
 let make = () => {
   let url = ReasonReactRouter.useUrl();
 
+  let _ =
+    React.useEffect0(() => {
+      let disableContextMenu = ev => {
+        let _ = Webapi.Dom.Event.preventDefault(ev);
+        ();
+      };
+      let _ =
+        Webapi.Dom.Document.addEventListener(
+          "contextmenu",
+          disableContextMenu,
+          Webapi.Dom.document,
+        );
+      Some(
+        () =>
+          Webapi.Dom.Document.removeEventListener(
+            "contextmenu",
+            disableContextMenu,
+            Webapi.Dom.document,
+          ),
+      );
+    });
+
   switch (url.path) {
   | [] => <Screen.Landing />
   | ["coming-soon"] => <Screen.ComingSoon />

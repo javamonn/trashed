@@ -9,14 +9,14 @@ module State = {
     | NotStarted
     | InProgress(array(File.t))
     | Complete(File.t)
-    | Error;
+    | Error(error);
 
   let toString =
     fun
     | NotStarted => "not started"
     | InProgress(_) => "in progress"
     | Complete(_) => "complete"
-    | Error => "error";
+    | Error(_) => "error";
 
   type action =
     | SetState(t)
@@ -27,8 +27,7 @@ module TimerProgress = {
   let targetMs = 7 * 1000;
 
   let isComplete = time => time === targetMs;
-  let percent = time =>
-    int_of_float(float_of_int(time) /. float_of_int(targetMs) *. 100.);
+  let percent = time => float_of_int(time) /. float_of_int(targetMs);
 };
 
 [@react.component]
@@ -46,16 +45,20 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
 
   let (state, dispatch) =
     React.useReducer(
-      (state, action) =>
+      (state, action) => {
+        Js.log2(state, action);
         switch (action, state) {
         | (State.SetState(newState), _) => newState
         | (RecorderEvent((MediaRecorder.Event.Start, ev)), State.NotStarted) =>
-          State.InProgress([||])
-        | (RecorderEvent((MediaRecorder.Event.Start, ev)), _) => State.Error
+          Js.log("start");
+          State.InProgress([||]);
+        | (RecorderEvent((MediaRecorder.Event.Start, ev)), _) =>
+          State.Error(`InvalidState)
         | (
             RecorderEvent((MediaRecorder.Event.DataAvailable, ev)),
             State.InProgress(data),
           ) =>
+          Js.log("data available");
           let eventData =
             ev
             ->MediaRecorder.Event.toDataAvailable
@@ -66,6 +69,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
             RecorderEvent((MediaRecorder.Event.Stop, ev)),
             State.InProgress(data),
           ) =>
+          Js.log("stop");
           if (time->TimerProgress.isComplete) {
             let blob =
               File.makeBlob(
@@ -75,10 +79,12 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
             Complete(blob);
           } else {
             NotStarted;
-          }
-        | (RecorderEvent((MediaRecorder.Event.Error, _)), ev) => Error
-        | _ => Error
-        },
+          };
+        | (RecorderEvent((MediaRecorder.Event.Error, _)), ev) =>
+          Error(`MediaRecorderError)
+        | _ => Error(`InvalidState)
+        };
+      },
       NotStarted,
     );
   let _ =
@@ -100,9 +106,28 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
       [|time|],
     );
 
-  Js.log2("state", state->State.toString);
+  let _ =
+    React.useEffect1(
+      () => {
+        let _ =
+          switch (state) {
+          | Complete(blob) => onComplete(~blob)
+          | Error(error) => onError(error)
+          | _ => ()
+          };
+        None;
+      },
+      [|state|],
+    );
 
-  let handleTouchStart = _ev => {
+  let handleOnClick = ev => {
+    Js.log("handleOnClick");
+    let _ = ev->ReactEvent.Synthetic.preventDefault;
+    ();
+  };
+
+  let handleTouchStart = ev => {
+    let _ = ev->ReactEvent.Synthetic.preventDefault;
     let browser = Lib.Constants.browser->Bowser.getBrowserName;
     switch (state, browser) {
     | (NotStarted, Some(`Safari)) =>
@@ -122,7 +147,8 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     };
   };
 
-  let handleTouchEnd = _ev => {
+  let handleTouchEnd = ev => {
+    let _ = ev->ReactEvent.Synthetic.preventDefault;
     switch (state) {
     | InProgress(_) =>
       let _ = recorder->MediaRecorder.stop;
@@ -134,6 +160,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
 
   let _ =
     React.useEffect0(() => {
+      Js.log("mount effect");
       let handleRecorderEvent = (type_, ev) => {
         let _ = dispatch(State.RecorderEvent((type_, ev)));
         ();
@@ -168,10 +195,11 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
 
   <div
     className={cn(["w-screen", "h-screen", "relative"])}
+    onClick=handleOnClick
     onTouchStart=handleTouchStart
     onTouchEnd=handleTouchEnd>
     <div className={cn(["absolute", "inset-x-0", "top-0", "h-32", "p-8"])}>
-      <Progress value={time->TimerProgress.percent->string_of_int} />
+      <Progress value={time->TimerProgress.percent->string_of_float} />
     </div>
     <VideoSurface src={stream->VideoSurface.srcObject} autoPlay=true />
   </div>;
