@@ -41,7 +41,10 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
               let videoElem = VideoElement.unsafeAsVideoElement(elem);
               VideoElement.(
                 switch (src) {
-                | Some(SrcObject(srcObject)) =>
+                | Some(SrcObject(srcObject))
+                    when
+                      getSrcObject(videoElem)
+                      !== Js.Undefined.return(srcObject) =>
                   let _ =
                     videoElem->setSrcObject(srcObject->Js.Undefined.return);
                   ();

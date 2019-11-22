@@ -125,6 +125,7 @@ let make = (~isActive) => {
   switch (Constants.browser->Bowser.getBrowserName) {
   | Some(`Safari) =>
     <VideoRecorder.FileInput mimeType=`WEBM onFile=handleFile />
-  | _ => <VideoRecorder.MediaRecorder mimeType=`WEBM onFile=handleFile />
+  | _ =>
+    <VideoRecorder.MediaRecorder mimeType=`WEBM onFile=handleFile isActive />
   };
 };

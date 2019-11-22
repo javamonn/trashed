@@ -91,7 +91,7 @@ let cleanupPhase = (~full=false, p) => {
 };
 
 [@react.component]
-let make = (~mimeType, ~onFile) => {
+let make = (~mimeType, ~onFile, ~isActive) => {
   let ((phaseState, prevPhaseState), dispatchPhaseAction) =
     React.useReducer(
       ((state, _prevState), action) =>
@@ -273,6 +273,7 @@ let make = (~mimeType, ~onFile) => {
         onTouchEnd=handleTouchEnd>
         <VideoSurface ?src autoPlay=true controls=true />
       </div>;
+    | PhaseComplete(_) => React.null
     }
   );
 };

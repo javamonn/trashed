@@ -28,6 +28,10 @@ external readyState:
 external setSrcObject: (t, Js.Undefined.t(Externals_MediaStream.t)) => unit =
   "srcObject";
 
+[@bs.get]
+external getSrcObject: t => Js.Undefined.t(Externals_MediaStream.t) =
+  "srcObject";
+
 let setSrcObject = doto1(setSrcObject);
 
 [@bs.set] external setSrc: (t, Js.Undefined.t(string)) => unit = "src";

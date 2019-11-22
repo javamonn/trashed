@@ -17,7 +17,7 @@ let use = (~interval) => {
       );
     };
 
-  let stop = () =>
+  let stop = () => {
     switch (timer->React.Ref.current) {
     | Some(intervalId) =>
       let _ = intervalId->Js.Global.clearInterval;
@@ -25,8 +25,13 @@ let use = (~interval) => {
       ();
     | None => ()
     };
+  };
+
+  let reset = () => {
+    setTime(_ => 0);
+  };
 
   let _ = React.useEffect0(() => Some(() => stop()));
 
-  (time, start, stop);
+  (time, start, stop, reset);
 };
