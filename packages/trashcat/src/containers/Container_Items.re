@@ -111,6 +111,7 @@ let make =
           }
         );
       let handleScroll = ev => {
+        let _ = ReactEvent.UI.stopPropagation(ev); 
         let scrollTop = ReactEvent.UI.target(ev)##scrollTop;
         let windowHeight = Webapi.Dom.(window->Window.innerHeight);
         let activeIdx =

@@ -269,7 +269,12 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       let url = state->Review.objectUrlGet;
       let src = [|(url, mimeType)|]->VideoSurface.srcElement->Js.Option.some;
       <div
-        className={cn(["w-screen", "h-screen", "relative"])}
+        className={cn([
+          "w-screen",
+          "h-screen",
+          "relative",
+          "overflow-hidden",
+        ])}
         onTouchEnd=handleTouchEnd>
         <VideoSurface ?src autoPlay=true controls=true />
       </div>;

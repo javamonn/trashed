@@ -96,7 +96,9 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
       <Progress />
     </div>
   | Data(src) =>
-    <div ?style className={cn(["w-screen", "h-screen", "relative"])}>
+    <div
+      ?style
+      className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
       <VideoSurface src autoPlay />
     </div>
   | Error => React.string("Nothing here!")

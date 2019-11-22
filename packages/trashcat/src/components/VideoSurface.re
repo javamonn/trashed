@@ -129,7 +129,8 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
         "preload": "auto",
         "onError": handleError,
         "onLoadedMetadata": handleLoadedMetadata,
-        "className": cn(["w-full", "h-full", "object-cover"]),
+        "className":
+          cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),
         "ref": videoRef->ReactDOMRe.Ref.domRef,
         "muted": true,
         "src":

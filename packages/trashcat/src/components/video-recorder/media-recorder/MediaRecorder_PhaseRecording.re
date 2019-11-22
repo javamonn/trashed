@@ -46,8 +46,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
 
   let (state, dispatch) =
     React.useReducer(
-      (state, action) => {
-        Js.log2(state, action);
+      (state, action) =>
         switch (action, state) {
         | (State.SetState(newState), _) => newState
         | (RecorderEvent((MediaRecorder.Event.Start, ev)), State.NotStarted) =>
@@ -81,8 +80,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
         | (RecorderEvent((MediaRecorder.Event.Error, _)), ev) =>
           Error(`MediaRecorderError)
         | _ => Error(`InvalidState)
-        };
-      },
+        },
       NotStarted,
     );
   let _ =
@@ -152,7 +150,6 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
 
   let _ =
     React.useEffect0(() => {
-      Js.log("mount effect");
       let handleRecorderEvent = (type_, ev) => {
         let _ = dispatch(State.RecorderEvent((type_, ev)));
         ();
@@ -186,7 +183,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     });
 
   <div
-    className={cn(["w-screen", "h-screen", "relative"])}
+    className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}
     onTouchStart=handleTouchStart
     onTouchEnd=handleTouchEnd>
     <div className={cn(["absolute", "inset-x-0", "top-0", "h-32", "p-8"])}>
