@@ -118,27 +118,37 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       (phaseState, prevPhaseState),
     );
 
-  let handleTouchEnd = _ev =>
-    PhaseState.(
-      switch (phaseState) {
-      | PhaseReview(review) =>
-        let _ =
+  let handleReviewApprove = () =>
+    switch (phaseState) {
+    | PhaseReview(review) =>
+      let _ =
+        PhaseState.(
           Complete.make(
             ~data=review->Review.dataGet,
             ~coordinates=review->Review.coordinatesGet,
           )
           ->phaseComplete
           ->PhaseState.setPhase
-          ->dispatchPhaseAction;
-        let _ =
+          ->dispatchPhaseAction
+        );
+      let _ =
+        PhaseState.(
           onFile(
             ~file=review->Review.dataGet,
             ~location=review->Review.coordinatesGet,
-          );
-        ();
-      | _ => ()
-      }
-    );
+          )
+        );
+      ();
+    | _ => ()
+    };
+
+  let handleReviewReject = () =>
+    switch (phaseState) {
+    | PhaseReview(_review) =>
+      let _ = PhaseState.(phaseGetUserMedia->setPhase->dispatchPhaseAction);
+      ();
+    | _ => ()
+    };
 
   let handleGetUserMedia = () => {
     MediaDevices.MediaConstraints.(
@@ -268,16 +278,11 @@ let make = (~mimeType, ~onFile, ~isActive) => {
     | PhaseReview(state) =>
       let url = state->Review.objectUrlGet;
       let src = [|(url, mimeType)|]->VideoSurface.srcElement->Js.Option.some;
-      <div
-        className={cn([
-          "w-screen",
-          "h-screen",
-          "relative",
-          "overflow-hidden",
-        ])}
-        onTouchEnd=handleTouchEnd>
-        <VideoSurface ?src autoPlay=true controls=true />
-      </div>;
+      <MediaRecorder_PhaseReview
+        onApprove=handleReviewApprove
+        onReject=handleReviewReject
+        src
+      />;
     | PhaseComplete(_) => React.null
     }
   );
