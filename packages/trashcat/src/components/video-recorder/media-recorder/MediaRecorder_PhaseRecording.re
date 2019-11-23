@@ -24,7 +24,7 @@ module State = {
 };
 
 module TimerProgress = {
-  let targetMs = 7 * 1000;
+  let targetMs = 5 * 1000;
 
   let isComplete = time => time === targetMs;
   let percent = time => float_of_int(time) /. float_of_int(targetMs);

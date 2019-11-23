@@ -121,16 +121,8 @@ let make = (~mimeType, ~onFile, ~isActive) => {
   let handleReviewApprove = () =>
     switch (phaseState) {
     | PhaseReview(review) =>
-      let _ =
-        PhaseState.(
-          Complete.make(
-            ~data=review->Review.dataGet,
-            ~coordinates=review->Review.coordinatesGet,
-          )
-          ->phaseComplete
-          ->PhaseState.setPhase
-          ->dispatchPhaseAction
-        );
+      let _ = PhaseState.(phaseGetUserMedia->setPhase->dispatchPhaseAction);
+
       let _ =
         PhaseState.(
           onFile(
