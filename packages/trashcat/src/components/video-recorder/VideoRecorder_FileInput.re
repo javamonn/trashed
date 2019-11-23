@@ -39,7 +39,7 @@ let make = (~mimeType, ~onFile) => {
   let inputRef = React.useRef(Js.Nullable.null);
   let (phaseState, dispatchPhaseAction) =
     React.useReducer(
-      (state, action) =>
+      (_state, action) =>
         switch (action) {
         | PhaseState.SetPhase(p) => p
         },

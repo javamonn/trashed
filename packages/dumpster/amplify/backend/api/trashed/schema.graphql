@@ -67,6 +67,7 @@ type Item
   @model
   @auth(rules: [{allow: public, provider: iam, operations: [create, read]}]) {
   id: ID!
+  createdAt: String!
   video: Video! @connection
   location: Location!
 }

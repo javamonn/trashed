@@ -62,13 +62,9 @@ module State = {
     | SetState(t('a));
 };
 
-/**
 let resolver =
   Constants.Env.nodeEnv === "production"
     ? CloudFrontResolver.resolve : S3Resolver.resolve;
-**/
-
-let resolver = CloudFrontResolver.resolve;
 
 let use = s3Objects => {
   let (state, dispatch) =

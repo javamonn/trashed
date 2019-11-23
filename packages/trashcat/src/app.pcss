@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  font-size: 16px;
+}
+
+#app {
+  touch-action: pan-x pan-y;
+}
+
 progress {
   box-sizing: border-box;
   border-width: unset;
@@ -13,4 +21,22 @@ progress {
   html {
     font-size: 14px;
   }
+}
+
+@media (min-width: 50rem) {
+  #app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app div {
+    max-width: 31.25rem;
+    max-height: 55.3125rem;
+  }
+}
+
+.touch-none {
+  touch-action: none;
 }

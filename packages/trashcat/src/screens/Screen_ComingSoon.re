@@ -38,7 +38,7 @@ let make = () => {
     <div className={cn(["my-32", "h-56", "w-56"])}>
       <TrashedIconOnBackgroundSVG
         className={cn(["w-fill", "h-fill"])}
-        backgroundColor="#FDE58F"
+        backgroundColor=Colors.brandYellow
       />
     </div>
     {ReactDOMRe.createElementVariadic(

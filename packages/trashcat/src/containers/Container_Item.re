@@ -34,7 +34,7 @@ type state =
   | Data(VideoSurface.src);
 
 [@react.component]
-let make = (~itemId) => {
+let make = (~itemId, ~autoPlay=false, ~style=?) => {
   let (query, _fullQuery) =
     GetItemQuery.use(
       ~variables=GetItemQueryConfig.make(~itemId, ())##variables,
@@ -64,17 +64,27 @@ let make = (~itemId) => {
     | (Error(_), _, _)
     | (_, Error, _) => Error
     | (_, Resolved(d), Some(files)) =>
-      Data(
+      let srcElements =
         Belt.Array.zip(d, files)
-        ->Belt.Array.map(((src, file)) => (src, file##mimeType))
-        ->VideoSurface.srcElement,
-      )
+        ->Belt.Array.map(((src, file)) => (src, file##mimeType));
+      let _ =
+        Js.Array.sortInPlaceWith(
+          ((_, mime1), (_, mime2)) =>
+            switch (mime1, mime2) {
+            | (`WEBM, `MP4) => (-1)
+            | (`MP4, `WEBM) => 1
+            | _ => 0
+            },
+          srcElements,
+        );
+      Data(srcElements->VideoSurface.srcElement);
     | _ => Loading
     };
 
   switch (state) {
   | Loading =>
     <div
+      ?style
       className={cn([
         "w-screen",
         "h-screen",
@@ -86,8 +96,10 @@ let make = (~itemId) => {
       <Progress />
     </div>
   | Data(src) =>
-    <div className={cn(["w-screen", "h-screen", "relative"])}>
-      <VideoSurface src autoPlay=true />
+    <div
+      ?style
+      className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
+      <VideoSurface src autoPlay />
     </div>
   | Error => React.string("Nothing here!")
   };

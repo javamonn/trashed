@@ -49,7 +49,7 @@ module CreateItemMutation =
   ReasonApolloHooks.Mutation.Make(CreateItemMutationConfig);
 
 [@react.component]
-let make = () => {
+let make = (~isActive) => {
   let (createItemVideoMutation, _s, _f) = CreateItemVideoMutation.use();
   let (createItemMutation, _s, _f) = CreateItemMutation.use();
 
@@ -81,7 +81,7 @@ let make = () => {
                     "key":
                       "public/item-video-upload/" ++ Externals.UUID.makeV4(),
                   },
-                  "userUpload": true
+                  "userUpload": true,
                 },
               |],
               "poster": None,
@@ -125,6 +125,7 @@ let make = () => {
   switch (Constants.browser->Bowser.getBrowserName) {
   | Some(`Safari) =>
     <VideoRecorder.FileInput mimeType=`WEBM onFile=handleFile />
-  | _ => <VideoRecorder.MediaRecorder mimeType=`WEBM onFile=handleFile />
+  | _ =>
+    <VideoRecorder.MediaRecorder mimeType=`WEBM onFile=handleFile isActive />
   };
 };

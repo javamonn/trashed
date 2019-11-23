@@ -1,2 +1,2 @@
 [@react.component]
-let make = () => <progress />;
+let make = (~value=?, ~className=?) => <progress ?className ?value />;

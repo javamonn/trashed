@@ -25,7 +25,12 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
             doto(Webapi.Dom.Element.setAttribute("muted", "true")),
           )
         ->Belt.Option.map(
-            doto(Webapi.Dom.Element.setAttribute("playsinline", "true")),
+            doto(
+              Webapi.Dom.Element.setAttribute(
+                "disableRemotePlayback",
+                "true",
+              ),
+            ),
           );
       None;
     });
@@ -41,28 +46,49 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
               let videoElem = VideoElement.unsafeAsVideoElement(elem);
               VideoElement.(
                 switch (src) {
-                | Some(SrcObject(srcObject)) =>
-                  videoElem
-                  ->setSrcObject(srcObject->Js.Undefined.return)
-                  ->setSrc(Js.undefined)
-                  ->removeAttribute("src")
-                | Some(SrcUrl(src)) =>
-                  videoElem
-                  ->setSrc(src->Js.Undefined.return)
-                  ->setSrcObject(Js.undefined)
-                  ->removeAttribute("srcObject")
-                | _ =>
-                  videoElem
-                  ->setSrc(Js.undefined)
-                  ->setSrcObject(Js.undefined)
-                  ->removeAttribute("src")
-                  ->removeAttribute("srcObject")
+                | Some(SrcObject(srcObject))
+                    when
+                      getSrcObject(videoElem)
+                      !== Js.Undefined.return(srcObject) =>
+                  let _ =
+                    videoElem->setSrcObject(srcObject->Js.Undefined.return);
+                  ();
+                | _ => ()
                 }
               );
             });
         None;
       },
       [|src|],
+    );
+
+  let _ =
+    React.useEffect1(
+      () => {
+        let _ =
+          videoRef
+          ->React.Ref.current
+          ->Js.Nullable.toOption
+          ->Belt.Option.map(elem => {
+              let videoElem = elem->VideoElement.unsafeAsVideoElement;
+              let paused = videoElem->VideoElement.paused;
+              let readyState = videoElem->VideoElement.readyState;
+
+              switch (readyState) {
+              | _ when !autoPlay && !paused =>
+                let _ = videoElem->VideoElement.pause;
+                ();
+              | `HaveNothing => ()
+              | _ when autoPlay && paused =>
+                videoElem
+                ->VideoElement.setMuted(Js.Undefined.return(true))
+                ->VideoElement.play
+              | _ => ()
+              };
+            });
+        None;
+      },
+      [|autoPlay|],
     );
 
   let handleLoadedMetadata = _ev => {
@@ -72,7 +98,11 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
       ->Js.Nullable.toOption
       ->Belt.Option.map(elem =>
           if (autoPlay) {
-            let _ = elem->VideoElement.unsafeAsVideoElement->VideoElement.play;
+            let _ =
+              elem
+              ->VideoElement.unsafeAsVideoElement
+              ->VideoElement.setMuted(Js.Undefined.return(true))
+              ->VideoElement.play;
             ();
           }
         );
@@ -88,18 +118,33 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
     | Some(SrcElement(ss)) =>
       ss
       ->Belt.Array.map(((src, type_)) =>
-          <source type_={type_->mimeTypeToJs} src />
+          <source type_={type_->mimeTypeToJs} src key=src />
         )
       ->ReasonReact.array
     | _ => React.null
     };
-  <video
-    autoPlay
-    controls
-    onError=handleError
-    onLoadedMetadata=handleLoadedMetadata
-    className={cn(["w-full", "h-full", "object-cover"])}
-    ref={videoRef->ReactDOMRe.Ref.domRef}>
-    children
-  </video>;
+
+  ReactDOMRe.createElementVariadic(
+    "video",
+    ~props=
+      ReactDOMRe.objToDOMProps({
+        "autoPlay": autoPlay,
+        "controls": controls,
+        "loop": !controls,
+        "preload": "auto",
+        "onError": handleError,
+        "disableRemotePlayback": true,
+        "onLoadedMetadata": handleLoadedMetadata,
+        "className":
+          cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),
+        "ref": videoRef->ReactDOMRe.Ref.domRef,
+        "muted": true,
+        "src":
+          switch (src) {
+          | Some(SrcUrl(url)) => Some(url)
+          | _ => None
+          },
+      }),
+    [|children|],
+  );
 };

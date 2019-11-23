@@ -1,37 +1,22 @@
 open Lib.Styles;
 
-module ListItemsQueryConfig = [%graphql
-  {|
-    query ListItems {
-      listItems {
-        items {
-          id
-          video {
-            id
-            thumbnail {
-              bucket 
-              key
-              region
-            }
-          }
-          location {
-            lat
-            lon
-          }
-        }
-      }
-    }
-  |}
-];
-
-module ListItemsQuery = ReasonApolloHooks.Query.Make(ListItemsQueryConfig);
-
 [@react.component]
-let make = () => {
-  let (query, _fullQuery) = ListItemsQuery.use();
+let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
+  let renderItem = (~itemId, ~isActive as isItemActive) =>
+    <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Vertical>
+      <Container.Item key=itemId itemId autoPlay={isActive && isItemActive} />
+    </ScrollSnapList.Item>;
 
-  switch (query) {
-  | Loading =>
+  let renderPlaceholder = () =>
+    <ScrollSnapList.Item direction=ScrollSnapList.Vertical />;
+
+  let renderContainer = (~onScroll, ~itemIdx, ~children) =>
+    <ScrollSnapList.Container
+      direction=ScrollSnapList.Vertical onScroll initialIdx=itemIdx>
+      children
+    </ScrollSnapList.Container>;
+
+  let renderLoading = () =>
     <div
       className={cn([
         "w-screen",
@@ -39,53 +24,30 @@ let make = () => {
         "flex",
         "justify-center",
         "items-center",
-        "flex-col",
       ])}>
       <Progress />
-    </div>
-  | Data(data) =>
-    data##listItems
-    ->Belt.Option.flatMap(listItems => listItems##items)
-    ->Belt.Option.map(items => {
-        let rows =
-          items
-          ->Belt.Array.keep(Belt.Option.isSome)
-          ->Belt.Array.map(Belt.Option.getExn)
-          ->Belt.Array.reduce([||], (acc, item) =>
-              switch (Belt.Array.get(acc, Belt.Array.length(acc) - 1)) {
-              | Some(last) when Belt.Array.length(last) < 2 =>
-                let _ = last |> Js.Array.push(item);
-                acc;
-              | Some(_)
-              | None =>
-                let _ = acc |> Js.Array.push([|item|]);
-                acc;
-              }
-            )
-          ->Belt.Array.map(row =>
-              <div className={cn(["flex", "flex-row", "items-stretch"])}>
-                {row
-                 ->Belt.Array.mapWithIndex((idx, item) =>
-                     <Link
-                       className={cn([
-                         "flex-1",
-                         "h-48",
-                         "bg-brandBlue",
-                         "mr-4"->Cn.ifTrue(idx < Belt.Array.length(row) - 1),
-                       ])}
-                       href={"/item/" ++ item##id}>
-                       {React.string(item##id)}
-                     </Link>
-                   )
-                 ->React.array}
-              </div>
-            )
-          ->React.array;
+    </div>;
 
-        <div className={cn(["w-screen", "h-screen"])}> rows </div>;
-      })
-    ->Belt.Option.getWithDefault(React.string("Nothing here!"))
-  | NoData
-  | Error(_) => React.string("Nothing here!")
-  };
+  let renderError = () => <Error />;
+
+  <Container.Items
+    renderItem
+    renderPlaceholder
+    renderContainer
+    renderLoading
+    renderError
+    onChange={(~nextToken, ~itemId, ()) => {
+      let _ =
+        [|("nextToken", nextToken), ("itemId", itemId)|]
+        ->Belt.Array.keepMap(((key, value)) =>
+            value->Belt.Option.map(value => (key, value))
+          )
+        ->Webapi.Url.URLSearchParams.makeWithArray
+        ->Webapi.Url.URLSearchParams.toString
+        ->onReplaceUrlSearch;
+      ();
+    }}
+    ?nextToken
+    ?itemId
+  />;
 };
