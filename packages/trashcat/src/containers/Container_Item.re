@@ -28,10 +28,15 @@ module GetItemQueryConfig = [%graphql
 
 module GetItemQuery = ReasonApolloHooks.Query.Make(GetItemQueryConfig);
 
+type data = {
+  src: VideoSurface.src,
+  location: (float, float),
+};
+
 type state =
   | Loading
   | Error
-  | Data(VideoSurface.src);
+  | Data(data);
 
 [@react.component]
 let make = (~itemId, ~autoPlay=false, ~style=?) => {
@@ -40,7 +45,7 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
       ~variables=GetItemQueryConfig.make(~itemId, ())##variables,
       (),
     );
-  let files =
+  let item =
     query
     ->(
         fun
@@ -49,23 +54,22 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
         | NoData => None
         | Data(d) => Some(d)
       )
-    ->Belt.Option.flatMap(i => i##getItem)
-    ->Belt.Option.map(i => i##video##files);
+    ->Belt.Option.flatMap(i => i##getItem);
 
   let s3Objects =
     Hook.S3ObjectResolver.use(
-      files->Belt.Option.map(i =>
-        i->Belt.Array.map(i => i##file->S3Object.fromJs)
-      ),
+      item
+      ->Belt.Option.map(i => i##video##files)
+      ->Belt.Option.map(i => i->Belt.Array.map(i => i##file->S3Object.fromJs)),
     );
 
   let state =
-    switch (query, s3Objects, files) {
+    switch (query, s3Objects, item) {
     | (Error(_), _, _)
     | (_, Error, _) => Error
-    | (_, Resolved(d), Some(files)) =>
+    | (_, Resolved(d), Some(item)) =>
       let srcElements =
-        Belt.Array.zip(d, files)
+        Belt.Array.zip(d, item##video##files)
         ->Belt.Array.map(((src, file)) => (src, file##mimeType));
       let _ =
         Js.Array.sortInPlaceWith(
@@ -77,7 +81,10 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
             },
           srcElements,
         );
-      Data(srcElements->VideoSurface.srcElement);
+      Data({
+        src: srcElements->VideoSurface.srcElement,
+        location: (item##location##lat, item##location##lon),
+      });
     | _ => Loading
     };
 
@@ -95,10 +102,24 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
       ])}>
       <Progress />
     </div>
-  | Data(src) =>
+  | Data({src, location}) =>
     <div
       ?style
       className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
+      <div
+        className={cn([
+          "absolute",
+          "inset-x-0",
+          "top-0",
+          "my-8",
+          "mx-8",
+          "flex",
+          "flex-row",
+          "justify-start",
+          "z-10",
+        ])}>
+        <Map location />
+      </div>
       <VideoSurface src autoPlay />
     </div>
   | Error => React.string("Nothing here!")
