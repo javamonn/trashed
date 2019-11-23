@@ -24,7 +24,7 @@ module Prompt = {
             "text-center",
           ])}>
           {React.string(
-             "trashed needs access to your camera to take videos of things.",
+             "trashed needs access to your location to know where things are.",
            )}
         </span>
       </div>

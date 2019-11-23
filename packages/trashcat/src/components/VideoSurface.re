@@ -25,7 +25,12 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
             doto(Webapi.Dom.Element.setAttribute("muted", "true")),
           )
         ->Belt.Option.map(
-            doto(Webapi.Dom.Element.setAttribute("playsinline", "true")),
+            doto(
+              Webapi.Dom.Element.setAttribute(
+                "disableRemotePlayback",
+                "true",
+              ),
+            ),
           );
       None;
     });
@@ -128,6 +133,7 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
         "loop": !controls,
         "preload": "auto",
         "onError": handleError,
+        "disableRemotePlayback": true,
         "onLoadedMetadata": handleLoadedMetadata,
         "className":
           cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),

@@ -47,7 +47,8 @@ let make = (~tab, ~url) => {
   };
 
   let handleScroll = ev => {
-    let scrollLeft = ReactEvent.UI.target(ev)##scrollLeft;
+    let _ = ReactEvent.UI.persist(ev);
+    let scrollLeft = int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
     let windowWidth = Webapi.Dom.(window->Window.innerWidth);
     let tabs = Tab.ordered();
     let activeIdx =

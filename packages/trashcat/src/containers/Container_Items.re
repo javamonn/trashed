@@ -111,14 +111,20 @@ let make =
           }
         );
       let handleScroll = ev => {
-        let _ = ReactEvent.UI.stopPropagation(ev); 
-        let scrollTop = ReactEvent.UI.target(ev)##scrollTop;
-        let windowHeight = Webapi.Dom.(window->Window.innerHeight);
+        let _ = ReactEvent.UI.stopPropagation(ev);
+        let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
+        let bodyHeight =
+          Webapi.Dom.(
+            document
+            |> Document.unsafeAsHtmlDocument
+            |> HtmlDocument.body
+            |> Js.Option.getExn
+            |> Element.clientHeight
+          );
         let activeIdx =
           itemWindow
-          ->Belt.Array.mapWithIndex((idx, _item) => idx * windowHeight)
+          ->Belt.Array.mapWithIndex((idx, _item) => idx * bodyHeight)
           ->Belt.Array.getIndexBy(height => scrollTop === height);
-
         let _ =
           switch (
             activeIdx->Belt.Option.flatMap(idx =>
