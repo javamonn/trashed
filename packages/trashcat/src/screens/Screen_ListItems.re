@@ -3,18 +3,36 @@ open Lib.Styles;
 [@react.component]
 let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
   let renderItem = (~itemId, ~isActive as isItemActive) =>
-    <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Vertical>
+    <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Horizontal>
       <Container.Item key=itemId itemId autoPlay={isActive && isItemActive} />
     </ScrollSnapList.Item>;
 
   let renderPlaceholder = () =>
-    <ScrollSnapList.Item direction=ScrollSnapList.Vertical />;
+    <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />;
 
-  let renderContainer = (~onScroll, ~itemIdx, ~children) =>
-    <ScrollSnapList.Container
-      direction=ScrollSnapList.Vertical onScroll initialIdx=itemIdx>
-      children
-    </ScrollSnapList.Container>;
+  let renderContainer = (~onScroll, ~itemIdx, ~item, ~children) =>
+    <>
+      <ScrollSnapList.Container
+        direction=ScrollSnapList.Horizontal onScroll initialIdx=itemIdx>
+        children
+      </ScrollSnapList.Container>
+      <Map
+        className={cn([
+          "block",
+          "absolute",
+          "bottom-0",
+          "right-0",
+          "overflow-hidden",
+          "rounded-tl-full",
+          "w-40",
+          "h-40",
+          "border-brandYellow",
+          "border-t-4",
+          "border-l-4",
+        ])}
+        location=(item##location##lat, item##location##lon)
+      />
+    </>;
 
   let renderLoading = () =>
     <div

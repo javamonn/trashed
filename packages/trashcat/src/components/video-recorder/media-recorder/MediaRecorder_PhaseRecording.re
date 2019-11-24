@@ -186,10 +186,10 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}
     onTouchStart=handleTouchStart
     onTouchEnd=handleTouchEnd>
-    <div className={cn(["absolute", "inset-x-0", "top-0", "h-5", "m-8"])}>
+    <div className={cn(["absolute", "inset-x-0", "bottom-0", "h-5", "m-8"])}>
       <Progress
         className={cn(["w-full", "h-full"])}
-        value={time->TimerProgress.percent->string_of_float}
+        value={time->TimerProgress.percent->Js.Float.toString}
       />
     </div>
     <VideoSurface src={stream->VideoSurface.srcObject} autoPlay=true />

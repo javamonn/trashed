@@ -112,19 +112,14 @@ let make =
         );
       let handleScroll = ev => {
         let _ = ReactEvent.UI.stopPropagation(ev);
-        let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
-        let bodyHeight =
-          Webapi.Dom.(
-            document
-            |> Document.unsafeAsHtmlDocument
-            |> HtmlDocument.body
-            |> Js.Option.getExn
-            |> Element.clientHeight
-          );
+        let scrollLeft = int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
+        let windowWidth = Webapi.Dom.(window->Window.innerWidth);
+
         let activeIdx =
           itemWindow
-          ->Belt.Array.mapWithIndex((idx, _item) => idx * bodyHeight)
-          ->Belt.Array.getIndexBy(height => scrollTop === height);
+          ->Belt.Array.mapWithIndex((idx, _item) => idx * windowWidth)
+          ->Belt.Array.getIndexBy(width => scrollLeft === width);
+
         let _ =
           switch (
             activeIdx->Belt.Option.flatMap(idx =>
@@ -138,9 +133,17 @@ let make =
           };
         ();
       };
+
+      let activeItem =
+        itemWindow
+        ->Belt.Array.get(itemIdx)
+        ->Belt.Option.flatMap(identity)
+        ->Js.Option.getExn;
+
       renderContainer(
         ~onScroll=handleScroll,
         ~itemIdx,
+        ~item=activeItem,
         ~children=
           itemWindow
           ->Belt.Array.map(item =>

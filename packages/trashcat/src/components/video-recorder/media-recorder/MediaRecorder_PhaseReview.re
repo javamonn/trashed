@@ -7,7 +7,7 @@ let make = (~onApprove, ~onReject, ~src) => {
       className={cn([
         "absolute",
         "inset-x-0",
-        "top-0",
+        "bottom-0",
         "flex",
         "flex-row",
         "justify-between",

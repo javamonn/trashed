@@ -47,14 +47,22 @@ let make = (~tab, ~url) => {
   };
 
   let handleScroll = ev => {
-    let _ = ReactEvent.UI.persist(ev);
-    let scrollLeft = int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
-    let windowWidth = Webapi.Dom.(window->Window.innerWidth);
+    let _ = ReactEvent.UI.stopPropagation(ev);
+    let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
+    let bodyHeight =
+      Webapi.Dom.(
+        document
+        |> Document.unsafeAsHtmlDocument
+        |> HtmlDocument.body
+        |> Js.Option.getExn
+        |> Element.clientHeight
+      );
+
     let tabs = Tab.ordered();
     let activeIdx =
       tabs
-      ->Belt.Array.mapWithIndex((idx, _item) => idx * windowWidth)
-      ->Belt.Array.getIndexBy(width => scrollLeft === width);
+      ->Belt.Array.mapWithIndex((idx, _item) => idx * bodyHeight)
+      ->Belt.Array.getIndexBy(height => scrollTop === height);
 
     let _ =
       switch (activeIdx) {
@@ -79,13 +87,14 @@ let make = (~tab, ~url) => {
   };
 
   <ScrollSnapList.Container
-    direction=ScrollSnapList.Horizontal
+    direction=ScrollSnapList.Vertical
     initialIdx={Tab.indexOf(tab)}
     onScroll=handleScroll>
-    <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
+    <ScrollSnapList.Item direction=ScrollSnapList.Vertical>
       <Screen_NewItem isActive={Tab.equal(tab, New)} />
     </ScrollSnapList.Item>
-    <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
+    <ScrollSnapList.Item
+      className={cn(["relative"])} direction=ScrollSnapList.Vertical>
       <Screen_ListItems
         ?nextToken
         ?itemId
