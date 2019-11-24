@@ -93,8 +93,5 @@ let make = (~tab, ~url) => {
         isActive={Tab.equal(tab, Feed)}
       />
     </ScrollSnapList.Item>
-    <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
-      <Screen_ComingSoon />
-    </ScrollSnapList.Item>
   </ScrollSnapList.Container>;
 };

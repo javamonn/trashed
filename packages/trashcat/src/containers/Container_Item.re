@@ -106,21 +106,23 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
     <div
       ?style
       className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
-      <div
-        className={cn([
-          "absolute",
-          "inset-x-0",
-          "top-0",
-          "my-8",
-          "mx-8",
-          "flex",
-          "flex-row",
-          "justify-start",
-          "z-10",
-        ])}>
-        <Map location />
-      </div>
       <VideoSurface src autoPlay />
+      <Map
+        className={cn([
+          "block",
+          "absolute",
+          "bottom-0",
+          "right-0",
+          "overflow-hidden",
+          "rounded-tl-full",
+          "w-40",
+          "h-40",
+          "border-brandYellow",
+          "border-t-4",
+          "border-l-4",
+        ])}
+        location
+      />
     </div>
   | Error => React.string("Nothing here!")
   };
