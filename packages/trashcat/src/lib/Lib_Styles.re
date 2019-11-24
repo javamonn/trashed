@@ -7,8 +7,8 @@ module Colors = {
 let style = ReactDOMRe.Style.make;
 
 let rootFontSize = 16.0;
-let rem = r => string_of_int(r) ++ "rem";
-let rem = r => string_of_float(r) ++ "rem";
+let rem = r => Js.Float.toString(r) ++ "rem";
+let px = p => Js.Float.toString(p) ++ "px";
 let remOfPx = px => rem(float_of_int(px) /. rootFontSize);
 
 let unsafeStyle = (style, unsafeList) =>

@@ -3,11 +3,8 @@ open Lib.Styles;
 let make = (~onApprove, ~onReject, ~src) => {
   <div
     className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
-    <div
+    <ScreenBottomEdgeAligned
       className={cn([
-        "absolute",
-        "inset-x-0",
-        "top-0",
         "flex",
         "flex-row",
         "justify-between",
@@ -23,7 +20,7 @@ let make = (~onApprove, ~onReject, ~src) => {
       <div onTouchEnd={_ev => onApprove()} className={cn(["w-12", "h-12"])}>
         <Emoji_WhiteCheckMarkSVG className={cn(["w-fill", "h-fill"])} />
       </div>
-    </div>
+    </ScreenBottomEdgeAligned>
     <VideoSurface ?src autoPlay=true />
   </div>;
 };

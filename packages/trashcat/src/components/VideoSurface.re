@@ -148,3 +148,17 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
     [|children|],
   );
 };
+
+module ContrastOverlay = {
+  [@react.component]
+  let make = (~height) =>
+    <div
+      className={cn(["absolute", "inset-x-0", "bottom-0"])}
+      style={style(
+        ~height=rem(height),
+        ~background=
+          "linear-gradient(0deg, rgba(0, 0, 0, 0.12) 80%, transparent)",
+        (),
+      )}
+    />;
+};

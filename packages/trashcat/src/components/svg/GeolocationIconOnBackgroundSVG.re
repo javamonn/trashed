@@ -1,13 +1,12 @@
 [@react.component]
-let make = (~className, ~backgroundColor) => {
+let make = (~className=?, ~backgroundColor) => {
   <svg
-    width="224"
-    height="224"
+    ?className
     viewBox="0 0 224 224"
     fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <rect x="7" y="7" width="217" height="217" fill="black" />
-    <rect width="217" height="217" fill="#FDE58F" />
+    <rect width="217" height="217" fill=backgroundColor />
     <g opacity="0.180723" filter="url(#filter0_f)">
       <path
         d="M169.877 155.117H48.1096C44.211 155.117 41.0506 157.771 41.0506 161.044C41.0506 164.318 44.211 166.972 48.1096 166.972H169.877C173.776 166.972 176.936 164.318 176.936 161.044C176.936 157.771 173.776 155.117 169.877 155.117Z"

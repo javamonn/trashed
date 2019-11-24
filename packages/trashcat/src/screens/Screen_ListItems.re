@@ -3,18 +3,21 @@ open Lib.Styles;
 [@react.component]
 let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
   let renderItem = (~itemId, ~isActive as isItemActive) =>
-    <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Vertical>
+    <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Horizontal>
       <Container.Item key=itemId itemId autoPlay={isActive && isItemActive} />
     </ScrollSnapList.Item>;
 
   let renderPlaceholder = () =>
-    <ScrollSnapList.Item direction=ScrollSnapList.Vertical />;
+    <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />;
 
-  let renderContainer = (~onScroll, ~itemIdx, ~children) =>
-    <ScrollSnapList.Container
-      direction=ScrollSnapList.Vertical onScroll initialIdx=itemIdx>
-      children
-    </ScrollSnapList.Container>;
+  let renderContainer = (~onScroll, ~itemIdx, ~item, ~children) =>
+    <>
+      <ScrollSnapList.Container
+        direction=ScrollSnapList.Horizontal onScroll initialIdx=itemIdx>
+        children
+      </ScrollSnapList.Container>
+      <ItemBottomOverlay item />
+    </>;
 
   let renderLoading = () =>
     <div
