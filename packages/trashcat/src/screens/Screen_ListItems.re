@@ -16,21 +16,7 @@ let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
         direction=ScrollSnapList.Horizontal onScroll initialIdx=itemIdx>
         children
       </ScrollSnapList.Container>
-      <ScreenBottomEdgeAligned className={cn(["flex", "justify-end"])}>
-        <Map
-          className={cn([
-            "block",
-            "overflow-hidden",
-            "rounded-tl-full",
-            "w-40",
-            "h-40",
-            "border-black",
-            "border-t-4",
-            "border-l-4",
-          ])}
-          location=(item##location##lat, item##location##lon)
-        />
-      </ScreenBottomEdgeAligned>
+      <ItemBottomOverlay item />
     </>;
 
   let renderLoading = () =>

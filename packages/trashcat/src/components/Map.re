@@ -1,5 +1,3 @@
-open Lib.Styles;
-
 let imageSize = 200.;
 
 let mapsUrl = (~lat, ~lon) => {j|https://www.google.com/maps/search/?api=1&query=$lat,$lon|j};
@@ -12,12 +10,12 @@ let imgUrl = (~lat, ~lon) => {
 };
 
 [@react.component]
-let make = (~className=?, ~location as (lat, lon)) =>
-  <a ?className href={mapsUrl(~lat, ~lon)}>
+let make = (~className=?, ~style=?, ~location as (lat, lon)) =>
+  <a ?style ?className href={mapsUrl(~lat, ~lon)}>
     <img
-      style={style(
-        ~width=px(imageSize),
-        ~height=px(imageSize),
+      style={Lib.Styles.style(
+        ~width=Lib.Styles.px(imageSize),
+        ~height=Lib.Styles.px(imageSize),
         ~maxWidth="unset",
         (),
       )}

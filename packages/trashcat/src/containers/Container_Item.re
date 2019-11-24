@@ -28,10 +28,7 @@ module GetItemQueryConfig = [%graphql
 
 module GetItemQuery = ReasonApolloHooks.Query.Make(GetItemQueryConfig);
 
-type data = {
-  src: VideoSurface.src,
-  location: (float, float),
-};
+type data = {src: VideoSurface.src};
 
 type state =
   | Loading
@@ -81,10 +78,7 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
             },
           srcElements,
         );
-      Data({
-        src: srcElements->VideoSurface.srcElement,
-        location: (item##location##lat, item##location##lon),
-      });
+      Data({src: srcElements->VideoSurface.srcElement});
     | _ => Loading
     };
 
@@ -102,7 +96,7 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
       ])}>
       <Progress />
     </div>
-  | Data({src, location}) =>
+  | Data({src}) =>
     <div
       ?style
       className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>

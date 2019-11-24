@@ -7,6 +7,7 @@ module ListItemsQueryConfig = [%graphql
         nextToken
         items {
           id
+          createdAt
           video {
             id
             thumbnail {

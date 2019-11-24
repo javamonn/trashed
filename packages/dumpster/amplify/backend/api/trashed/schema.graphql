@@ -6,6 +6,12 @@ input S3ObjectInput {
   mimeType: String
 }
 
+input CreateItemInput {
+  id: ID
+  location: LocationInput!
+  itemVideoId: ID!
+}
+
 type Location @aws_iam {
   lat: Float!
   lon: Float!
