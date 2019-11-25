@@ -24,7 +24,7 @@ let make = (~item) => {
   let age = formatAge(item##createdAt);
 
   <ScreenBottomEdgeAligned className={cn(["flex", "justify-between"])}>
-    <div className={cn(["flex", "flex-col", "justify-end", "mx-4", "my-8"])}>
+    <div className={cn(["flex", "flex-col", "justify-end", "mx-4", "my-4"])}>
       <div
         className={cn(["flex", "flex-row", "justify-center", "items-center"])}>
         <Emoji_HourglassSVG className={cn(["w-10", "h-10"])} />
