@@ -39,6 +39,8 @@ S src/containers
 B lib/bs/src/containers
 S src/lib
 B lib/bs/src/lib
+S src/service
+B lib/bs/src/service
 S src/hook
 B lib/bs/src/hook
 S src/providers

@@ -142,85 +142,27 @@ let make = (~mimeType, ~onFile, ~isActive) => {
     | _ => ()
     };
 
-  let handleGetUserMedia = () => {
-    MediaDevices.MediaConstraints.(
-      make(~audio=true, ~video=makeVideo(~facingMode="environment"), ())
-    )
-    |> MediaDevices.getUserMedia
-    |> Js.Promise.then_(stream => {
-         let _ =
-           PhaseState.Recording.make(~stream)
-           ->PhaseState.phaseRecording
-           ->PhaseState.setPhase
-           ->dispatchPhaseAction;
+  let handleGrantedUserMedia = stream =>
+    PhaseState.Recording.make(~stream)
+    ->PhaseState.phaseRecording
+    ->PhaseState.setPhase
+    ->dispatchPhaseAction;
 
-         Permissions.Status.make(~state=`Granted)
-         ->Js.Option.some
-         ->Js.Promise.resolve;
-       })
-    |> Js.Promise.catch(_ex =>
-         /** FIXME: may have errored for other reasons */
-         (
-           Permissions.Status.make(~state=`Denied)
-           ->Js.Option.some
-           ->Js.Promise.resolve
-         )
-       );
-  };
-
-  let handleGetUserMediaGranted = () => {
-    switch (phaseState) {
-    | PhaseGetUserMedia =>
-      let _ = handleGetUserMedia();
-      ();
-    | _ => ()
-    };
-  };
-
-  let handleGetGeolocation = () =>
-    Js.Promise.make((~resolve, ~reject) =>
-      Geolocation.getCurrentPosition(
-        position => {
-          let _ =
-            PhaseState.(
-              switch (phaseState) {
-              | PhaseGetGeolocation(getGeolocation) =>
-                Review.make(
-                  ~coordinates=position->Geolocation.coordsGet,
-                  ~data=getGeolocation->GetGeolocation.dataGet,
-                  ~objectUrl=getGeolocation->GetGeolocation.objectUrlGet,
-                )
-                ->phaseReview
-                ->setPhase
-                ->dispatchPhaseAction
-              | _ => ()
-              }
-            );
-          let _ =
-            Permissions.Status.make(~state=`Granted)
-            ->Js.Option.some
-            ->wrapBs(resolve);
-          ();
-        },
-        _positionError => {
-          /** FIXME: may have errored for other reasons */
-          let _ =
-            Permissions.Status.make(~state=`Denied)
-            ->Js.Option.some
-            ->wrapBs(resolve);
-          ();
-        },
-        Geolocation.currentPositionOptions(~enableHighAccuracy=true, ()),
-      )
+  let handleGrantedGeolocation = position =>
+    PhaseState.(
+      switch (phaseState) {
+      | PhaseGetGeolocation(getGeolocation) =>
+        Review.make(
+          ~coordinates=position->Geolocation.coordsGet,
+          ~data=getGeolocation->GetGeolocation.dataGet,
+          ~objectUrl=getGeolocation->GetGeolocation.objectUrlGet,
+        )
+        ->phaseReview
+        ->setPhase
+        ->dispatchPhaseAction
+      | _ => ()
+      }
     );
-
-  let handleGetGeolocationGranted = () =>
-    switch (phaseState) {
-    | PhaseGetGeolocation(_) =>
-      let _ = handleGetGeolocation();
-      ();
-    | _ => ()
-    };
 
   let handleRecordingComplete = (~blob) =>
     switch (phaseState) {
@@ -251,15 +193,9 @@ let make = (~mimeType, ~onFile, ~isActive) => {
   PhaseState.(
     switch (phaseState) {
     | PhaseGetUserMedia =>
-      <MediaRecorder_PhaseGetUserMedia
-        onGetUserMedia=handleGetUserMedia
-        onGetUserMediaGranted=handleGetUserMediaGranted
-      />
+      <MediaRecorder_PhaseGetUserMedia onGranted=handleGrantedUserMedia />
     | PhaseGetGeolocation(_) =>
-      <MediaRecorder_PhaseGetGeolocation
-        onGetGeolocation=handleGetGeolocation
-        onGetGeolocationGranted=handleGetGeolocationGranted
-      />
+      <MediaRecorder_PhaseGetGeolocation onGranted=handleGrantedGeolocation />
     | PhaseRecording(state) =>
       <MediaRecorder_PhaseRecording
         stream={state->PhaseState.Recording.streamGet}

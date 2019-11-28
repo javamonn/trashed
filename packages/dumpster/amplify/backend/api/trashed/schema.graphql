@@ -17,6 +17,11 @@ type Location @aws_iam {
   lon: Float!
 }
 
+type ModelItemConnection @aws_iam {
+  items: [Item]
+  nextToken: String
+}
+
 input LocationInput {
   lat: Float!
   lon: Float!
@@ -71,9 +76,14 @@ type Video
 
 type Item
   @model
+  @searchable
   @auth(rules: [{allow: public, provider: iam, operations: [create, read]}]) {
   id: ID!
   createdAt: String!
   video: Video! @connection
   location: Location!
+}
+
+type Query {
+  nearbyItems(location: LocationInput!, m: Int): ModelItemConnection @aws_iam
 }
