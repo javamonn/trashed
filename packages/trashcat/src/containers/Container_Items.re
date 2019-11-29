@@ -1,9 +1,9 @@
 open Lib.Utils;
 
-module ListItemsQueryConfig = [%graphql
+module NearbyItemsQueryConfig = [%graphql
   {|
-    query ListItems($limit: Int!, $nextToken: String)  {
-      listItems(limit: $limit, nextToken: $nextToken) {
+    query NearbyItems($location: LocationInput!, $m: Int)  {
+      nearbyItems(location: $location, m: $m) {
         nextToken
         items {
           id
@@ -34,7 +34,8 @@ module ListItemsQueryConfig = [%graphql
   |}
 ];
 
-module ListItemsQuery = ReasonApolloHooks.Query.Make(ListItemsQueryConfig);
+module NearbyItemsQuery =
+  ReasonApolloHooks.Query.Make(NearbyItemsQueryConfig);
 
 [@react.component]
 let make =
@@ -47,11 +48,12 @@ let make =
       ~onChange,
       ~itemId=?,
       ~nextToken=?,
+      ~location,
     ) => {
   let (query, _fullQuery) =
-    ListItemsQuery.use(
+    NearbyItemsQuery.use(
       ~variables=
-        ListItemsQueryConfig.make(~limit=30, ~nextToken?, ())##variables,
+        NearbyItemsQueryConfig.make(~location?, ~m=1000, ())##variables,
       (),
     );
 
@@ -62,11 +64,11 @@ let make =
           switch (query) {
           | Data(data) =>
             let items =
-              data##listItems
+              data##nearbyItems
               ->Belt.Option.flatMap(l => l##items)
               ->Belt.Option.map(i => i->Belt.Array.keepMap(i => i));
             let nextToken =
-              data##listItems->Belt.Option.flatMap(l => l##nextToken);
+              data##nearbyItems->Belt.Option.flatMap(l => l##nextToken);
             (items, nextToken);
           | _ => (None, None)
           };
@@ -94,7 +96,7 @@ let make =
   switch (itemId, query) {
   | (Some(itemId), Data(data)) =>
     switch (
-      data##listItems
+      data##nearbyItems
       ->Belt.Option.flatMap(l => l##items)
       ->Belt.Option.map(i => i->Belt.Array.keepMap(i => i))
     ) {

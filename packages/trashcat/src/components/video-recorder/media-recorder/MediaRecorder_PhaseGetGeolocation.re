@@ -66,8 +66,7 @@ module Prompt = {
 
 [@react.component]
 let make = (~onGranted) => {
-  let (permission, onPrompt, setStatus) =
-    Service.Permission.Geolocation.use();
+  let (permission, onPrompt, _) = Service.Permission.Geolocation.use();
 
   let _ =
     React.useEffect1(

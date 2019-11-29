@@ -1,20 +1,28 @@
+open Lib.Styles;
+
 [@react.component]
-let make = (~className=?, ~onClick, ~children) =>
-  <button
-    type_="button"
-    onClick
-    className={Cn.make([
-      "bg-white",
-      "hover:bg-gray-100",
-      "text-gray-800",
-      "font-semibold",
-      "py-2",
-      "px-4",
-      "border",
-      "border-gray-400",
-      "rounded",
-      "shadow",
-      className->Cn.unpack,
-    ])}>
+let make = (~className=?, ~onClick, ~children) => {
+  <div className={cn([className->Cn.unpack])} onClick>
     children
-  </button>;
+    <div
+      style={style(
+        ~bottom=rem(0.),
+        ~right=rem(0.),
+        ~top=rem(0.375),
+        ~left=rem(0.375),
+        (),
+      )}
+      className={cn(["absolute", "bg-brandYellow"])}
+    />
+    <div
+      style={style(
+        ~top=rem(0.),
+        ~left=rem(0.),
+        ~right=rem(0.375),
+        ~bottom=rem(0.375),
+        (),
+      )}
+      className={cn(["absolute", "bg-black"])}
+    />
+  </div>;
+};

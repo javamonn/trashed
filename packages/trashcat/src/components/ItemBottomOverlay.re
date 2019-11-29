@@ -23,8 +23,9 @@ let make = (~item) => {
   let location = (item##location##lat, item##location##lon);
   let age = formatAge(item##createdAt);
 
-  <ScreenBottomEdgeAligned className={cn(["flex", "justify-between"])}>
-    <div className={cn(["flex", "flex-col", "justify-end", "mx-4", "my-4"])}>
+  <ScreenBottomEdgeAligned
+    className={cn(["flex", "justify-between", "py-4", "px-6"])}>
+    <div className={cn(["flex", "flex-col", "justify-end"])}>
       <div
         className={cn(["flex", "flex-row", "justify-center", "items-center"])}>
         <Emoji_HourglassSVG className={cn(["w-10", "h-10"])} />
@@ -42,23 +43,7 @@ let make = (~item) => {
         </span>
       </div>
     </div>
-    <Map
-      style={style(
-        ~borderTop="solid 1.5px #000",
-        ~borderLeft="solid 1.5px #000",
-        (),
-      )}
-      className={cn([
-        "block",
-        "overflow-hidden",
-        "rounded-tl-full",
-        "w-40",
-        "h-40",
-        "border-black",
-        "z-10",
-      ])}
-      location
-    />
+    <Map className={cn(["block", "z-10"])} location />
     <VideoSurface.ContrastOverlay height=12.5 />
   </ScreenBottomEdgeAligned>;
 };
