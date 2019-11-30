@@ -8,7 +8,8 @@
             "DeploymentBucketName": "trashed-production-20190824131356-deployment",
             "UnauthRoleName": "trashed-production-20190824131356-unauthRole",
             "StackName": "trashed-production-20190824131356",
-            "StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0"
+            "StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0",
+            "AmplifyAppId": "d2nshcjf1ypod4"
         },
         "categories": {
             "auth": {
