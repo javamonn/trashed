@@ -1,7 +1,7 @@
 open Lib.Styles;
 
 [@react.component]
-let make = (~className=?, ~onClick, ~children) => {
+let make = (~className=?, ~backgroundClassName=?, ~onClick, ~children) => {
   <div className={cn(["relative", className->Cn.unpack])} onClick>
     children
     <div
@@ -24,7 +24,10 @@ let make = (~className=?, ~onClick, ~children) => {
         ~zIndex="-1",
         (),
       )}
-      className={cn(["absolute", "bg-brandYellow"])}
+      className={backgroundClassName
+        ->Belt.Option.getWithDefault(
+          cn(["absolute", "bg-brandYellow"])
+        )}
     />
   </div>;
 };

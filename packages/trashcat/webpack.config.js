@@ -37,6 +37,19 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.svg$/,
+        loader: 'file-loader',
+        options: {
+          outputPath: 'static',
+          esModule: false,
+          publicPath: '/js/static',
+          name:
+            process.env.NODE_ENV === 'production'
+              ? '[contenthash].[ext]'
+              : '[name].[ext]',
+        },
+      },
     ],
   },
   plugins: [

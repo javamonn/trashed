@@ -11,22 +11,22 @@ require('http')
           request.url.includes('.mjs')
         ) {
           const url = request.url.split('?')[0];
-          fileServer.serveFile(
-            url,
-            200,
-            {'Content-Type': 'application/javascript'},
-            request,
-            response
-          )
-            .addListener('error', (err) => { 
-              console.error(err) 
-              response.writeHead(500)
-              response.end()
+          fileServer
+            .serveFile(
+              url,
+              200,
+              {'Content-Type': 'application/javascript'},
+              request,
+              response,
+            )
+            .addListener('error', err => {
+              console.error(err);
+              response.writeHead(500);
+              response.end();
             });
-
         } else if (
-          !request.url.includes('/build/') &&
-          !request.url.includes('/images')
+          !request.url.includes('/images') &&
+          !request.url.includes('/js/static/')
         ) {
           const url = 'index.html';
           fileServer.serveFile(url, 200, {}, request, response);
@@ -36,7 +36,7 @@ require('http')
       })
       .addListener('error', () => {
         response.writeHead(500);
-        response.end()
+        response.end();
       })
       .resume();
   })

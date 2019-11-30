@@ -21,3 +21,11 @@ let wrapBs = (a, f) => f(. a);
 let apply = (f, a) => f(a);
 
 let identity = x => x;
+
+module Pair = {
+  let fromArray = a =>
+    switch (Array.to_list(a)) {
+    | [k, v] => Some((k, v))
+    | _ => None
+    };
+};

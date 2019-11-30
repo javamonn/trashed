@@ -35,6 +35,8 @@ S src/components/video-recorder/media-recorder
 B lib/bs/src/components/video-recorder/media-recorder
 S src/components/svg
 B lib/bs/src/components/svg
+S src/components/material-ui
+B lib/bs/src/components/material-ui
 S src/containers
 B lib/bs/src/containers
 S src/lib
