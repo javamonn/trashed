@@ -2,17 +2,26 @@ const path = require('path');
 const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const BUILD_DIR = path.resolve(DIST_DIR, './js');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
-  entry: './src/Index.bs.js',
+  entry: {
+    main: './src/Index.bs.js',
+    serviceWorker: './src/ServiceWorker.bs.js',
+  },
   output: {
+    publicPath: '/js/',
     path: BUILD_DIR,
-    filename:
-      process.env.NODE_ENV === 'production' ? 'bundle-[hash].js' : 'bundle.js',
+    filename: chunkData =>
+      chunkData.chunk.name === 'main'
+        ? process.env.NODE_ENV === 'production'
+          ? 'bundle-[hash].js'
+          : 'bundle.js'
+        : 'service-worker.js',
   },
   resolve: {
     alias: {
@@ -64,6 +73,10 @@ module.exports = {
   },
   plugins: [
     process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin() : null,
+    new WorkboxPlugin.InjectManifest({
+      swSrc: './src/ServiceWorker.bs.js',
+      swDest: 'service-worker.js',
+    }),
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
@@ -73,6 +86,7 @@ module.exports = {
         'trashcat-cdn.trashed.today',
       ),
       'process.env.RPC_ORIGIN': JSON.stringify('trashcat-rpc.trashed.today'),
+      'process.env.SERVICE_WORKER_URL': JSON.stringify('/js/service-worker.js'),
     }),
   ].filter(p => Boolean(p)),
 };

@@ -12,6 +12,8 @@ module Env = {
     "process.env.CLOUDFRONT_DISTRIBUTION_ORIGIN";
   [@bs.val] external rpcOrigin: string = "process.env.RPC_ORIGIN";
   [@bs.val] external nodeEnv: string = "process.env.NODE_ENV";
+  [@bs.val]
+  external serviceWorkerUrl: string = "process.env.SERVICE_WORKER_URL";
 };
 
 [@bs.module "../aws-exports"]
