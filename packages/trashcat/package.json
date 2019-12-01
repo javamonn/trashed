@@ -10,6 +10,7 @@
     "bsb:clean": "bsb -clean-world",
     "webpack:start": "webpack -w",
     "webpack:build": "webpack",
+    "webpack:analyze-bundle": "NODE_ENV=production ANALYZE_BUNDLE=true npm run build",
     "graphql:sync-schema": "./scripts/graphql-sync-schema.sh && npm run bsb:clean",
     "amplify:production:pull": "amplify env pull --restore && amplify env checkout production && amplify api gql-compile",
     "html:build": "./scripts/build-html.js",
@@ -38,6 +39,7 @@
     "tachyons": "^4.11.1",
     "tailwindcss": "^1.1.2",
     "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {

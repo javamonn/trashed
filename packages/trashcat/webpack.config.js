@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const BUILD_DIR = path.resolve(DIST_DIR, './js');
@@ -53,6 +54,7 @@ module.exports = {
     ],
   },
   plugins: [
+    process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin() : null,
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
@@ -63,5 +65,5 @@ module.exports = {
       ),
       'process.env.RPC_ORIGIN': JSON.stringify('trashcat-rpc.trashed.today'),
     }),
-  ],
+  ].filter(p => Boolean(p)),
 };
