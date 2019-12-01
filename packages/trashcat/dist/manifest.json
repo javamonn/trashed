@@ -17,7 +17,7 @@
       "size": "513x513"
     }
   ],
-  "start_url": "/record?utm_source=launch-home-screen",
+  "start_url": "/item?utm_source=launch-home-screen",
   "background_color": "#93B5C6",
   "theme_color": "#93B5C6",
   "display": "standalone"
