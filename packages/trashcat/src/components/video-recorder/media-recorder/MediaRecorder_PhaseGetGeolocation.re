@@ -39,9 +39,10 @@ module Prompt = {
         ])}>
         {isInProgress
            ? <div className={cn(["relative"])}>
-               <IconBackgroundSVG
+               <SVG
                  className={cn(["h-56", "w-56"])}
-                 backgroundColor=Colors.brandYellow
+                 icon=SVG.iconBackground
+                 placeholderViewBox="0 0 192 192"
                />
                <div
                  className={cn([
@@ -55,9 +56,10 @@ module Prompt = {
                </div>
              </div>
            : <div onClick={_ => onClick()}>
-               <GeolocationIconOnBackgroundSVG
+               <SVG
                  className={cn(["h-56", "w-56"])}
-                 backgroundColor=Colors.brandYellow
+                 icon=SVG.geolocationIconOnBackground
+                 placeholderViewBox="0 0 224 224"
                />
              </div>}
       </div>

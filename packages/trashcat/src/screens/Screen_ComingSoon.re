@@ -17,7 +17,7 @@ let make = () => {
        "marquee",
        ~props=
          ReactDOMRe.objToDOMProps({
-           "class":
+           "className":
              cn([
                "text-white",
                "font-bold",
@@ -36,16 +36,17 @@ let make = () => {
        [|React.string("Coming Soon to NYC")|],
      )}
     <div className={cn(["my-32", "h-56", "w-56"])}>
-      <TrashedIconOnBackgroundSVG
+      <SVG
         className={cn(["w-fill", "h-fill"])}
-        backgroundColor=Colors.brandYellow
+        icon=SVG.trashIconOnBackground
+        placeholderViewBox="0 0 224 224"
       />
     </div>
     {ReactDOMRe.createElementVariadic(
        "marquee",
        ~props=
          ReactDOMRe.objToDOMProps({
-           "class":
+           "className":
              cn([
                "text-white",
                "font-bold",

@@ -39,7 +39,11 @@ module GeolocationRequired = {
            | Service.Permission.TransitionInProgress(_) =>
              <Progress className={cn(["w-full"])} />
            | _ =>
-             <SVG className={cn(["h-full", "w-full"])} icon=SVG.geolocation />
+             <SVG
+                placeholderViewBox="0 0 224 224"
+                className={cn(["h-full", "w-full"])}
+                icon=SVG.geolocation
+              />
            }}
         </div>
         <div

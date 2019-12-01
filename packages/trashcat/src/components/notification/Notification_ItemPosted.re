@@ -35,7 +35,11 @@ module ItemPosted = {
             "px-6",
             "py-4"
           ])}>
-          <SVG className={cn(["h-full", "w-full"])} icon=SVG.trashFavorite />
+          <SVG
+            className={cn(["h-full", "w-full"])}
+            icon=SVG.trashFavorite
+            placeholderViewBox="0 0 57 62"
+          />
         </div>
         <div
           className={cn([
