@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^1.3.0",
     "bs-platform": "^5.0.6",
     "chroma-js": "^2.0.6",
     "clean-webpack-plugin": "^3.0.0",

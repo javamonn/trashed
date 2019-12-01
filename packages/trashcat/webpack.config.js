@@ -34,7 +34,16 @@ module.exports = {
           {loader: 'css-loader', options: {importLoaders: 1}},
           {
             loader: 'postcss-loader',
-            options: {plugins: [require('tailwindcss')]},
+            options: {
+              plugins: [
+                require('tailwindcss'),
+                process.env.NODE_ENV === 'production'
+                  ? require('@fullhuman/postcss-purgecss')({
+                      content: ['./src/**/*.bs.js'],
+                    })
+                  : null,
+              ].filter(p => Boolean(p)),
+            },
           },
         ],
       },
