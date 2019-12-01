@@ -28,7 +28,11 @@ let make = (~item) => {
     <div className={cn(["flex", "flex-col", "justify-end"])}>
       <div
         className={cn(["flex", "flex-row", "justify-center", "items-center"])}>
-        <Emoji_HourglassSVG className={cn(["w-10", "h-10"])} />
+        <SVG
+          icon=SVG.emojiHourglass
+          className={cn(["w-10", "h-10"])}
+          placeholderViewBox="0 0 128 128"
+        />
         <span
           style={style()->unsafeStyle([("-webkitTextStroke", "1.5px #000")])}
           className={cn([

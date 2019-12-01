@@ -15,6 +15,14 @@ let iconBackground: string = [%raw "require('./icon-background.svg')"];
 
 let trashedText: string = [%raw "require('./trashed-text.svg')"];
 
+let emojiCrossMark: string = [%raw "require('./emoji-cross-mark.svg')"];
+
+let emojiWhiteCheckMark: string = [%raw
+  "require('./emoji-white-check-mark.svg')"
+];
+
+let emojiHourglass: string = [%raw "require('./emoji-hourglass.svg')"];
+
 [@react.component]
 let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) => {
   let (isLoading, setIsLoading) = React.useState(() => true);

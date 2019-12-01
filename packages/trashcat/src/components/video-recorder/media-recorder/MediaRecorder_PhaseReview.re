@@ -15,10 +15,18 @@ let make = (~onApprove, ~onReject, ~src) => {
       <div
         onTouchEnd={_ev => onReject()}
         className={cn(["w-12", "h-12", "p-1"])}>
-        <Emoji_CrossMarkSVG className={cn(["w-fill", "h-fill"])} />
+        <SVG
+          icon=SVG.emojiCrossMark
+          className={cn(["w-fill", "h-fill"])}
+          placeholderViewBox="0 0 128 128"
+        />
       </div>
       <div onTouchEnd={_ev => onApprove()} className={cn(["w-12", "h-12"])}>
-        <Emoji_WhiteCheckMarkSVG className={cn(["w-fill", "h-fill"])} />
+        <SVG
+          icon=SVG.emojiWhiteCheckMark
+          className={cn(["w-fill", "h-fill"])}
+          placeholderViewBox="0 0 128 128"
+        />
       </div>
     </ScreenBottomEdgeAligned>
     <VideoSurface ?src autoPlay=true />
