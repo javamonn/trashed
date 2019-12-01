@@ -1,24 +1,38 @@
 #set( $indexPath = "/item/doc/_search" )
 #set( $distance = $util.defaultIfNull($ctx.args.m, 500) )
 {
-    "version": "2017-02-28",
-    "operation": "GET",
-    "path": "$indexPath.toLowerCase()",
-    "params": {
-        "body": {
-            "query": {
-                "bool" : {
-                    "must" : {
-                        "match_all" : {}
-                    },
-                    "filter" : {
-                        "geo_distance" : {
-                            "distance" : "${distance}m",
-                            "location" : $util.toJson($ctx.args.location)
-                        }
-                    }
-                }
+  "version": "2017-02-28",
+  "operation": "GET",
+  "path": "$indexPath.toLowerCase()",
+  "params": {
+    "body": {
+      #if ( $ctx.args.nextToken ) 
+        "search_after": ["$ctx.args.nextToken"], 
+      #end
+      "size": 
+        #if ( $ctx.args.limit ) 
+          $ctx.args.limit 
+        #else
+          10 
+        #end,
+      "sort": [{ "createdAt": "desc" }],
+      "query": {
+        #if ( $ctx.args.location )
+          "bool" : {
+            "must" : {
+              "match_all" : {}
+            },
+            "filter": {
+              "geo_distance" : {
+                "distance" : "${distance}m",
+                "location" : $util.toJson($ctx.args.location)
+              }
             }
-        }
+          }
+        #else
+          "match_all": {}
+        #end
+      }
     }
+  }
 }

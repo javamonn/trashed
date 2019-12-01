@@ -2,8 +2,8 @@ open Lib.Utils;
 
 module NearbyItemsQueryConfig = [%graphql
   {|
-    query NearbyItems($location: LocationInput!, $m: Int)  {
-      nearbyItems(location: $location, m: $m) {
+    query NearbyItems($location: LocationInput, $m: Int, $nextToken: String)  {
+      nearbyItems(location: $location, m: $m, nextToken: $nextToken, limit: 30) {
         nextToken
         items {
           id
@@ -48,7 +48,7 @@ let make =
       ~onChange,
       ~itemId=?,
       ~nextToken=?,
-      ~location,
+      ~location=?,
     ) => {
   let (query, _fullQuery) =
     NearbyItemsQuery.use(

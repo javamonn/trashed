@@ -5,6 +5,7 @@ open Externals;
 let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
   let (geolocationPermission, onPromptGeolocation, _) =
     Service.Permission.Geolocation.use();
+
   let location =
     switch (geolocationPermission) {
     | Service.Permission.PermissionGranted(Some(pos)) =>
@@ -66,8 +67,6 @@ let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
     }}
     ?nextToken
     ?itemId
-    location={
-      location->Belt.Option.getWithDefault({"lat": 40.657, "lon": (-73.956)})
-    }
+    ?location
   />;
 };

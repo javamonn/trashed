@@ -84,7 +84,11 @@ type Item
   location: Location!
 }
 
-
 type Query {
-  nearbyItems(location: LocationInput!, m: Int): ModelItemConnection @aws_iam
+  nearbyItems(
+    location: LocationInput
+    m: Int
+    limit: Int
+    nextToken: String
+  ): ModelItemConnection @aws_iam
 }

@@ -89,7 +89,7 @@ let make = (~onPromptGeolocation, ~geolocationPermission) => {
             let _ = setIn(_ => in_);
             ();
           },
-          2000,
+          3000,
         );
       let _ = timeoutId->React.Ref.setCurrent(Some(newTimeoutId));
 
