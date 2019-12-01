@@ -40,10 +40,10 @@ module GeolocationRequired = {
              <Progress className={cn(["w-full"])} />
            | _ =>
              <SVG
-                placeholderViewBox="0 0 224 224"
-                className={cn(["h-full", "w-full"])}
-                icon=SVG.geolocation
-              />
+               placeholderViewBox="0 0 224 224"
+               className={cn(["h-full", "w-full"])}
+               icon=SVG.geolocation
+             />
            }}
         </div>
         <div
