@@ -18,3 +18,13 @@ let unsafeStyle = (style, unsafeList) =>
     style,
     unsafeList,
   );
+
+let parse = s => {
+  let styles =
+    s
+    ->Js.String2.split(";")
+    ->Belt.Array.map(s => s->Js.String2.split(":")->Lib_Utils.Pair.fromArray)
+    ->Belt.Array.keepMap(Lib_Utils.identity)
+    ->Array.to_list;
+  unsafeStyle(style(), styles);
+};

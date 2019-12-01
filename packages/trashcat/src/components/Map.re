@@ -1,4 +1,4 @@
-let imageSize = 200.;
+let imageSize = 130.;
 
 let mapsUrl = (~lat, ~lon) => {j|https://www.google.com/maps/search/?api=1&query=$lat,$lon|j};
 
@@ -11,8 +11,30 @@ let imgUrl = (~lat, ~lon) => {
 
 [@react.component]
 let make = (~className=?, ~style=?, ~location as (lat, lon)) =>
-  <a ?style ?className href={mapsUrl(~lat, ~lon)}>
+  <a
+    ?style
+    className={Cn.make(["relative", className->Cn.unpack])}
+    href={mapsUrl(~lat, ~lon)}>
+    <div
+      className={Cn.make([
+        "bg-black",
+        "absolute",
+        "overflow-hidden",
+        "rounded-full",
+      ])}
+      style=Lib.Styles.(
+        style(
+          ~width=px(imageSize),
+          ~height=px(imageSize),
+          ~top=px(2.),
+          ~left=px(2.),
+          ~zIndex="-1",
+          (),
+        )
+      )
+    />
     <img
+      className={Cn.make(["overflow-hidden", "rounded-full"])}
       style={Lib.Styles.style(
         ~width=Lib.Styles.px(imageSize),
         ~height=Lib.Styles.px(imageSize),

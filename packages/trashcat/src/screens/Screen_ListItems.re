@@ -1,7 +1,21 @@
 open Lib.Styles;
+open Externals;
 
 [@react.component]
 let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
+  let (geolocationPermission, onPromptGeolocation, _) =
+    Service.Permission.Geolocation.use();
+
+  let location =
+    switch (geolocationPermission) {
+    | Service.Permission.PermissionGranted(Some(pos)) =>
+      Some({
+        "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
+        "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
+      })
+    | _ => None
+    };
+
   let renderItem = (~itemId, ~isActive as isItemActive) =>
     <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Horizontal>
       <Container.Item key=itemId itemId autoPlay={isActive && isItemActive} />
@@ -12,6 +26,7 @@ let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
 
   let renderContainer = (~onScroll, ~itemIdx, ~item, ~children) =>
     <>
+      <ItemTopOverlay onPromptGeolocation geolocationPermission />
       <ScrollSnapList.Container
         direction=ScrollSnapList.Horizontal onScroll initialIdx=itemIdx>
         children
@@ -52,5 +67,6 @@ let make = (~itemId=?, ~nextToken=?, ~onReplaceUrlSearch, ~isActive) => {
     }}
     ?nextToken
     ?itemId
+    ?location
   />;
 };

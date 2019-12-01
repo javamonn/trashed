@@ -4,7 +4,6 @@ open Lib;
 "import './app.pcss'";
 
 let _ = AwsAmplify.(inst->configure(Constants.awsAmplifyConfig));
-let _ = Webapi.Dom.(Window.scrollTo(0., 1., window));
 
 [@react.component]
 let make = () => {
@@ -12,6 +11,9 @@ let make = () => {
 
   let _ =
     React.useEffect0(() => {
+      let _ = Service.Permission.Geolocation.initialize();
+      let _ = Service.Permission.Camera.initialize();
+
       let disableContextMenu = ev => {
         let _ = Webapi.Dom.Event.preventDefault(ev);
         ();
