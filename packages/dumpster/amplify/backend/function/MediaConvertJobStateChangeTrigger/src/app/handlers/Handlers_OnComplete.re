@@ -111,7 +111,7 @@ let getMediaConvertOutputs = event =>
             ->Belt.Option.flatMap(S3Object.fromString)
             ->Belt.Option.getExn;
 
-          let keyParts = s3Object->S3Object.key->Js.String2.split("/");
+          let keyParts = s3Object->S3Object.keyGet->Js.String2.split("/");
           let lastPath = keyParts[Js.Array.length(keyParts) - 1];
 
           lastPath

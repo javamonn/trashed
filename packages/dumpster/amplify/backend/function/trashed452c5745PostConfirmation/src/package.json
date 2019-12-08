@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "axios": "latest",
-    "bs-platform": "^5.0.6",
+    "bs-platform": "^7.0.1",
     "twilio": "^3.33.4"
   },
   "devDependencies": {
