@@ -53,6 +53,36 @@ let make = (~isActive) => {
   let (createItemVideoMutation, _s, _f) = CreateItemVideoMutation.use();
   let (createItemMutation, _s, _f) = CreateItemMutation.use();
 
+  let (notificationIn, setNotificationIn) = React.useState(() => false);
+  let timeoutIdRef = React.useRef(None);
+
+  let clearTimeout = () =>
+    switch (timeoutIdRef->React.Ref.current) {
+    | Some(id) =>
+      let _ = id->Js.Global.clearTimeout;
+      let _ = timeoutIdRef->React.Ref.setCurrent(None);
+      ();
+    | None => ()
+    };
+
+  let handleDisplayNotification = () => {
+    let _ = setNotificationIn(_ => true);
+    let _ = clearTimeout();
+    let timeoutId =
+      Js.Global.setTimeout(
+        () => {
+          let _ = setNotificationIn(_ => false);
+          let _ = clearTimeout();
+          ();
+        },
+        4000,
+      );
+    let _ = timeoutIdRef->React.Ref.setCurrent(Some(timeoutId));
+    ();
+  };
+
+  let _ = React.useEffect0(() => Some(() => clearTimeout()));
+
   let handleFile = (~file, ~location) => {
     let _ =
       createItemVideoMutation(
@@ -119,13 +149,21 @@ let make = (~isActive) => {
            | _ => Js.Promise.resolve()
            }
          );
+    let _ = handleDisplayNotification();
     ();
   };
 
-  switch (Constants.browser->Bowser.getBrowserName) {
-  | Some(`Safari) =>
-    <VideoRecorder.FileInput mimeType=`WEBM onFile=handleFile />
-  | _ =>
-    <VideoRecorder.MediaRecorder mimeType=`WEBM onFile=handleFile isActive />
-  };
+  <>
+    <Notification.ItemPosted _in=notificationIn />
+    {switch (Constants.browser->Bowser.getBrowserName) {
+     | Some(`Safari) =>
+       <VideoRecorder.FileInput mimeType=`WEBM onFile=handleFile />
+     | _ =>
+       <VideoRecorder.MediaRecorder
+         mimeType=`WEBM
+         onFile=handleFile
+         isActive
+       />
+     }}
+  </>;
 };

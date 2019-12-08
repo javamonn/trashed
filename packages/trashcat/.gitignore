@@ -3,8 +3,9 @@ src/**/*.js
 .merlin
 .bsb.lock
 
-dist/js
+dist/*.js
 dist/index\.html
+dist/static
 
 #amplify
 amplify/\#current-cloud-backend
@@ -14,7 +15,6 @@ amplify/mock-data
 amplify/backend/awscloudformation
 
 build/
-dist/
 
 node_modules/
 aws-exports.js

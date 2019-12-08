@@ -1,17 +1,29 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
+const md5File = require('md5-file');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const DIST_DIR = path.resolve(__dirname, 'dist');
-const BUILD_DIR = path.resolve(DIST_DIR, './js');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
-  entry: './src/Index.bs.js',
+  entry: {
+    main: './src/Index.bs.js',
+    serviceWorker: './src/ServiceWorker.bs.js',
+  },
   output: {
-    path: BUILD_DIR,
-    filename:
-      process.env.NODE_ENV === 'production' ? 'bundle-[hash].js' : 'bundle.js',
+    publicPath: '/',
+    path: DIST_DIR,
+    filename: chunkData =>
+      chunkData.chunk.name === 'main'
+        ? process.env.NODE_ENV === 'production'
+          ? 'bundle-[hash].js'
+          : 'bundle.js'
+        : 'service-worker.js',
   },
   resolve: {
     alias: {
@@ -33,7 +45,16 @@ module.exports = {
           {loader: 'css-loader', options: {importLoaders: 1}},
           {
             loader: 'postcss-loader',
-            options: {plugins: [require('tailwindcss')]},
+            options: {
+              plugins: [
+                require('tailwindcss'),
+                process.env.NODE_ENV === 'production'
+                  ? require('@fullhuman/postcss-purgecss')({
+                    content: ['./src/**/*.bs.js'],
+                  })
+                  : null,
+              ].filter(p => Boolean(p)),
+            },
           },
         ],
       },
@@ -43,7 +64,7 @@ module.exports = {
         options: {
           outputPath: 'static',
           esModule: false,
-          publicPath: '/js/static',
+          publicPath: '/static',
           name:
             process.env.NODE_ENV === 'production'
               ? '[contenthash].[ext]'
@@ -53,7 +74,28 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin() : null,
+    new WorkboxPlugin.InjectManifest({
+      swSrc: './src/ServiceWorker.bs.js',
+      swDest: 'service-worker.js',
+      additionalManifestEntries: [
+        fs.existsSync(path.resolve(DIST_DIR, './index.html'))
+          ?
+          {
+            url: '/index.html',
+            revision: md5File.sync(path.resolve(DIST_DIR, './index.html')),
+          }
+          : null,
+      ].filter(Boolean)
+    }),
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['static/*.*', '*.js'],
+      cleanAfterEveryBuildPatterns: ['static/*.*', '*.js']
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      excludeChunks: ['serviceWorker']
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         process.env.NODE_ENV || 'development',
@@ -62,6 +104,7 @@ module.exports = {
         'trashcat-cdn.trashed.today',
       ),
       'process.env.RPC_ORIGIN': JSON.stringify('trashcat-rpc.trashed.today'),
+      'process.env.SERVICE_WORKER_URL': JSON.stringify('/service-worker.js'),
     }),
-  ],
+  ].filter(p => Boolean(p)),
 };

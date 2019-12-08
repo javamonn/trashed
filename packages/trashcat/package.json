@@ -10,18 +10,21 @@
     "bsb:clean": "bsb -clean-world",
     "webpack:start": "webpack -w",
     "webpack:build": "webpack",
+    "webpack:analyze-bundle": "NODE_ENV=production ANALYZE_BUNDLE=true npm run build",
     "graphql:sync-schema": "./scripts/graphql-sync-schema.sh && npm run bsb:clean",
     "amplify:production:pull": "amplify env pull --restore && amplify env checkout production && amplify api gql-compile",
-    "html:build": "./scripts/build-html.js",
     "serve": "node ./static-server.js",
     "deploy": "npm run build && amplify publish -y -c",
-    "build": "npm run bsb:clean && npm run bsb:build && npm run webpack:build && npm run html:build",
+    "build": "npm run bsb:clean && npm run bsb:build && npm run webpack:build",
     "build:production": "NODE_ENV=production npm run build",
-    "start": "npm run build && concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\" \"npm run serve\""
+    "start": "npm run start:webpack-serve",
+    "start:webpack-serve": "concurrently -k -n \"webpack,serve\" \"npm run webpack:start\" \"npm run serve\"",
+    "start:all": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\" \"npm run serve\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^1.3.0",
     "bs-platform": "^5.0.6",
     "chroma-js": "^2.0.6",
     "clean-webpack-plugin": "^3.0.0",
@@ -29,6 +32,8 @@
     "css-loader": "^3.2.0",
     "file-loader": "^5.0.2",
     "graphql_ppx": "^0.2.8",
+    "html-webpack-plugin": "^3.2.0",
+    "md5-file": "^4.0.0",
     "node-static": "^0.7.11",
     "postcss-loader": "^3.0.0",
     "prettier": "^1.18.2",
@@ -38,7 +43,9 @@
     "tachyons": "^4.11.1",
     "tailwindcss": "^1.1.2",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10",
+    "workbox-webpack-plugin": "^5.0.0-rc.1"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.0",
@@ -59,6 +66,10 @@
     "reason-apollo": "^0.17.0",
     "reason-apollo-hooks": "^2.5.1",
     "reason-react": "^0.7.0",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "workbox-expiration": "^4.3.1",
+    "workbox-precaching": "^4.3.1",
+    "workbox-routing": "^4.3.1",
+    "workbox-strategies": "^4.3.1"
   }
 }

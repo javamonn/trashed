@@ -1,6 +1,4 @@
 open Externals;
-open Lib.Styles;
-open Lib.Utils;
 
 module PhaseState = {
   module Recording = {

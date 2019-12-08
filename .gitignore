@@ -10,3 +10,6 @@ awsconfiguration.json
 
 #misc
 .env
+
+#reason
+.merlin

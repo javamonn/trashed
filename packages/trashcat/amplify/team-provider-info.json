@@ -9,15 +9,6 @@
             "AuthRoleName": "trashed-production-20190824131356-authRole",
             "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
             "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole"
-        },
-        "categories": {
-            "function": {
-                "rpc": {},
-                "trashed452c5745PostConfirmation": {},
-                "trashed452c5745PreSignup": {},
-                "DynamoDBStreamTrigger": {},
-                "MediaConvertJobStateChangeTrigger": {}
-            }
         }
     }
 }
