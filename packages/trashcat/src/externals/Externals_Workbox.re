@@ -13,10 +13,6 @@ module Precaching = {
   external getCacheKeyForURL: string => string = "getCacheKeyForURL";
 };
 
-module Routing = {
-  [@bs.module "workbox 
-};
-
 module Expiration = {
   type t;
 
@@ -44,8 +40,17 @@ module Strategies = {
 };
 
 module Routing = {
+
+  [@bs.deriving abstract]
+  type config = {
+    whitelist: array(Js.Re.t)
+  };
+
   [@bs.module "workbox-routing/registerRoute.mjs"]
   external registerRoute: (Js.Re.t, Strategies.t) => unit = "registerRoute";
+
+  [@bs.module "workbox-routing/registerNavigationRoute.mjs"]
+  external registerNavigationRoute: (string, config) => unit = "registerNavigationRoute";
 };
 
 [@bs.scope "self"] [@bs.val]

@@ -18,7 +18,9 @@
     "deploy": "npm run build && amplify publish -y -c",
     "build": "npm run bsb:clean && npm run bsb:build && npm run webpack:build && npm run html:build",
     "build:production": "NODE_ENV=production npm run build",
-    "start": "npm run build && concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\" \"npm run serve\""
+    "start": "npm run start:webpack-serve",
+    "start:webpack-serve": "npm run webpack:build && npm run html:build && concurrently -k -n \"webpack,serve\" \"npm run webpack:start\" \"npm run serve\"",
+    "start:all": "npm run build && concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\" \"npm run serve\""
   },
   "author": "",
   "license": "ISC",

@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const md5File = require('md5-file');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
@@ -49,8 +50,8 @@ module.exports = {
                 require('tailwindcss'),
                 process.env.NODE_ENV === 'production'
                   ? require('@fullhuman/postcss-purgecss')({
-                      content: ['./src/**/*.bs.js'],
-                    })
+                    content: ['./src/**/*.bs.js'],
+                  })
                   : null,
               ].filter(p => Boolean(p)),
             },
@@ -78,11 +79,14 @@ module.exports = {
       swSrc: './src/ServiceWorker.bs.js',
       swDest: 'service-worker.js',
       additionalManifestEntries: [
-        {
-          url: '/index.html',
-          revision: md5File.sync(path.resolve(DIST_DIR, './index.html')),
-        },
-      ],
+        fs.existsSync(path.resolve(DIST_DIR, './index.html'))
+          ?
+          {
+            url: '/index.html',
+            revision: md5File.sync(path.resolve(DIST_DIR, './index.html')),
+          }
+          : null,
+      ].filter(Boolean)
     }),
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
