@@ -34,23 +34,6 @@ module Make =
     ();
   };
 
-  let initialize = () => {
-    Permissions.(query(Descriptor.make(~name=Conf.name)))
-    |> Js.Promise.then_(s => {
-         let initialStatus =
-           switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
-           | Some(`Prompt) => Unprompted
-           | Some(`Granted) => PermissionGranted(None)
-           | Some(`Denied) => PermissionRejected
-           | None => Unprompted
-           };
-         handleStatusChange(initialStatus);
-         Js.Promise.resolve(initialStatus);
-       })
-    |> transitionInProgress
-    |> handleStatusChange;
-  };
-
   let prompt = () => {
     let newStatus =
       Conf.onPrompt()
@@ -67,6 +50,23 @@ module Make =
       |> transitionInProgress;
     let _ = handleStatusChange(newStatus);
     newStatus;
+  };
+
+  let initialize = () => {
+    Permissions.(query(Descriptor.make(~name=Conf.name)))
+    |> Js.Promise.then_(s => {
+         let initialStatus =
+           switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
+           | Some(`Prompt) => Unprompted
+           | Some(`Granted) => prompt()
+           | Some(`Denied) => PermissionRejected
+           | None => Unprompted
+           };
+         handleStatusChange(initialStatus);
+         Js.Promise.resolve(initialStatus);
+       })
+    |> transitionInProgress
+    |> handleStatusChange;
   };
 
   let use = () => {

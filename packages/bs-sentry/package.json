@@ -1,0 +1,17 @@
+{
+  "name": "bs-sentry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bsb:build": "bsb -make-world",
+    "bsb:start": "bsb -make-world -w",
+    "bsb:clean": "bsb -clean-world"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@sentry/browser": "^5.10.1",
+    "bs-platform": "^7.0.1"
+  }
+}

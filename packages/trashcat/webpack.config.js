@@ -105,6 +105,7 @@ module.exports = {
       ),
       'process.env.RPC_ORIGIN': JSON.stringify('trashcat-rpc.trashed.today'),
       'process.env.SERVICE_WORKER_URL': JSON.stringify('/service-worker.js'),
+      'process.env.SENTRY_DSN': JSON.stringify('https://a40bfb7832ee49ada594bcf7f8d9bf87@sentry.io/1850121')
     }),
   ].filter(p => Boolean(p)),
 };

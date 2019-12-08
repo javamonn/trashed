@@ -20,10 +20,13 @@
     "re-classnames",
     "bs-webapi",
     "bs-aws-amplify",
+    "bs-sentry",
     "bs-date-fns",
     "reason-apollo",
     "reason-apollo-hooks"
   ],
-  "ppx-flags": ["graphql_ppx/ppx"],
+  "ppx-flags": [
+    "@baransu/graphql_ppx_re/ppx6"
+  ],
   "refmt": 3
 }

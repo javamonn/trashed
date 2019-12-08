@@ -14,6 +14,9 @@ module Env = {
   [@bs.val] external nodeEnv: string = "process.env.NODE_ENV";
   [@bs.val]
   external serviceWorkerUrl: string = "process.env.SERVICE_WORKER_URL";
+  
+  [@bs.val]
+    external sentryDsn: string = "process.env.SENTRY_DSN";
 };
 
 [@bs.module "../aws-exports"]
