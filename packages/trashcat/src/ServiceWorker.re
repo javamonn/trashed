@@ -1,7 +1,5 @@
 open Externals;
 
-Js.log("workbox")
-
 let _ = Workbox.(precacheManifest->Precaching.precacheAndRoute);
 let _ =
   Workbox.(

@@ -26,7 +26,7 @@ require('http')
             });
         } else if (
           !request.url.includes('/images') &&
-          !request.url.includes('/js/static/')
+          !request.url.includes('/static')
         ) {
           const url = 'index.html';
           fileServer.serveFile(url, 200, {}, request, response);

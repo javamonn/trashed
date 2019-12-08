@@ -88,11 +88,13 @@ module.exports = {
           : null,
       ].filter(Boolean)
     }),
-    // new CleanWebpackPlugin({}),
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['static/*.*', '*.js'],
+      cleanAfterEveryBuildPatterns: ['static/*.*', '*.js']
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      excludeChunks: ['serviceWorker'],
-      inject: 'head'
+      excludeChunks: ['serviceWorker']
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
