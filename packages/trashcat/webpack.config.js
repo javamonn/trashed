@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const md5File = require('md5-file');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const WorkboxPlugin = require('workbox-webpack-plugin');
@@ -76,6 +77,12 @@ module.exports = {
     new WorkboxPlugin.InjectManifest({
       swSrc: './src/ServiceWorker.bs.js',
       swDest: 'service-worker.js',
+      additionalManifestEntries: [
+        {
+          url: '/index.html',
+          revision: md5File.sync(path.resolve(DIST_DIR, './index.html')),
+        },
+      ],
     }),
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
