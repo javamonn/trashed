@@ -20,12 +20,11 @@
     "@aws-amplify/storage": "^1.2.4"
   },
   "devDependencies": {
-    "bs-platform": "^5.0.6",
+    "bs-platform": "^7.0.1",
     "@aws-amplify/api": "^1.2.4",
     "@aws-amplify/auth": "^1.5.0",
     "@aws-amplify/core": "^1.2.4",
     "@aws-amplify/pubsub": "^1.2.4",
-    "@aws-amplify/storage": "^1.2.4",
-    "graphql_ppx": "^0.2.8"
+    "@aws-amplify/storage": "^1.2.4"
   }
 }
