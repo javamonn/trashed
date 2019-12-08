@@ -42,7 +42,14 @@ let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) =
       type_="image/svg+xml"
       className={
         isLoading
-          ? cn(["invisible", "absolute", "w-0", "h-0"]) : className->Cn.unpack
+          ? cn([
+              "invisible",
+              "absolute",
+              "w-0",
+              "h-0",
+              "pointer-events-none",
+            ])
+          : cn(["pointer-events-none", className->Cn.unpack])
       }
       data=icon
     />
