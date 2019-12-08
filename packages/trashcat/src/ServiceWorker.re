@@ -1,12 +1,13 @@
 open Externals;
 
+Js.log("workbox")
+
 let _ = Workbox.(precacheManifest->Precaching.precacheAndRoute);
 let _ =
   Workbox.(
-    Routing.registerNavigationRoute(
-      Precaching.getCacheKeyForURL("/index.html"),
-      Routing.config(~whitelist=[|[%bs.re "/.*/"]|]),
-    )
+    "/index.html"
+    ->Precaching.getCacheKeyForURL
+    ->Routing.registerNavigationRoute
   );
 
 let _ =

@@ -50,7 +50,10 @@ module Routing = {
   external registerRoute: (Js.Re.t, Strategies.t) => unit = "registerRoute";
 
   [@bs.module "workbox-routing/registerNavigationRoute.mjs"]
-  external registerNavigationRoute: (string, config) => unit = "registerNavigationRoute";
+  external registerNavigationRoute: (string) => unit = "registerNavigationRoute";
+
+  [@bs.module "workbox-routing/registerNavigationRoute.mjs"]
+  external registerNavigationRouteWithConfig: (string, config) => unit = "registerNavigationRoute";
 };
 
 [@bs.scope "self"] [@bs.val]
