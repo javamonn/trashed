@@ -20,6 +20,7 @@
     "re-classnames",
     "bs-webapi",
     "bs-aws-amplify",
+    "bs-sentry",
     "bs-date-fns",
     "reason-apollo",
     "reason-apollo-hooks"
