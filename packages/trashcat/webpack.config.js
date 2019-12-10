@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const replaceInFile = require('replace-in-file')
 const webpack = require('webpack');
 const md5File = require('md5-file');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
@@ -79,22 +79,31 @@ module.exports = {
       swSrc: './src/ServiceWorker.bs.js',
       swDest: 'service-worker.js',
       additionalManifestEntries: [
-        fs.existsSync(path.resolve(DIST_DIR, './index.html'))
-          ?
-          {
-            url: '/index.html',
-            revision: md5File.sync(path.resolve(DIST_DIR, './index.html')),
-          }
-          : null,
-      ].filter(Boolean)
+        {
+          url: '/index.html',
+          revision: '<%= INDEX_REVISION %>',
+        }]
+
     }),
+    new HtmlWebpackPlugin({
+      template: './src/static/index-template.html',
+      excludeChunks: ['serviceWorker']
+    }),
+    {
+      apply: (compiler) => {
+        compiler.hooks.done.tap('IndexRevisionPlugin', () => {
+          const indexRevision = md5File.sync(path.resolve(DIST_DIR, './index.html'))
+          replaceInFile.sync({
+            files: path.resolve(DIST_DIR, './service-worker.js'),
+            from: /<%= INDEX_REVISION %>/,
+            to: indexRevision
+          })
+        })
+      }
+    },
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['static/*.*', '*.js'],
       cleanAfterEveryBuildPatterns: ['static/*.*', '*.js']
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-      excludeChunks: ['serviceWorker']
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
