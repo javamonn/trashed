@@ -52,6 +52,10 @@ let handler =
       |> cookie(
            ~name="CloudFront-Policy",
            ~domain=Constants.Env.domain,
+           ~httpOnly=true,
+           ~secure=true,
+           ~maxAge=60*60*24*7,
+           ~sameSite=`Strict,
            signedCookie
            ->AWSSDK.CloudFront.Signer.SignedCookie.policyGet
            ->Json.Encode.string,
@@ -59,6 +63,10 @@ let handler =
       |> cookie(
            ~name="CloudFront-Signature",
            ~domain=Constants.Env.domain,
+           ~httpOnly=true,
+           ~secure=true,
+           ~maxAge=60*60*24*7,
+           ~sameSite=`Strict,
            signedCookie
            ->AWSSDK.CloudFront.Signer.SignedCookie.signatureGet
            ->Json.Encode.string,
@@ -66,6 +74,10 @@ let handler =
       |> cookie(
            ~name="CloudFront-Key-Pair-Id",
            ~domain=Constants.Env.domain,
+           ~httpOnly=true,
+           ~secure=true,
+           ~maxAge=60*60*24*7,
+           ~sameSite=`Strict,
            signedCookie
            ->AWSSDK.CloudFront.Signer.SignedCookie.keyPairIdGet
            ->Json.Encode.string,
