@@ -12,6 +12,7 @@ module VideoElement = Externals_VideoElement;
 module Bowser = Externals_Bowser;
 module UUID = Externals_UUID;
 module Workbox = Externals_Workbox;
+module Cookie = Externals_Cookie;
 
 module AppSync = Externals_AppSync;
 module S3Object = Externals_S3Object;

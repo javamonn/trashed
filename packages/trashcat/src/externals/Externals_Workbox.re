@@ -41,19 +41,40 @@ module Strategies = {
 
 module Routing = {
 
+  [@bs.val "Response"]
+  external makeResponseError: unit => Fetch.Response.t = "error";
+
   [@bs.deriving abstract]
-  type config = {
-    whitelist: array(Js.Re.t)
+  type config = {whitelist: array(Js.Re.t)};
+
+  type fetchEvent = {request: Fetch.request};
+
+  [@bs.deriving accessors]
+  type handlerContext = {
+    url: string,
+    request: option(Fetch.request),
+    event: option(fetchEvent),
+    params: option(Js.Json.t),
   };
 
   [@bs.module "workbox-routing/registerRoute.mjs"]
-  external registerRoute: (Js.Re.t, Strategies.t) => unit = "registerRoute";
+  external registerRoute:
+    (
+      Js.Re.t,
+      [@bs.unwrap] [
+        | `Strategy(Strategies.t)
+        | `Handler(handlerContext => Js.Promise.t(Fetch.response))
+      ]
+    ) =>
+    unit =
+    "registerRoute";
 
   [@bs.module "workbox-routing/registerNavigationRoute.mjs"]
-  external registerNavigationRoute: (string) => unit = "registerNavigationRoute";
+  external registerNavigationRoute: string => unit = "registerNavigationRoute";
 
   [@bs.module "workbox-routing/registerNavigationRoute.mjs"]
-  external registerNavigationRouteWithConfig: (string, config) => unit = "registerNavigationRoute";
+  external registerNavigationRouteWithConfig: (string, config) => unit =
+    "registerNavigationRoute";
 };
 
 [@bs.scope "self"] [@bs.val]

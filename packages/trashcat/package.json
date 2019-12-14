@@ -8,6 +8,7 @@
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
+    "webpack:serve": "webpack-dev-server",
     "webpack:start": "webpack -w",
     "webpack:build": "webpack",
     "webpack:analyze-bundle": "NODE_ENV=production ANALYZE_BUNDLE=true npm run build",
@@ -18,8 +19,8 @@
     "build": "npm run bsb:clean && npm run bsb:build && npm run webpack:build",
     "build:production": "NODE_ENV=production npm run build",
     "start": "npm run start:webpack-serve",
-    "start:webpack-serve": "concurrently -k -n \"webpack,serve\" \"npm run webpack:start\" \"npm run serve\"",
-    "start:all": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\" \"npm run serve\""
+    "start:webpack-serve": "concurrently -k -n \"webpack,serve\" \"npm run webpack:start\"",
+    "start:all": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\""
   },
   "author": "",
   "license": "ISC",
@@ -46,6 +47,7 @@
     "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "3.8.2",
     "workbox-webpack-plugin": "^5.0.0-rc.1"
   },
   "dependencies": {
@@ -62,9 +64,11 @@
     "aws-appsync-react": "^2.0.0",
     "bowser": "^2.5.3",
     "bs-aws-amplify": "^1.0.0",
-    "bs-sentry": "^1.0.0",
     "bs-date-fns": "^0.1.6",
+    "bs-fetch": "^0.5.0",
+    "bs-sentry": "^1.0.0",
     "bs-webapi": "^0.15.3",
+    "js-cookie": "^2.2.1",
     "re-classnames": "^4.0.0",
     "reason-apollo": "^0.18.0",
     "reason-apollo-hooks": "^2.5.1",

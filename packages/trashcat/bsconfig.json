@@ -22,6 +22,7 @@
     "bs-aws-amplify",
     "bs-sentry",
     "bs-date-fns",
+    "bs-fetch",
     "reason-apollo",
     "reason-apollo-hooks"
   ],

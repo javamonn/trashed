@@ -117,4 +117,11 @@ module.exports = {
       'process.env.SENTRY_DSN': JSON.stringify('https://a40bfb7832ee49ada594bcf7f8d9bf87@sentry.io/1850121')
     }),
   ].filter(p => Boolean(p)),
+  devServer: {
+    liveReload: true,
+    port: 8080,
+    host: 'localhost.trashed.today',
+    index: 'index.html',
+    contentBase: DIST_DIR
+  }
 };
