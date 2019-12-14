@@ -122,6 +122,7 @@ module.exports = {
     port: 8080,
     host: 'localhost.trashed.today',
     index: 'index.html',
-    contentBase: DIST_DIR
+    contentBase: DIST_DIR,
+    historyApiFallback: true
   }
 };

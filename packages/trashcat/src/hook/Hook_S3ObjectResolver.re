@@ -67,9 +67,10 @@ module State = {
     | SetState(t('a));
 };
 
-let resolver =
-  Constants.Env.nodeEnv === "production" || true
-    ? CloudFrontResolver.resolve : S3Resolver.resolve;
+let resolver = 
+  Webapi.Dom.(location |> Webapi.Dom.Location.host) === "localhost:8080"
+    ? S3Resolver.resolve
+    : CloudFrontResolver.resolve;
 
 let use = s3Objects => {
   let (state, dispatch) =

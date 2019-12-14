@@ -14,13 +14,12 @@
     "webpack:analyze-bundle": "NODE_ENV=production ANALYZE_BUNDLE=true npm run build",
     "graphql:sync-schema": "./scripts/graphql-sync-schema.sh && npm run bsb:clean",
     "amplify:production:pull": "amplify env pull --restore && amplify env checkout production && amplify api gql-compile",
-    "serve": "node ./static-server.js",
     "deploy": "npm run build && amplify publish -y -c",
     "build": "npm run bsb:clean && npm run bsb:build && npm run webpack:build",
     "build:production": "NODE_ENV=production npm run build",
     "start": "npm run start:webpack-serve",
-    "start:webpack-serve": "concurrently -k -n \"webpack,serve\" \"npm run webpack:start\"",
-    "start:all": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:start\""
+    "start:webpack-serve": "npm run webpack:serve",
+    "start:all": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:serve\""
   },
   "author": "",
   "license": "ISC",

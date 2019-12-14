@@ -33,14 +33,21 @@ let make = (~className=?, ~style=?, ~location as (lat, lon)) =>
         )
       )
     />
-    <img
-      className={Cn.make(["overflow-hidden", "rounded-full"])}
-      style={Lib.Styles.style(
-        ~width=Lib.Styles.px(imageSize),
-        ~height=Lib.Styles.px(imageSize),
-        ~maxWidth="unset",
-        (),
-      )}
-      src={imgUrl(~lat, ~lon)}
-    />
+    {ReactDOMRe.createElementVariadic(
+       "img",
+       ~props=
+         ReactDOMRe.objToDOMProps({
+           "className": Cn.make(["overflow-hidden", "rounded-full"]),
+           "style":
+             Lib.Styles.style(
+               ~width=Lib.Styles.px(imageSize),
+               ~height=Lib.Styles.px(imageSize),
+               ~maxWidth="unset",
+               (),
+             ),
+           "src": imgUrl(~lat, ~lon),
+           "crossorigin": "anonymous",
+         }),
+       [||],
+     )}
   </a>;
