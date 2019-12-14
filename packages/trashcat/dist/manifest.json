@@ -2,18 +2,20 @@
   "name": "trashed",
   "icons": [
     {
-      "src": "/images/icon-192-circle.png",
+      "src": "/images/icon-192-maskable.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "maskable any"
     },
     {
-      "src": "/images/icon-512-circle.png",
+      "src": "/images/icon-512-maskable.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "maskable any"
     }
   ],
   "start_url": "/item?utm_source=launch-home-screen",
-  "background_color": "#93B5C6",
-  "theme_color": "#93B5C6",
+  "background_color": "#FDE58F",
+  "theme_color": "#FDE58F",
   "display": "standalone"
 }

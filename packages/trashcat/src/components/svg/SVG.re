@@ -23,9 +23,27 @@ let emojiWhiteCheckMark: string = [%raw
 
 let emojiHourglass: string = [%raw "require('./emoji-hourglass.svg')"];
 
+type state = {
+  isLoading: bool,
+  src: string,
+};
+
 [@react.component]
 let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) => {
-  let (isLoading, setIsLoading) = React.useState(() => true);
+  let ({isLoading, src}, setState) =
+    React.useState(() => {isLoading: true, src: icon});
+
+  let _ =
+    React.useEffect1(
+      () => {
+        if (src !== icon) {
+          let _ = setState(_ => {isLoading: true, src: icon});
+          ();
+        };
+        None;
+      },
+      [|icon|],
+    );
 
   let renderPlaceholder = () =>
     <svg
@@ -38,7 +56,7 @@ let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) =
   <>
     {isLoading ? renderPlaceholder() : React.null}
     <object
-      onLoad={_ => setIsLoading(_ => false)}
+      onLoad={_ => setState(_ => {isLoading: false, src})}
       type_="image/svg+xml"
       className={
         isLoading
@@ -51,7 +69,7 @@ let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) =
             ])
           : cn(["pointer-events-none", className->Cn.unpack])
       }
-      data=icon
+      data=src
     />
   </>;
 };

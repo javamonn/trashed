@@ -84,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "trashed-production-20190824131356-deployment",
-					"S3Key": "amplify-builds/rpc-6d47712f4a436e594476-build.zip"
+					"S3Key": "amplify-builds/rpc-4b5a38464934787a4e30-build.zip"
 				}
 			}
 		},

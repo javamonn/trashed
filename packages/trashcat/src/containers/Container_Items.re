@@ -163,6 +163,7 @@ let make =
   | (Some(itemId), _) => renderItem(~itemId, ~isActive=true)
   | (None, Loading)
   | (None, Data(_)) => renderLoading()
-  | (None, Error(_)) => renderError()
+  | (None, Error(_))
+  | (None, NoData) => renderError()
   };
 };

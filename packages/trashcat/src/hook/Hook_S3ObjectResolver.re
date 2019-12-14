@@ -13,7 +13,15 @@ module CloudFrontResolver = {
     | AuthenticationInProgress(Js.Promise.t(unit))
     | Authenticated;
 
-  let authenticationState = ref(Unauthenticated);
+  let authenticationState =
+    switch (
+      Cookie.get("CloudFront-Signature"),
+      Cookie.get("CloudFront-Policy"),
+      Cookie.get("CloudFront-Key-Pair-Id"),
+    ) {
+    | (Some(_), Some(_), Some(_)) => ref(Authenticated)
+    | _ => ref(Unauthenticated)
+    };
 
   let authenticate = () =>
     switch (authenticationState^) {
@@ -39,14 +47,11 @@ module CloudFrontResolver = {
     };
 
   let resolve = s3Object => {
-    let protocol = Webapi.Dom.location->Webapi.Dom.Location.protocol;
     let origin = Constants.Env.cloudfrontDistributionOrigin;
     let key = s3Object->S3Object.keyGet;
 
     authenticate()
-    |> Js.Promise.then_(() =>
-         {j|$protocol//$origin/$key|j}->Js.Promise.resolve
-       );
+    |> Js.Promise.then_(() => {j|https://$origin/$key|j}->Js.Promise.resolve);
   };
 };
 
@@ -62,9 +67,10 @@ module State = {
     | SetState(t('a));
 };
 
-let resolver =
-  Constants.Env.nodeEnv === "production"
-    ? CloudFrontResolver.resolve : S3Resolver.resolve;
+let resolver = 
+  Webapi.Dom.(location |> Webapi.Dom.Location.host) === "localhost:8080"
+    ? S3Resolver.resolve
+    : CloudFrontResolver.resolve;
 
 let use = s3Objects => {
   let (state, dispatch) =

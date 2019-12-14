@@ -8,11 +8,19 @@ module Container = {
   [@react.component]
   let make = (~direction, ~onScroll=?, ~initialIdx=?, ~children) => {
     let containerRef = React.useRef(Js.Nullable.null);
+    let (hasScrolledToInitialIdx, setHasScrolledToInitialIdx) =
+      React.useState(() =>
+        switch (initialIdx) {
+        | Some(idx) when idx === 0 => true
+        | Some(_)
+        | None => false
+        }
+      );
     let _ =
       React.useEffect0(() => {
         let _ =
           switch (initialIdx) {
-          | Some(initialIdx) when initialIdx > 0 =>
+          | Some(initialIdx) when initialIdx > 0 && !hasScrolledToInitialIdx =>
             let elem = containerRef->React.Ref.current->Js.Nullable.toOption;
             switch (elem, direction) {
             | (Some(elem), Horizontal) =>
@@ -22,6 +30,7 @@ module Container = {
                   elem,
                   float_of_int(width * initialIdx),
                 );
+              let _ = setHasScrolledToInitialIdx(_ => true);
               ();
             | (Some(elem), Vertical) =>
               let height = Webapi.Dom.Element.clientHeight(elem);
@@ -30,6 +39,7 @@ module Container = {
                   elem,
                   float_of_int(height * initialIdx),
                 );
+              let _ = setHasScrolledToInitialIdx(_ => true);
               ();
             | _ => ()
             };
@@ -39,11 +49,12 @@ module Container = {
       });
 
     <div
-      ?onScroll
+      onScroll=?{hasScrolledToInitialIdx ? onScroll : None}
       ref={containerRef->ReactDOMRe.Ref.domRef}
       className={cn([
         "h-screen",
         "w-screen",
+        "invisible"->Cn.ifTrue(!hasScrolledToInitialIdx),
         switch (direction) {
         | Horizontal => cn(["overflow-x-scroll", "flex"])
         | Vertical => cn(["overflow-y-scroll"])
