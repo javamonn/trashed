@@ -36,16 +36,6 @@ let make = (~tab, ~url) => {
   let nextToken = Webapi.Url.URLSearchParams.get("nextToken", params);
   let itemId = Webapi.Url.URLSearchParams.get("itemId", params);
 
-  let handleReplaceUrlSearch = newSearch => {
-    let _ =
-      url.path
-      |> Array.of_list
-      |> Js.Array.joinWith("/")
-      |> (path => "/" ++ path ++ "?" ++ newSearch)
-      |> ReasonReactRouter.replace;
-    ();
-  };
-
   let handleScroll = ev => {
     let _ = ReactEvent.UI.stopPropagation(ev);
     let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
@@ -86,20 +76,37 @@ let make = (~tab, ~url) => {
     ();
   };
 
+  let handleVisibleItemChange = (~nextToken, ~itemId, ()) => {
+    let newSearch =
+      [|("nextToken", nextToken), ("itemId", itemId)|]
+      ->Belt.Array.keepMap(((key, value)) =>
+          value->Belt.Option.map(value => (key, value))
+        )
+      ->Webapi.Url.URLSearchParams.makeWithArray
+      ->Webapi.Url.URLSearchParams.toString;
+    let _ =
+      url.path
+      |> Array.of_list
+      |> Js.Array.joinWith("/")
+      |> (path => "/" ++ path ++ "?" ++ newSearch)
+      |> ReasonReactRouter.replace;
+    ();
+  };
+
   <ScrollSnapList.Container
     direction=ScrollSnapList.Vertical
     initialIdx={Tab.indexOf(tab)}
     onScroll=handleScroll>
     <ScrollSnapList.Item direction=ScrollSnapList.Vertical>
-      <Screen_NewItem isActive={Tab.equal(tab, New)} />
+      <Container.ItemNew isActive={Tab.equal(tab, New)} />
     </ScrollSnapList.Item>
     <ScrollSnapList.Item
       className={cn(["relative"])} direction=ScrollSnapList.Vertical>
-      <Screen_ListItems
+      <Container.ItemFeed
         ?nextToken
         ?itemId
-        onReplaceUrlSearch=handleReplaceUrlSearch
         isActive={Tab.equal(tab, Feed)}
+        onVisibleItemChange=handleVisibleItemChange
       />
     </ScrollSnapList.Item>
   </ScrollSnapList.Container>;

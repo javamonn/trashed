@@ -1,4 +1,6 @@
 open Lib.Utils;
+open Lib.Styles;
+open Externals;
 
 module NearbyItemsQueryConfig = [%graphql
   {|
@@ -37,19 +39,63 @@ module NearbyItemsQueryConfig = [%graphql
 module NearbyItemsQuery =
   ReasonApolloHooks.Query.Make(NearbyItemsQueryConfig);
 
+let renderItem = (~itemId, ~isActive) =>
+  <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Horizontal>
+    <Container_Item key=itemId itemId autoPlay=isActive />
+  </ScrollSnapList.Item>;
+
+let renderPlaceholder = () =>
+  <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />;
+
+let renderContainer =
+    (
+      ~onScroll,
+      ~itemIdx,
+      ~item,
+      ~children,
+      ~onPromptGeolocation,
+      ~geolocationPermission,
+    ) =>
+  <>
+    <ItemTopOverlay onPromptGeolocation geolocationPermission />
+    <ScrollSnapList.Container
+      direction=ScrollSnapList.Horizontal onScroll initialIdx=itemIdx>
+      children
+    </ScrollSnapList.Container>
+    <ItemBottomOverlay item />
+  </>;
+
+let renderLoading = () =>
+  <div
+    className={cn([
+      "w-screen",
+      "h-screen",
+      "flex",
+      "justify-center",
+      "items-center",
+    ])}>
+    <Progress />
+  </div>;
+
+let renderError = () => <Error />;
+
 [@react.component]
 let make =
-    (
-      ~renderItem,
-      ~renderError,
-      ~renderLoading,
-      ~renderContainer,
-      ~renderPlaceholder,
-      ~onChange,
-      ~itemId=?,
-      ~nextToken=?,
-      ~location=?,
-    ) => {
+    (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
+
+  let (geolocationPermission, onPromptGeolocation, _) =
+    Service.Permission.Geolocation.use();
+
+  let location =
+    switch (geolocationPermission) {
+    | Service.Permission.PermissionGranted(Some(pos)) =>
+      Some({
+        "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
+        "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
+      })
+    | _ => None
+    };
+
   let (query, _fullQuery) =
     NearbyItemsQuery.use(
       ~variables=
@@ -84,7 +130,7 @@ let make =
                 ->Belt.Option.map(item => item##id)
               };
             if (newItemId !== itemId || newNextToken !== nextToken) {
-              onChange(~nextToken=newNextToken, ~itemId=newItemId, ());
+              onVisibleItemChange(~nextToken=newNextToken, ~itemId=newItemId, ());
             };
           | _ => ()
           };
@@ -130,7 +176,7 @@ let make =
             )
           ) {
           | Some(item) when item##id !== itemId =>
-            let _ = onChange(~nextToken, ~itemId=Some(item##id), ());
+            let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
             ();
           | _ => ()
           };
@@ -147,20 +193,25 @@ let make =
         ~onScroll=handleScroll,
         ~itemIdx,
         ~item=activeItem,
+        ~geolocationPermission,
+        ~onPromptGeolocation,
         ~children=
           itemWindow
           ->Belt.Array.map(item =>
               switch (item) {
               | Some(item) =>
-                renderItem(~itemId=item##id, ~isActive=item##id === itemId)
+                renderItem(
+                  ~itemId=item##id,
+                  ~isActive=item##id === itemId && isActive,
+                )
               | None => renderPlaceholder()
               }
             )
           ->React.array,
       );
-    | None => renderItem(~itemId, ~isActive=true)
+    | None => renderItem(~itemId, ~isActive)
     }
-  | (Some(itemId), _) => renderItem(~itemId, ~isActive=true)
+  | (Some(itemId), _) => renderItem(~itemId, ~isActive)
   | (None, Loading)
   | (None, Data(_)) => renderLoading()
   | (None, Error(_))
