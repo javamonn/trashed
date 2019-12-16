@@ -2,87 +2,27 @@ open Lib.Utils;
 open Lib.Styles;
 open Externals;
 
-module NearbyItemsQueryConfig = [%graphql
+module NearbyItemsQuery = [%graphql
   {|
     query NearbyItems($location: LocationInput, $m: Int, $nextToken: String)  {
       nearbyItems(location: $location, m: $m, nextToken: $nextToken, limit: 30) {
         nextToken
         items {
           id
-          createdAt
-          video {
-            id
-            thumbnail {
-              bucket
-              key
-              region
-            }
-            files {
-              file {
-                bucket
-                key
-                region
-              }
-              mimeType
-            }
-          }
           location {
             lat
             lon
           }
+          createdAt
+          ...Container_Item.GetItemFragment.ItemFragment @bsField(name: "itemFragment")
         }
       }
     }
   |}
 ];
 
-module NearbyItemsQuery =
-  ReasonApolloHooks.Query.Make(NearbyItemsQueryConfig);
-
-let renderItem = (~itemId, ~isActive) =>
-  <ScrollSnapList.Item key=itemId direction=ScrollSnapList.Horizontal>
-    <Container_Item key=itemId itemId autoPlay=isActive />
-  </ScrollSnapList.Item>;
-
-let renderPlaceholder = () =>
-  <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />;
-
-let renderContainer =
-    (
-      ~onScroll,
-      ~itemIdx,
-      ~item,
-      ~children,
-      ~onPromptGeolocation,
-      ~geolocationPermission,
-    ) =>
-  <>
-    <ItemTopOverlay onPromptGeolocation geolocationPermission />
-    <ScrollSnapList.Container
-      direction=ScrollSnapList.Horizontal onScroll initialIdx=itemIdx>
-      children
-    </ScrollSnapList.Container>
-    <ItemBottomOverlay item />
-  </>;
-
-let renderLoading = () =>
-  <div
-    className={cn([
-      "w-screen",
-      "h-screen",
-      "flex",
-      "justify-center",
-      "items-center",
-    ])}>
-    <Progress />
-  </div>;
-
-let renderError = () => <Error />;
-
 [@react.component]
-let make =
-    (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
-
+let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let (geolocationPermission, onPromptGeolocation, _) =
     Service.Permission.Geolocation.use();
 
@@ -97,10 +37,10 @@ let make =
     };
 
   let (query, _fullQuery) =
-    NearbyItemsQuery.use(
-      ~variables=
-        NearbyItemsQueryConfig.make(~location?, ~m=1000, ())##variables,
-      (),
+    ApolloHooks.useQuery(
+      ~fetchPolicy=ApolloHooksTypes.CacheAndNetwork,
+      ~variables=NearbyItemsQuery.makeVariables(~location?, ~m=1000, ()),
+      NearbyItemsQuery.definition,
     );
 
   let _ =
@@ -130,7 +70,11 @@ let make =
                 ->Belt.Option.map(item => item##id)
               };
             if (newItemId !== itemId || newNextToken !== nextToken) {
-              onVisibleItemChange(~nextToken=newNextToken, ~itemId=newItemId, ());
+              onVisibleItemChange(
+                ~nextToken=newNextToken,
+                ~itemId=newItemId,
+                (),
+              );
             };
           | _ => ()
           };
@@ -139,82 +83,107 @@ let make =
       [|query|],
     );
 
-  switch (itemId, query) {
-  | (Some(itemId), Data(data)) =>
-    switch (
+  let handleScroll = (~itemWindow, ~itemId, ev) => {
+    let _ = ReactEvent.UI.stopPropagation(ev);
+    let scrollLeft = int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
+    let windowWidth = Webapi.Dom.(window->Window.innerWidth);
+
+    let activeIdx =
+      itemWindow
+      ->Belt.Array.mapWithIndex((idx, _item) => idx * windowWidth)
+      ->Belt.Array.getIndexBy(width => scrollLeft === width);
+
+    let _ =
+      switch (
+        activeIdx->Belt.Option.flatMap(idx =>
+          Belt.Array.get(itemWindow, idx)->Belt.Option.flatMap(identity)
+        )
+      ) {
+      | Some(item) when item##id !== itemId =>
+        let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
+        ();
+      | _ => ()
+      };
+    ();
+  };
+
+  switch (query) {
+  | Loading =>
+    <div
+      className={cn([
+        "w-screen",
+        "h-screen",
+        "flex",
+        "justify-center",
+        "items-center",
+      ])}>
+      <Progress />
+    </div>
+  | Error(_)
+  | NoData => <Error />
+  | Data(data) =>
+    let items =
       data##nearbyItems
       ->Belt.Option.flatMap(l => l##items)
       ->Belt.Option.map(i => i->Belt.Array.keepMap(i => i))
-    ) {
-    | Some(items) =>
-      let itemIdx =
-        items
-        ->Belt.Array.getIndexBy(i => itemId === i##id)
-        ->Belt.Option.getExn;
-      let itemWindow =
-        Belt.Array.makeBy(itemIdx + 2, idx =>
-          if (idx <= itemIdx + 1 && idx >= itemIdx - 1) {
+      ->Belt.Option.getWithDefault([||]);
+
+    let activeItemId =
+      switch (itemId, Belt.Array.get(items, 0)) {
+      | (Some(itemId), _) => Some(itemId)
+      | (None, Some(item)) => Some(item##id)
+      | (None, None) => None
+      };
+    let activeItemIdx =
+      activeItemId->Belt.Option.flatMap(activeItemId =>
+        items->Belt.Array.getIndexBy(i => activeItemId === i##id)
+      );
+    let activeItem =
+      activeItemIdx->Belt.Option.flatMap(Belt.Array.get(items));
+    let itemWindow =
+      activeItemIdx->Belt.Option.map(activeItemIdx =>
+        Belt.Array.makeBy(activeItemIdx + 2, idx =>
+          if (idx <= activeItemIdx + 1 && idx >= activeItemIdx - 1) {
             items->Belt.Array.get(idx);
           } else {
             None;
           }
-        );
-      let handleScroll = ev => {
-        let _ = ReactEvent.UI.stopPropagation(ev);
-        let scrollLeft = int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
-        let windowWidth = Webapi.Dom.(window->Window.innerWidth);
-
-        let activeIdx =
-          itemWindow
-          ->Belt.Array.mapWithIndex((idx, _item) => idx * windowWidth)
-          ->Belt.Array.getIndexBy(width => scrollLeft === width);
-
-        let _ =
-          switch (
-            activeIdx->Belt.Option.flatMap(idx =>
-              Belt.Array.get(itemWindow, idx)->Belt.Option.flatMap(identity)
-            )
-          ) {
-          | Some(item) when item##id !== itemId =>
-            let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
-            ();
-          | _ => ()
-          };
-        ();
-      };
-
-      let activeItem =
-        itemWindow
-        ->Belt.Array.get(itemIdx)
-        ->Belt.Option.flatMap(identity)
-        ->Js.Option.getExn;
-
-      renderContainer(
-        ~onScroll=handleScroll,
-        ~itemIdx,
-        ~item=activeItem,
-        ~geolocationPermission,
-        ~onPromptGeolocation,
-        ~children=
-          itemWindow
-          ->Belt.Array.map(item =>
-              switch (item) {
-              | Some(item) =>
-                renderItem(
-                  ~itemId=item##id,
-                  ~isActive=item##id === itemId && isActive,
-                )
-              | None => renderPlaceholder()
-              }
-            )
-          ->React.array,
+        )
       );
-    | None => renderItem(~itemId, ~isActive)
-    }
-  | (Some(itemId), _) => renderItem(~itemId, ~isActive)
-  | (None, Loading)
-  | (None, Data(_)) => renderLoading()
-  | (None, Error(_))
-  | (None, NoData) => renderError()
+    switch (itemWindow, activeItem, activeItemIdx, activeItemId) {
+    | (
+        Some(itemWindow),
+        Some(activeItem),
+        Some(activeItemIdx),
+        Some(activeItemId),
+      ) =>
+      <>
+        <ItemTopOverlay onPromptGeolocation geolocationPermission />
+        <ScrollSnapList.Container
+          direction=ScrollSnapList.Horizontal
+          onScroll={handleScroll(~itemWindow, ~itemId=activeItemId)}
+          initialIdx=activeItemIdx>
+          {itemWindow
+           ->Belt.Array.map(item =>
+               switch (item) {
+               | Some(item) =>
+                 <ScrollSnapList.Item
+                   key=item##id direction=ScrollSnapList.Horizontal>
+                   <Container_Item
+                     key=item##id
+                     itemFragment=item##itemFragment
+                     autoPlay={item##id === activeItemId && isActive}
+                   />
+                 </ScrollSnapList.Item>
+               | None =>
+                 <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />
+               }
+             )
+           ->React.array}
+        </ScrollSnapList.Container>
+        <ItemBottomOverlay item=activeItem />
+      </>
+    | (_, _, _, _) => <Error />
+    };
   };
 };

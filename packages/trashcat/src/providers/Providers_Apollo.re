@@ -43,9 +43,9 @@ let make = (~children) =>
   <ReasonApollo.Provider
     client={client->AppSync.Client.asGeneratedApolloClient}>
     <AppSync.Rehydrated>
-      <ReasonApolloHooks.ApolloProvider
+      <ApolloHooks.Provider
         client={client->AppSync.Client.asGeneratedApolloClient}>
         children
-      </ReasonApolloHooks.ApolloProvider>
+      </ApolloHooks.Provider>
     </AppSync.Rehydrated>
   </ReasonApollo.Provider>;

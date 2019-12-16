@@ -1,7 +1,7 @@
 open Lib;
 open Externals;
 
-module CreateItemVideoMutationConfig = [%graphql
+module CreateItemVideoMutation = [%graphql
   {|
   mutation CreateItemVideo($input: CreateVideoInput!) {
     createVideo(input: $input) {
@@ -18,10 +18,8 @@ module CreateItemVideoMutationConfig = [%graphql
   }
 |}
 ];
-module CreateItemVideoMutation =
-  ReasonApolloHooks.Mutation.Make(CreateItemVideoMutationConfig);
 
-module CreateItemMutationConfig = [%graphql
+module CreateItemMutation = [%graphql
   {|
   mutation CreateItem($input: CreateItemInput!) {
     createItem(input: $input) {
@@ -45,13 +43,13 @@ module CreateItemMutationConfig = [%graphql
   }
 |}
 ];
-module CreateItemMutation =
-  ReasonApolloHooks.Mutation.Make(CreateItemMutationConfig);
 
 [@react.component]
 let make = (~isActive) => {
-  let (createItemVideoMutation, _s, _f) = CreateItemVideoMutation.use();
-  let (createItemMutation, _s, _f) = CreateItemMutation.use();
+  let (createItemVideoMutation, _s, _f) =
+    ApolloHooks.useMutation(CreateItemVideoMutation.definition);
+  let (createItemMutation, _s, _f) =
+    ApolloHooks.useMutation(CreateItemMutation.definition);
 
   let (notificationIn, setNotificationIn) = React.useState(() => false);
   let timeoutIdRef = React.useRef(None);
@@ -87,7 +85,7 @@ let make = (~isActive) => {
     let _ =
       createItemVideoMutation(
         ~variables=
-          CreateItemVideoMutationConfig.make(
+          CreateItemVideoMutation.makeVariables(
             ~input={
               "id": Externals.UUID.makeV4()->Js.Option.some,
               "files": [|
@@ -119,17 +117,17 @@ let make = (~isActive) => {
               "videoMediaConvertJobId": None,
             },
             (),
-          )##variables,
+          ),
         (),
       )
       |> Js.Promise.then_(r =>
            switch (r) {
-           | ReasonApolloHooks.Mutation.Data(data) =>
+           | ApolloHooks.Mutation.Data(data) =>
              data##createVideo
              ->Belt.Option.map(video =>
                  createItemMutation(
                    ~variables=
-                     CreateItemMutationConfig.make(
+                     CreateItemMutation.makeVariables(
                        ~input={
                          "itemVideoId": video##id,
                          "location": {
@@ -139,7 +137,7 @@ let make = (~isActive) => {
                          "id": Externals.UUID.makeV4()->Js.Option.some,
                        },
                        (),
-                     )##variables,
+                     ),
                    (),
                  )
                  |> Js.Promise.then_(_r => Js.Promise.resolve())
