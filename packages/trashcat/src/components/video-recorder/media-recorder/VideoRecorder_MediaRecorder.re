@@ -9,13 +9,13 @@ type geolocation = {
   objectUrl: string,
 };
 type review = {
-  coordinates: Geolocation.coordinates,
+  position: Geolocation.position,
   data: File.t,
   objectUrl: string,
 };
 type complete = {
   data: File.t,
-  coordinates: Geolocation.coordinates,
+  position: Geolocation.position,
 };
 
 [@bs.deriving accessors]
@@ -24,60 +24,46 @@ type t =
   | PhaseRecording(recording)
   | PhaseGetGeolocation(geolocation)
   | PhaseReview(review)
-  | PhaseComplete(complete)
   | PhaseError(error);
 
 [@bs.deriving accessors]
 type action =
+  | SetPhase(t)
   | SetPhaseGetUserMedia
   | SetPhaseError(error)
   | SetPhaseRecording(MediaStream.t)
   | SetPhaseReview(Geolocation.position)
   | SetPhaseGetGeolocation(File.t);
 
-let cleanupPhase = (~full=false, p) =>
-  switch (p) {
-  | PhaseGetUserMedia => ()
-  | PhaseError(_) => ()
-  | PhaseComplete(_) => ()
-  | PhaseRecording({stream}) =>
-    let _ =
-      stream
-      ->MediaStream.getTracks
-      ->Belt.Array.forEach(MediaStream.Track.stop);
-    ();
-  | PhaseGetGeolocation({objectUrl}) when full =>
-    let _ = Webapi.Url.revokeObjectURL(objectUrl);
-    ();
-  | PhaseGetGeolocation(_) => ()
-  | PhaseReview({objectUrl}) =>
-    let _ = Webapi.Url.revokeObjectURL(objectUrl);
-    ();
-  };
-
 [@react.component]
 let make = (~mimeType, ~onFile, ~isActive) => {
+  let (geolocationPermission, onGeolocationPrompt, _) =
+    Service.Permission.Geolocation.use();
+
   let ((phaseState, prevPhaseState), dispatchPhaseAction) =
     React.useReducer(
       ((state, _prevState), action) => {
         let nextState =
           switch (action) {
+          | SetPhase(phase) => phase
           | SetPhaseGetUserMedia => PhaseGetUserMedia
           | SetPhaseError(error) => PhaseError(error)
           | SetPhaseRecording(stream) => PhaseRecording({stream: stream})
           | SetPhaseReview(position) =>
             switch (state) {
             | PhaseGetGeolocation({data, objectUrl}) =>
-              PhaseReview({
-                coordinates: position->Geolocation.coordsGet,
-                data,
-                objectUrl,
-              })
+              PhaseReview({position, data, objectUrl})
             | _ => PhaseError(`InvalidPhaseTransition)
             }
           | SetPhaseGetGeolocation(data) =>
-            switch (state) {
-            | PhaseRecording(_) =>
+            switch (state, geolocationPermission) {
+            | (PhaseRecording(_), PermissionGranted(Some(position))) =>
+              PhaseReview({
+                position,
+                data,
+                objectUrl: Webapi.Url.createObjectURL(data),
+              })
+            | (PhaseRecording(_), _) =>
               PhaseGetGeolocation({
                 data,
                 objectUrl: Webapi.Url.createObjectURL(data),
@@ -90,26 +76,78 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       (PhaseGetUserMedia, PhaseGetUserMedia),
     );
 
-  let _ =
-    React.useEffect0(() => Some(() => cleanupPhase(~full=true, phaseState)));
-
+  /** As we transition through phases, execute side effects **/
   let _ =
     React.useEffect2(
       () => {
+        let handlePhaseTransition = (prevPhaseState, phaseState) =>
+          switch (prevPhaseState, phaseState) {
+          | (PhaseGetUserMedia, _) => ()
+          | (PhaseError(_), _) => ()
+          | (PhaseRecording({stream}), _) =>
+            let _ =
+              stream
+              ->MediaStream.getTracks
+              ->Belt.Array.forEach(MediaStream.Track.stop);
+            ();
+          | (PhaseGetGeolocation({objectUrl}), None) =>
+            let _ = Webapi.Url.revokeObjectURL(objectUrl);
+            ();
+          | (PhaseGetGeolocation(_), Some(_)) =>
+            let _ = onGeolocationPrompt();
+            ();
+          | (PhaseReview({objectUrl}), _) =>
+            let _ = Webapi.Url.revokeObjectURL(objectUrl);
+            ();
+          };
         if (prevPhaseState !== phaseState) {
-          let _ = cleanupPhase(prevPhaseState);
+          let _ = handlePhaseTransition(prevPhaseState, Some(phaseState));
           ();
         };
-        None;
+        Some(() => handlePhaseTransition(phaseState, None));
       },
       (phaseState, prevPhaseState),
+    );
+
+  /**
+    * Geolocation may update after initital prompt due to refresh,
+    * propagate into state.
+    */
+  let _ =
+    React.useEffect1(
+      () => {
+        let _ =
+          switch (phaseState, geolocationPermission) {
+          | (
+              PhaseReview({position} as phase),
+              PermissionGranted(Some(newPosition)),
+            )
+              when
+                Geolocation.(
+                  timestampGet(newPosition) > timestampGet(position)
+                ) =>
+            let _ =
+              {...phase, position: newPosition}
+              ->phaseReview
+              ->setPhase
+              ->dispatchPhaseAction;
+            ();
+          | _ => ()
+          };
+        None;
+      },
+      [|geolocationPermission|],
     );
 
   let handleReviewApprove = () =>
     switch (phaseState) {
     | PhaseReview(review) =>
       let _ = setPhaseGetUserMedia->dispatchPhaseAction;
-      let _ = onFile(~file=review.data, ~location=review.coordinates);
+      let _ =
+        onFile(
+          ~file=review.data,
+          ~location=review.position->Geolocation.coordsGet,
+        );
       ();
     | _ =>
       let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
@@ -142,7 +180,11 @@ let make = (~mimeType, ~onFile, ~isActive) => {
   | PhaseGetUserMedia =>
     <MediaRecorder_PhaseGetUserMedia onGranted=handleGrantedUserMedia />
   | PhaseGetGeolocation(_) =>
-    <MediaRecorder_PhaseGetGeolocation onGranted=handleGrantedGeolocation />
+    <MediaRecorder_PhaseGetGeolocation
+      onGranted=handleGrantedGeolocation
+      onPrompt=onGeolocationPrompt
+      permission=geolocationPermission
+    />
   | PhaseRecording({stream}) =>
     <MediaRecorder_PhaseRecording
       stream
@@ -158,7 +200,6 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       onReject=handleReviewReject
       src
     />;
-  | PhaseComplete(_) => React.null
   | PhaseError(_) => <Error />
   };
 };
