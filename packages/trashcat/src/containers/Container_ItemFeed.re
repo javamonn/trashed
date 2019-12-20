@@ -144,14 +144,14 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       <>
         <ItemTopOverlay onPromptGeolocation geolocationPermission />
         <ScrollSnapList.Container
-          direction=ScrollSnapList.Horizontal
+          direction=ScrollSnapList.Vertical
           onIdxChange={handleIdxChange(~itemWindow, ~itemId=activeItemId)}
           initialIdx=activeItemIdx>
           {itemWindow->Belt.Array.map(item =>
              switch (item) {
              | Some(item) =>
                <ScrollSnapList.Item
-                 key=item##id direction=ScrollSnapList.Horizontal>
+                 key=item##id direction=ScrollSnapList.Vertical>
                  <Container_Item
                    key=item##id
                    itemFragment=item##itemFragment
@@ -159,7 +159,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
                  />
                </ScrollSnapList.Item>
              | None =>
-               <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />
+               <ScrollSnapList.Item direction=ScrollSnapList.Vertical />
              }
            )}
         </ScrollSnapList.Container>
