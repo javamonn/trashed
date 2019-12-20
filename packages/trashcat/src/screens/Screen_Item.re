@@ -76,11 +76,13 @@ let make = (~tab, ~url) => {
     initialIdx={Tab.indexOf(tab)}
     onIdxChange=handleIdxChange>
     [|
-      <ScrollSnapList.Item direction=ScrollSnapList.Horizontal>
+      <ScrollSnapList.Item direction=ScrollSnapList.Horizontal key="new">
         <Container.ItemNew isActive={Tab.equal(tab, New)} />
       </ScrollSnapList.Item>,
       <ScrollSnapList.Item
-        className={cn(["relative"])} direction=ScrollSnapList.Horizontal>
+        className={cn(["relative"])}
+        direction=ScrollSnapList.Horizontal
+        key="feed">
         <Container.ItemFeed
           ?nextToken
           ?itemId

@@ -12,7 +12,7 @@ module GeolocationRequired = {
         "h-24",
         "my-4",
         "mx-6",
-        "z-10",
+        "z-20",
         "flex",
         "flex-row",
       ])}>
