@@ -67,21 +67,21 @@ module Prompt = {
 };
 
 [@react.component]
-let make = (~onGranted) => {
-  let (permission, onPrompt, _) = Service.Permission.Geolocation.use();
-
+let make = (~onGranted, ~onPrompt, ~permission) => {
   let _ =
     React.useEffect1(
       () => {
         let _ =
-          switch (permission) {
-          | Unknown
-          | Unprompted
-          | PermissionGranted(None)
-          | PermissionRejected
-          | TransitionInProgress(_) => ()
-          | PermissionGranted(Some(data)) => onGranted(data)
-          };
+          Service.Permission.(
+            switch (permission) {
+            | Unknown
+            | Unprompted
+            | PermissionGranted(None)
+            | PermissionRejected
+            | TransitionInProgress(_) => ()
+            | PermissionGranted(Some(data)) => onGranted(data)
+            }
+          );
         None;
       },
       [|permission|],

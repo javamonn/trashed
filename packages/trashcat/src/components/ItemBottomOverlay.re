@@ -19,9 +19,8 @@ let formatAge = age => {
 };
 
 [@react.component]
-let make = (~item) => {
-  let location = (item##location##lat, item##location##lon);
-  let age = formatAge(item##createdAt);
+let make = (~location, ~createdAt) => {
+  let age = formatAge(createdAt);
 
   <ScreenBottomEdgeAligned
     className={cn(["flex", "justify-between", "py-4", "px-6"])}>

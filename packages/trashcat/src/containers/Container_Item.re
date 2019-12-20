@@ -1,32 +1,29 @@
 open Externals;
 open Lib.Styles;
 
-module GetItemQueryConfig = [%graphql
+module GetItemFragment = [%graphql
   {|
-    query GetItem($itemId: ID!) {
-      getItem(id: $itemId) {
+    fragment itemFragment on Item {
+      id
+      video {
         id
-        video {
-          id
-          files {
-            file {
-              bucket
-              key
-              region
-            }
-            mimeType
+        files {
+          file {
+            bucket
+            key
+            region
           }
-        }
-        location {
-          lat
-          lon
+          mimeType
         }
       }
+      location {
+        lat
+        lon
+      }
+      createdAt
     }
   |}
 ];
-
-module GetItemQuery = ReasonApolloHooks.Query.Make(GetItemQueryConfig);
 
 type data = {src: VideoSurface.src};
 
@@ -36,35 +33,17 @@ type state =
   | Data(data);
 
 [@react.component]
-let make = (~itemId, ~autoPlay=false, ~style=?) => {
-  let (query, _fullQuery) =
-    GetItemQuery.use(
-      ~variables=GetItemQueryConfig.make(~itemId, ())##variables,
-      (),
-    );
-  let item =
-    query
-    ->(
-        fun
-        | ReasonApolloHooks.Query.Loading
-        | Error(_)
-        | NoData => None
-        | Data(d) => Some(d)
-      )
-    ->Belt.Option.flatMap(i => i##getItem);
-
+let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
   let s3Objects =
-    Hook.S3ObjectResolver.use(
-      item
-      ->Belt.Option.map(i => i##video##files)
-      ->Belt.Option.map(i => i->Belt.Array.map(i => i##file->S3Object.fromJs)),
-    );
+    item##video##files
+    ->Belt.Array.map(i => i##file->S3Object.fromJs)
+    ->Js.Option.some
+    ->Hook.S3ObjectResolver.use;
 
   let state =
-    switch (query, s3Objects, item) {
-    | (Error(_), _, _)
-    | (_, Error, _) => Error
-    | (_, Resolved(d), Some(item)) =>
+    switch (s3Objects) {
+    | Error => Error
+    | Resolved(d) =>
       let srcElements =
         Belt.Array.zip(d, item##video##files)
         ->Belt.Array.map(((src, file)) => (src, file##mimeType));
@@ -101,6 +80,10 @@ let make = (~itemId, ~autoPlay=false, ~style=?) => {
       ?style
       className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
       <VideoSurface src autoPlay />
+      <ItemBottomOverlay
+        location=(item##location##lat, item##location##lon)
+        createdAt={item##createdAt}
+      />
     </div>
   | Error => React.string("Nothing here!")
   };

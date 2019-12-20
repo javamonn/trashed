@@ -1,2 +1,3 @@
 module Item = Container_Item;
-module Items = Container_Items;
+module ItemNew = Container_ItemNew;
+module ItemFeed = Container_ItemFeed;
