@@ -16,6 +16,11 @@ module GetItemFragment = [%graphql
           mimeType
         }
       }
+      location {
+        lat
+        lon
+      }
+      createdAt
     }
   |}
 ];
@@ -75,6 +80,10 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
       ?style
       className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
       <VideoSurface src autoPlay />
+      <ItemBottomOverlay
+        location=(item##location##lat, item##location##lon)
+        createdAt={item##createdAt}
+      />
     </div>
   | Error => React.string("Nothing here!")
   };

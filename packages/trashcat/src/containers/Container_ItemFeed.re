@@ -1,4 +1,3 @@
-open Lib.Utils;
 open Lib.Styles;
 open Externals;
 
@@ -9,11 +8,6 @@ module NearbyItemsQuery = [%graphql
         nextToken
         items {
           id
-          location {
-            lat
-            lon
-          }
-          createdAt
           ...Container_Item.GetItemFragment.ItemFragment @bsField(name: "itemFragment")
         }
       }
@@ -163,7 +157,6 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
              }
            )}
         </ScrollSnapList.Container>
-        <ItemBottomOverlay item=activeItem />
       </>
     | (_, _, _, _) => <Error />
     };
