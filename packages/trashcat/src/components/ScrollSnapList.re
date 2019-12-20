@@ -6,7 +6,7 @@ type direction =
 
 module Container = {
   [@react.component]
-  let make = (~direction, ~onScroll=?, ~initialIdx=?, ~children) => {
+  let make = (~direction, ~onIdxChange=?, ~initialIdx=?, ~children) => {
     let containerRef = React.useRef(Js.Nullable.null);
     let (hasScrolledToInitialIdx, setHasScrolledToInitialIdx) =
       React.useState(() =>
@@ -48,8 +48,42 @@ module Container = {
         None;
       });
 
+    let onScroll = ev => {
+      let _ = ReactEvent.UI.stopPropagation(ev);
+      let (scroll, containerDimen) =
+        switch (direction) {
+        | Vertical =>
+          let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
+          let bodyHeight =
+            Webapi.Dom.(
+              document
+              |> Document.unsafeAsHtmlDocument
+              |> HtmlDocument.body
+              |> Js.Option.getExn
+              |> Element.clientHeight
+            );
+          (scrollTop, bodyHeight);
+        | Horizontal =>
+          let scrollLeft =
+            int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
+          let windowWidth = Webapi.Dom.(window->Window.innerWidth);
+          (scrollLeft, windowWidth);
+        };
+      let activeIdx =
+        children
+        ->Belt.Array.mapWithIndex((idx, _item) => idx * containerDimen)
+        ->Belt.Array.getIndexBy(itemPos => scroll === itemPos);
+      let _ =
+        switch (activeIdx, onIdxChange) {
+        | (Some(activeIdx), Some(onIdxChange)) =>
+          onIdxChange(activeIdx)
+        | _ => ()
+        };
+      ();
+    };
+
     <div
-      onScroll=?{hasScrolledToInitialIdx ? onScroll : None}
+      onScroll=?{hasScrolledToInitialIdx ? Some(onScroll) : None}
       ref={containerRef->ReactDOMRe.Ref.domRef}
       className={cn([
         "h-screen",
@@ -73,7 +107,7 @@ module Container = {
             ("scrollSnapStop", "always"),
           ])
       }>
-      children
+      {React.array(children)}
     </div>;
   };
 };

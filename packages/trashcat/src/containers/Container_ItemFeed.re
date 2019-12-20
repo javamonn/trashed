@@ -83,29 +83,13 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       [|query|],
     );
 
-  let handleScroll = (~itemWindow, ~itemId, ev) => {
-    let _ = ReactEvent.UI.stopPropagation(ev);
-    let scrollLeft = int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
-    let windowWidth = Webapi.Dom.(window->Window.innerWidth);
-
-    let activeIdx =
-      itemWindow
-      ->Belt.Array.mapWithIndex((idx, _item) => idx * windowWidth)
-      ->Belt.Array.getIndexBy(width => scrollLeft === width);
-
-    let _ =
-      switch (
-        activeIdx->Belt.Option.flatMap(idx =>
-          Belt.Array.get(itemWindow, idx)->Belt.Option.flatMap(identity)
-        )
-      ) {
-      | Some(item) when item##id !== itemId =>
-        let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
-        ();
-      | _ => ()
-      };
-    ();
-  };
+  let handleIdxChange = (~itemWindow, ~itemId, idx) =>
+    switch (Belt.Array.get(itemWindow, idx)) {
+    | Some(Some(item)) when item##id !== itemId =>
+      let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
+      ();
+    | _ => ()
+    };
 
   switch (query) {
   | Loading =>
@@ -161,25 +145,23 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         <ItemTopOverlay onPromptGeolocation geolocationPermission />
         <ScrollSnapList.Container
           direction=ScrollSnapList.Horizontal
-          onScroll={handleScroll(~itemWindow, ~itemId=activeItemId)}
+          onIdxChange={handleIdxChange(~itemWindow, ~itemId=activeItemId)}
           initialIdx=activeItemIdx>
-          {itemWindow
-           ->Belt.Array.map(item =>
-               switch (item) {
-               | Some(item) =>
-                 <ScrollSnapList.Item
-                   key=item##id direction=ScrollSnapList.Horizontal>
-                   <Container_Item
-                     key=item##id
-                     itemFragment=item##itemFragment
-                     autoPlay={item##id === activeItemId && isActive}
-                   />
-                 </ScrollSnapList.Item>
-               | None =>
-                 <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />
-               }
-             )
-           ->React.array}
+          {itemWindow->Belt.Array.map(item =>
+             switch (item) {
+             | Some(item) =>
+               <ScrollSnapList.Item
+                 key=item##id direction=ScrollSnapList.Horizontal>
+                 <Container_Item
+                   key=item##id
+                   itemFragment=item##itemFragment
+                   autoPlay={item##id === activeItemId && isActive}
+                 />
+               </ScrollSnapList.Item>
+             | None =>
+               <ScrollSnapList.Item direction=ScrollSnapList.Horizontal />
+             }
+           )}
         </ScrollSnapList.Container>
         <ItemBottomOverlay item=activeItem />
       </>

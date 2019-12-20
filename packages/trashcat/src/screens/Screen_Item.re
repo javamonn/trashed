@@ -36,43 +36,21 @@ let make = (~tab, ~url) => {
   let nextToken = Webapi.Url.URLSearchParams.get("nextToken", params);
   let itemId = Webapi.Url.URLSearchParams.get("itemId", params);
 
-  let handleScroll = ev => {
-    let _ = ReactEvent.UI.stopPropagation(ev);
-    let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
-    let bodyHeight =
-      Webapi.Dom.(
-        document
-        |> Document.unsafeAsHtmlDocument
-        |> HtmlDocument.body
-        |> Js.Option.getExn
-        |> Element.clientHeight
-      );
-
+  let handleIdxChange = idx => {
     let tabs = Tab.ordered();
-    let activeIdx =
-      tabs
-      ->Belt.Array.mapWithIndex((idx, _item) => idx * bodyHeight)
-      ->Belt.Array.getIndexBy(height => scrollTop === height);
 
-    let _ =
-      switch (activeIdx) {
-      | Some(activeIdx) =>
-        let newTab = tabs[activeIdx];
-        let pathArr = Array.of_list(url.path);
-        if (newTab !== tab) {
-          let _ =
-            Belt.Array.(
-              set(pathArr, length(pathArr) - 1, Tab.pathOf(newTab))
-            );
-          let _ =
-            pathArr
-            |> Js.Array.joinWith("/")
-            |> (path => "/" ++ path ++ "?" ++ url.search)
-            |> ReasonReactRouter.replace;
-          ();
-        };
-      | None => ()
-      };
+    let newTab = tabs[idx];
+    let pathArr = Array.of_list(url.path);
+    if (newTab !== tab) {
+      let _ =
+        Belt.Array.(set(pathArr, length(pathArr) - 1, Tab.pathOf(newTab)));
+      let _ =
+        pathArr
+        |> Js.Array.joinWith("/")
+        |> (path => "/" ++ path ++ "?" ++ url.search)
+        |> ReasonReactRouter.replace;
+      ();
+    };
     ();
   };
 
@@ -96,18 +74,20 @@ let make = (~tab, ~url) => {
   <ScrollSnapList.Container
     direction=ScrollSnapList.Vertical
     initialIdx={Tab.indexOf(tab)}
-    onScroll=handleScroll>
-    <ScrollSnapList.Item direction=ScrollSnapList.Vertical>
-      <Container.ItemNew isActive={Tab.equal(tab, New)} />
-    </ScrollSnapList.Item>
-    <ScrollSnapList.Item
-      className={cn(["relative"])} direction=ScrollSnapList.Vertical>
-      <Container.ItemFeed
-        ?nextToken
-        ?itemId
-        isActive={Tab.equal(tab, Feed)}
-        onVisibleItemChange=handleVisibleItemChange
-      />
-    </ScrollSnapList.Item>
+    onIdxChange=handleIdxChange>
+    [|
+      <ScrollSnapList.Item direction=ScrollSnapList.Vertical>
+        <Container.ItemNew isActive={Tab.equal(tab, New)} />
+      </ScrollSnapList.Item>,
+      <ScrollSnapList.Item
+        className={cn(["relative"])} direction=ScrollSnapList.Vertical>
+        <Container.ItemFeed
+          ?nextToken
+          ?itemId
+          isActive={Tab.equal(tab, Feed)}
+          onVisibleItemChange=handleVisibleItemChange
+        />
+      </ScrollSnapList.Item>,
+    |]
   </ScrollSnapList.Container>;
 };
