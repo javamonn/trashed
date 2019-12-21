@@ -12,7 +12,7 @@ type src =
   | SrcElement(array((string, mimeType)));
 
 [@react.component]
-let make = (~autoPlay=false, ~controls=false, ~src=?) => {
+let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
   let videoRef = React.useRef(Js.Nullable.null);
 
   let _ =
@@ -46,7 +46,7 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
               let videoElem = VideoElement.unsafeAsVideoElement(elem);
               VideoElement.(
                 switch (src) {
-                | Some(SrcObject(srcObject))
+                | SrcObject(srcObject)
                     when
                       getSrcObject(videoElem)
                       !== Js.Undefined.return(srcObject) =>
@@ -115,7 +115,7 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
 
   let children =
     switch (src) {
-    | Some(SrcElement(ss)) =>
+    | SrcElement(ss) =>
       ss
       ->Belt.Array.map(((src, type_)) =>
           <source type_={type_->mimeTypeToJs} src key=src />
@@ -139,9 +139,10 @@ let make = (~autoPlay=false, ~controls=false, ~src=?) => {
           cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),
         "ref": videoRef->ReactDOMRe.Ref.domRef,
         "muted": true,
+        "poster": poster,
         "src":
           switch (src) {
-          | Some(SrcUrl(url)) => Some(url)
+          | SrcUrl(url) => Some(url)
           | _ => None
           },
       }),

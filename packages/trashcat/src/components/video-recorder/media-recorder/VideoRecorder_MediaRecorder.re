@@ -194,7 +194,7 @@ let make = (~mimeType, ~onFile, ~isActive) => {
     />
   | PhaseReview({objectUrl}) =>
     let src =
-      [|(objectUrl, mimeType)|]->VideoSurface.srcElement->Js.Option.some;
+      [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
     <MediaRecorder_PhaseReview
       onApprove=handleReviewApprove
       onReject=handleReviewReject

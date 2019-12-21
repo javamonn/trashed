@@ -19,10 +19,11 @@ module NearbyItemsQuery = [%graphql
 let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let (geolocationPermission, onPromptGeolocation, _) =
     Service.Permission.Geolocation.use();
+  let (ignoreGeolocation, setIgnoreGeolocation) = React.useState(() => false);
 
   let location =
     switch (geolocationPermission) {
-    | Service.Permission.PermissionGranted(Some(pos)) =>
+    | Service.Permission.PermissionGranted(Some(pos)) when !ignoreGeolocation =>
       Some({
         "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
         "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
@@ -30,7 +31,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
     | _ => None
     };
 
-  let (query, _fullQuery) =
+  let (query, _) =
     ApolloHooks.useQuery(
       ~fetchPolicy=ApolloHooksTypes.CacheAndNetwork,
       ~variables=NearbyItemsQuery.makeVariables(~location?, ~m=1000, ()),
@@ -40,21 +41,15 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let _ =
     React.useEffect1(
       () => {
-        let (items, newNextToken) =
+        let _ =
           switch (query) {
           | Data(data) =>
             let items =
               data##nearbyItems
               ->Belt.Option.flatMap(l => l##items)
               ->Belt.Option.map(i => i->Belt.Array.keepMap(i => i));
-            let nextToken =
+            let newNextToken =
               data##nearbyItems->Belt.Option.flatMap(l => l##nextToken);
-            (items, nextToken);
-          | _ => (None, None)
-          };
-        let _ =
-          switch (query) {
-          | Data(_) =>
             let newItemId =
               switch (itemId) {
               | Some(itemId) => Some(itemId)
@@ -63,6 +58,17 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
                 ->Belt.Option.flatMap(items => items->Belt.Array.get(0))
                 ->Belt.Option.map(item => item##id)
               };
+
+            /** No items, refetch without coordinates */
+            let _ =
+              setIgnoreGeolocation(ignoreGeolocation =>
+                switch (items) {
+                | None => true
+                | Some(items) when Js.Array.length(items) === 0 => true
+                | Some(_) => ignoreGeolocation
+                }
+              );
+
             if (newItemId !== itemId || newNextToken !== nextToken) {
               onVisibleItemChange(
                 ~nextToken=newNextToken,
@@ -70,7 +76,9 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
                 (),
               );
             };
-          | _ => ()
+          | Loading
+          | Error(_)
+          | NoData => ()
           };
         None;
       },
@@ -116,8 +124,6 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       activeItemId->Belt.Option.flatMap(activeItemId =>
         items->Belt.Array.getIndexBy(i => activeItemId === i##id)
       );
-    let activeItem =
-      activeItemIdx->Belt.Option.flatMap(Belt.Array.get(items));
     let itemWindow =
       activeItemIdx->Belt.Option.map(activeItemIdx =>
         Belt.Array.makeBy(activeItemIdx + 2, idx =>
@@ -128,13 +134,8 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
           }
         )
       );
-    switch (itemWindow, activeItem, activeItemIdx, activeItemId) {
-    | (
-        Some(itemWindow),
-        Some(activeItem),
-        Some(activeItemIdx),
-        Some(activeItemId),
-      ) =>
+    switch (itemWindow, activeItemIdx, activeItemId) {
+    | (Some(itemWindow), Some(activeItemIdx), Some(activeItemId)) =>
       <>
         <ItemTopOverlay onPromptGeolocation geolocationPermission />
         <ScrollSnapList.Container
@@ -158,7 +159,19 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
            )}
         </ScrollSnapList.Container>
       </>
-    | (_, _, _, _) => <Error />
+    | _ when Array.length(items) === 0 =>
+      <div
+        className={cn([
+          "w-screen",
+          "h-screen",
+          "flex",
+          "justify-center",
+          "items-center",
+          "flex-col",
+        ])}>
+        <Progress />
+      </div>
+    | _ => <Error />
     };
   };
 };
