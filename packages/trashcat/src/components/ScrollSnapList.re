@@ -53,7 +53,7 @@ module Container = {
       let (scroll, containerDimen) =
         switch (direction) {
         | Vertical =>
-          let scrollTop = int_of_float(ReactEvent.UI.target(ev)##scrollTop);
+          let scrollTop = ReactEvent.UI.target(ev)##scrollTop;
           let bodyHeight =
             Webapi.Dom.(
               document
@@ -64,21 +64,13 @@ module Container = {
             );
           (scrollTop, bodyHeight);
         | Horizontal =>
-          let scrollLeft =
-            int_of_float(ReactEvent.UI.target(ev)##scrollLeft);
+          let scrollLeft = ReactEvent.UI.target(ev)##scrollLeft;
           let windowWidth = Webapi.Dom.(window->Window.innerWidth);
           (scrollLeft, windowWidth);
         };
       let activeIdx =
-        children
-        ->Belt.Array.mapWithIndex((idx, _item) => idx * containerDimen)
-        ->Belt.Array.getIndexBy(itemPos => scroll === itemPos);
-      let _ =
-        switch (activeIdx, onIdxChange) {
-        | (Some(activeIdx), Some(onIdxChange)) =>
-          onIdxChange(activeIdx)
-        | _ => ()
-        };
+        int_of_float(Js.Math.round(scroll /. float_of_int(containerDimen)));
+      let _ = onIdxChange->Belt.Option.map(fn => fn(activeIdx));
       ();
     };
 

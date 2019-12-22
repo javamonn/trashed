@@ -85,13 +85,14 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       [|query|],
     );
 
-  let handleIdxChange = (~itemWindow, ~itemId, idx) =>
+  let handleIdxChange = (~itemWindow, ~itemId, idx) => {
     switch (Belt.Array.get(itemWindow, idx)) {
     | Some(Some(item)) when item##id !== itemId =>
       let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
       ();
     | _ => ()
-    };
+    }
+  };
 
   switch (query) {
   | Loading =>
