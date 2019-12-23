@@ -46,6 +46,13 @@ enum MediaConvertJobState {
 }
 
 type MediaConvertJob
+  @key(fields: ["id"])
+  @key(name: "ByExternalId", fields: ["externalId"], queryField: "mediaConvertJobsByExternalId")
+  @key(
+    name: "ByVideoId",
+    fields: ["mediaConvertJobVideoId"],
+    queryField: "mediaConvertJobsByVideoId"
+  )
   @model
   @auth(
     rules: [{allow: public, provider: iam, operations: [create, read, update]}]
