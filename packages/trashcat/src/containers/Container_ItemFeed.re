@@ -15,11 +15,6 @@ module NearbyItemsQuery = [%graphql
   |}
 ];
 
-type windowItem('a) =
-  | Placeholder
-  | EndOfList
-  | Item('a);
-
 [@react.component]
 let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let (geolocationPermission, onPromptGeolocation, _) =
@@ -92,7 +87,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
 
   let handleIdxChange = (~itemWindow, ~itemId, idx) => {
     switch (Belt.Array.get(itemWindow, idx)) {
-    | Some(Item(item)) when item##id !== itemId =>
+    | Some(Some(item)) when item##id !== itemId =>
       let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
       ();
     | _ => ()
@@ -134,36 +129,55 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
     | (Some(activeItemIdx), Some(activeItemId)) =>
       let itemWindow =
         Belt.Array.concatMany([|
-          Belt.Array.makeBy(activeItemIdx - 1, _ => Placeholder),
+          Belt.Array.makeBy(activeItemIdx - 1, _ => None),
           items
           ->Belt.Array.slice(~offset=max(0, activeItemIdx - 1), ~len=3)
-          ->Belt.Array.map(item => Item(item)),
-          activeItemIdx === Js.Array.length(items) - 1
-            ? [|EndOfList|] : [||],
+          ->Belt.Array.map(item => Some(item)),
         |]);
-      let initialIdx =
+      let itemWindowIdx =
         itemWindow
         ->Belt.Array.getIndexBy(
             fun
-            | Item(item) => item##id === activeItemId
-            | _ => false,
+            | Some(item) => item##id === activeItemId
+            | None => false,
           )
         ->Belt.Option.getExn;
+
+      let isItemLastInFeed =
+        itemWindowIdx === Js.Array.length(itemWindow) - 1;
+      let isGeolocationRequired =
+        switch (geolocationPermission) {
+        | Service.Permission.Unknown
+        | Service.Permission.PermissionGranted(Some(_)) => false
+        | _ => true
+        };
+
       <>
-        <ItemTopOverlay onPromptGeolocation geolocationPermission />
+        <DelayedMount timeout=3000>
+          <Notification.GeolocationRequired
+            _in={!isItemLastInFeed && isGeolocationRequired}
+            onClick={_ => {
+              let _ = onPromptGeolocation();
+              ();
+            }}
+            permission=geolocationPermission
+          />
+        </DelayedMount>
+        <DelayedMount timeout=3000 paused={!isItemLastInFeed}>
+          <Notification.LastItemInFeed
+            _in=isItemLastInFeed
+            onClick={_ => {Js.log("LastItemInFeed Clicked!")}}
+          />
+        </DelayedMount>
         <ScrollSnapList.Container
           direction=ScrollSnapList.Vertical
           onIdxChange={handleIdxChange(~itemWindow, ~itemId=activeItemId)}
-          initialIdx>
+          initialIdx=itemWindowIdx>
           {itemWindow->Belt.Array.map(
              fun
-             | Placeholder =>
+             | None =>
                <ScrollSnapList.Item direction=ScrollSnapList.Vertical />
-             | EndOfList =>
-               <ScrollSnapList.Item direction=ScrollSnapList.Vertical>
-                 {React.string("end of list")}
-               </ScrollSnapList.Item>
-             | Item(item) =>
+             | Some(item) =>
                <ScrollSnapList.Item
                  key={item##id} direction=ScrollSnapList.Vertical>
                  <Container_Item
