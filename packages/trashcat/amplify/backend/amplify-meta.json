@@ -1,15 +1,29 @@
 {
     "providers": {
         "awscloudformation": {
+            "AuthRoleName": "trashed-production-20190824131356-authRole",
+            "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole",
             "Region": "us-east-1",
             "DeploymentBucketName": "trashed-production-20190824131356-deployment",
             "UnauthRoleName": "trashed-production-20190824131356-unauthRole",
             "StackName": "trashed-production-20190824131356",
             "StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0",
-            "AuthRoleName": "trashed-production-20190824131356-authRole",
-            "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole",
             "AmplifyAppId": "d2nshcjf1ypod4"
+        },
+        "categories": {
+            "auth": {
+                "trashed452c5745": {}
+            },
+            "function": {
+                "rpc": {},
+                "trashed452c5745": {},
+                "trashed": {},
+                "trashed452c5745PostConfirmation": {},
+                "trashed452c5745PreSignup": {},
+                "DynamoDBStreamTrigger": {},
+                "MediaConvertJobStateChangeTrigger": {}
+            }
         }
     },
     "dns": {
@@ -41,11 +55,12 @@
                 }
             ],
             "output": {},
-            "lastPushTimeStamp": "2019-12-20T23:13:44.064Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.062Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/dns/template.json",
                 "logicalId": "dnstrashed"
-            }
+            },
+            "lastPushDirHash": "DQ6R+ScPWElQ0DbZZZ8jvwjaen4="
         }
     },
     "auth": {
@@ -81,11 +96,12 @@
                 "IdentityPoolName": "trashed452c5745_identitypool_452c5745__production",
                 "UserPoolName": "trashed452c5745_userpool_452c5745"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.067Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.063Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/auth/trashed452c5745-cloudformation-template.yml",
                 "logicalId": "authtrashed452c5745"
-            }
+            },
+            "lastPushDirHash": "CzMt5zn/4phTGrukXiedPQhKCGU="
         }
     },
     "api": {
@@ -109,11 +125,12 @@
                 "GraphQLAPIIdOutput": "akkeqcns2fc5hn7ad3uu3euymy",
                 "GraphQLAPIEndpointOutput": "https://ewxf7cgpvrcvngjo66kv4avc7q.appsync-api.us-east-1.amazonaws.com/graphql"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.068Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.064Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/cloudformation-template.json",
                 "logicalId": "apitrashed"
-            }
+            },
+            "lastPushDirHash": "Utnma0c/k5K5IyJXwjBSpWdxlcI="
         },
         "apiRpc": {
             "service": "API Gateway",
@@ -134,11 +151,12 @@
                 "DistributionHostedZoneId": "Z2FDTNDATAQYW2",
                 "DistributionDomainName": "dvmjj4vbwyzvm.cloudfront.net"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.070Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.064Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/apiRpc-cloudformation-template.json",
                 "logicalId": "apiapiRpc"
-            }
+            },
+            "lastPushDirHash": "DZswTowqrgbQziXrIcyAyrW630k="
         }
     },
     "function": {
@@ -169,11 +187,15 @@
                 "Name": "rpc-production",
                 "LambdaExecutionRole": "trashedLambdaRole59092232-production"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.071Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.065Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/rpc-cloudformation-template.json",
                 "logicalId": "functionrpc"
-            }
+            },
+            "lastBuildTimeStamp": "2019-12-10T11:36:27.211Z",
+            "lastPackageTimeStamp": "2019-12-23T00:08:40.798Z",
+            "distZipFilename": "rpc-535569326550727a4664-build.zip",
+            "lastPushDirHash": "xBZvpJF6t//wcuBSap0TeqjCxPQ="
         },
         "trashed452c5745PostConfirmation": {
             "service": "Lambda",
@@ -184,11 +206,15 @@
                 "Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PostConfirmation-production",
                 "Name": "trashed452c5745PostConfirmation-production"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.073Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.066Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
                 "logicalId": "functiontrashed452c5745PostConfirmation"
-            }
+            },
+            "lastBuildTimeStamp": "2019-12-10T11:36:29.629Z",
+            "lastPackageTimeStamp": "2019-12-23T00:08:51.917Z",
+            "distZipFilename": "trashed452c5745PostConfirmation-4c4c466a35366d574642-build.zip",
+            "lastPushDirHash": "89QP2Lbo3U9+xdR3nyWW7EGNz3M="
         },
         "trashed452c5745PreSignup": {
             "service": "Lambda",
@@ -199,11 +225,15 @@
                 "Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PreSignup-production",
                 "Name": "trashed452c5745PreSignup-production"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.075Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.067Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
                 "logicalId": "functiontrashed452c5745PreSignup"
-            }
+            },
+            "lastBuildTimeStamp": "2019-12-10T11:36:30.544Z",
+            "lastPackageTimeStamp": "2019-12-23T00:08:47.556Z",
+            "distZipFilename": "trashed452c5745PreSignup-4c6c6269326f4f6b3463-build.zip",
+            "lastPushDirHash": "mpgMBjurNGSnRvfqc+cfY0H2aEY="
         },
         "DynamoDBStreamTrigger": {
             "service": "Lambda",
@@ -240,11 +270,15 @@
                 "Name": "DynamoDBStreamTrigger-production",
                 "LambdaExecutionRole": "trashedLambdaRole73cc0fd8-production"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.076Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.068Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/DynamoDBStreamTrigger-cloudformation-template.json",
                 "logicalId": "functionDynamoDBStreamTrigger"
-            }
+            },
+            "lastBuildTimeStamp": "2019-12-10T11:36:39.196Z",
+            "lastPackageTimeStamp": "2019-12-23T00:08:40.768Z",
+            "distZipFilename": "DynamoDBStreamTrigger-2b616477415a50474c2b-build.zip",
+            "lastPushDirHash": "Ol6sjWIvoLj1DQzo7iZKWJTz4ic="
         },
         "MediaConvertJobStateChangeTrigger": {
             "service": "Lambda",
@@ -273,11 +307,15 @@
                 "Name": "MediaConvertJobStateChangeTrigger-production",
                 "LambdaExecutionRole": "trashedLambdaRolec1ee20aa-production"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.078Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.069Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/MediaConvertJobStateChangeTrigger-cloudformation-template.json",
                 "logicalId": "functionMediaConvertJobStateChangeTrigger"
-            }
+            },
+            "lastBuildTimeStamp": "2019-12-10T11:36:47.746Z",
+            "lastPackageTimeStamp": "2019-12-23T00:08:40.736Z",
+            "distZipFilename": "MediaConvertJobStateChangeTrigger-6b58384f4f6379436f59-build.zip",
+            "lastPushDirHash": "LYC8If0zx8HClbFF33l+WqnheeE="
         }
     },
     "hosting": {
@@ -293,7 +331,7 @@
                 "HostingBucketName": "trashcat-hosting-production",
                 "CloudFrontDomainName": "d1cfcj1loi4v1r.cloudfront.net"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.079Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.070Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/hosting/template.json",
                 "logicalId": "hostingS3AndCloudFront"
@@ -310,11 +348,12 @@
                 "BucketName": "trashcat-production",
                 "Region": "us-east-1"
             },
-            "lastPushTimeStamp": "2019-12-20T23:13:44.081Z",
+            "lastPushTimeStamp": "2019-12-25T15:42:42.072Z",
             "providerMetadata": {
                 "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
                 "logicalId": "storagetrashcat"
-            }
+            },
+            "lastPushDirHash": "ZgiwZ/OA/q1tWGodKMdFfeQ7Zvo="
         }
     }
 }

@@ -8,12 +8,11 @@ let _ = AwsAmplify.(inst->configure(Constants.awsAmplifyConfig));
 [@react.component]
 let make = () => {
   let url = ReasonReactRouter.useUrl();
+  let (geolocationPermission, _, _) = Service.Permission.Geolocation.use();
+  let (cameraPermission, _, _) = Service.Permission.Camera.use();
 
   let _ =
     React.useEffect0(() => {
-      let _ = Service.Permission.Geolocation.initialize();
-      let _ = Service.Permission.Camera.initialize();
-
       let disableContextMenu = ev => {
         let _ = Webapi.Dom.Event.preventDefault(ev);
         ();
@@ -33,6 +32,23 @@ let make = () => {
           ),
       );
     });
+
+  let _ = React.useEffect1(() => {
+    let shouldInitialize = 
+      switch (url.path) {
+        | ["item", ..._] => true
+        | _ => false
+      };
+    let _ = switch (geolocationPermission) {
+      | Unknown when shouldInitialize => Service.Permission.Geolocation.initialize()
+      | _ => ()
+    };
+    let _ = switch (cameraPermission) {
+      | Unknown when shouldInitialize => Service.Permission.Camera.initialize()
+      | _ => ()
+    };
+    None;
+  }, [| url.path |> Array.of_list |> Js.Array.joinWith("/") |]);
 
   switch (url.path) {
   | [] => <Screen.Landing />
