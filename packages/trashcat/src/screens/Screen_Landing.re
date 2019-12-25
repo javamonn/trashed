@@ -57,13 +57,18 @@ let make = () => {
         </div>
       </div>
     </div>
-    <div className={cn(["bg-brandBlue", "py-2", "px-4", "flex-initial"])}>
-      <SVG
-        className={cn(["min-h-full", "h-full", "block"])}
-        icon=SVG.trashedText
-        placeholderViewBox="0 0 109 689"
-        placeholderClassName={cn(["bg-brandBlue"])}
-      />
-    </div>
+    <SVG
+      className={cn([
+        "min-h-full",
+        "h-full",
+        "block",
+        "bg-brandBlue",
+        "py-2",
+        "px-4",
+      ])}
+      icon=SVG.trashedText
+      placeholderViewBox="0 0 109 689"
+      placeholderClassName={cn(["bg-brandBlue"])}
+    />
   </div>;
 };

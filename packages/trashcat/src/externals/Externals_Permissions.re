@@ -38,9 +38,17 @@ module Descriptor = {
   let toJs = inst => {"name": inst->nameGet->permissionToJs};
 };
 
-[@bs.val] [@bs.scope ("window", "navigator", "permissions")]
-external query: Descriptor.js => Js.Promise.t(Status.js) = "query";
+module External = {
+  type t = {query: Descriptor.js => Js.Promise.t(Status.js)};
+
+  [@bs.val] [@bs.scope ("window", "navigator")]
+  external api: option(t) = "permissions";
+};
 
 let query = d =>
-  d->Descriptor.toJs->query
-  |> Js.Promise.then_(res => res->Status.fromJs->Js.Promise.resolve);
+  External.api->Belt.Option.map((External.{query}) =>
+    d
+    |> Descriptor.toJs
+    |> query
+    |> Js.Promise.then_(result => result->Status.fromJs->Js.Promise.resolve)
+  );

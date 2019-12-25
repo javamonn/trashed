@@ -33,22 +33,30 @@ let make = () => {
       );
     });
 
-  let _ = React.useEffect1(() => {
-    let shouldInitialize = 
-      switch (url.path) {
-        | ["item", ..._] => true
-        | _ => false
-      };
-    let _ = switch (geolocationPermission) {
-      | Unknown when shouldInitialize => Service.Permission.Geolocation.initialize()
-      | _ => ()
-    };
-    let _ = switch (cameraPermission) {
-      | Unknown when shouldInitialize => Service.Permission.Camera.initialize()
-      | _ => ()
-    };
-    None;
-  }, [| url.path |> Array.of_list |> Js.Array.joinWith("/") |]);
+  let _ =
+    React.useEffect1(
+      () => {
+        let shouldInitialize =
+          switch (url.path) {
+          | ["item", ..._] => true
+          | _ => false
+          };
+        let _ =
+          switch (geolocationPermission) {
+          | Unknown when shouldInitialize =>
+            Service.Permission.Geolocation.initialize()
+          | _ => ()
+          };
+        let _ =
+          switch (cameraPermission) {
+          | Unknown when shouldInitialize =>
+            Service.Permission.Camera.initialize()
+          | _ => ()
+          };
+        None;
+      },
+      [|url.path |> Array.of_list |> Js.Array.joinWith("/")|],
+    );
 
   switch (url.path) {
   | [] => <Screen.Landing />

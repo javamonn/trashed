@@ -53,15 +53,25 @@ module Make =
   };
 
   let initialize = () => {
-    Permissions.(query(Descriptor.make(~name=Conf.name)))
-    |> Js.Promise.then_(s => {
-         let initialStatus =
-           switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
-           | Some(`Prompt) => Unprompted
-           | Some(`Granted) => prompt()
-           | Some(`Denied) => PermissionRejected
-           | None => Unprompted
-           };
+    let initialStatus =
+      switch (Permissions.(query(Descriptor.make(~name=Conf.name)))) {
+      | Some(p) =>
+        p
+        |> Js.Promise.then_(s => {
+             let status =
+               switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
+               | Some(`Prompt) => Unprompted
+               | Some(`Granted) => prompt()
+               | Some(`Denied) => PermissionRejected
+               | None => Unprompted
+               };
+             Js.Promise.resolve(status);
+           })
+      | None => Js.Promise.resolve(Unprompted)
+      };
+
+    initialStatus
+    |> Js.Promise.then_(initialStatus => {
          handleStatusChange(initialStatus);
          Js.Promise.resolve(initialStatus);
        })
