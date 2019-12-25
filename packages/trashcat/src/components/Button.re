@@ -1,8 +1,8 @@
 open Lib.Styles;
 
 [@react.component]
-let make = (~className=?, ~backgroundClassName=?, ~onClick, ~children) => {
-  <div className={cn(["relative", className->Cn.unpack])} onClick>
+let make = (~className=?, ~backgroundClassName=?, ~onClick=?, ~children) => {
+  <div className={cn(["relative", className->Cn.unpack])} ?onClick>
     children
     <div
       style={style(
@@ -24,10 +24,11 @@ let make = (~className=?, ~backgroundClassName=?, ~onClick, ~children) => {
         ~zIndex="-1",
         (),
       )}
-      className={backgroundClassName
-        ->Belt.Option.getWithDefault(
-          cn(["absolute", "bg-brandYellow"])
-        )}
+      className={
+        backgroundClassName->Belt.Option.getWithDefault(
+          cn(["absolute", "bg-brandYellow"]),
+        )
+      }
     />
   </div>;
 };

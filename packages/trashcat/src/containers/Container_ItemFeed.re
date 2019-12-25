@@ -19,10 +19,11 @@ module NearbyItemsQuery = [%graphql
 let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let (geolocationPermission, onPromptGeolocation, _) =
     Service.Permission.Geolocation.use();
+  let (ignoreGeolocation, setIgnoreGeolocation) = React.useState(() => false);
 
   let location =
     switch (geolocationPermission) {
-    | Service.Permission.PermissionGranted(Some(pos)) =>
+    | Service.Permission.PermissionGranted(Some(pos)) when !ignoreGeolocation =>
       Some({
         "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
         "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
@@ -30,7 +31,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
     | _ => None
     };
 
-  let (query, _fullQuery) =
+  let (query, _) =
     ApolloHooks.useQuery(
       ~fetchPolicy=ApolloHooksTypes.CacheAndNetwork,
       ~variables=NearbyItemsQuery.makeVariables(~location?, ~m=1000, ()),
@@ -40,21 +41,15 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let _ =
     React.useEffect1(
       () => {
-        let (items, newNextToken) =
+        let _ =
           switch (query) {
           | Data(data) =>
             let items =
               data##nearbyItems
               ->Belt.Option.flatMap(l => l##items)
               ->Belt.Option.map(i => i->Belt.Array.keepMap(i => i));
-            let nextToken =
+            let newNextToken =
               data##nearbyItems->Belt.Option.flatMap(l => l##nextToken);
-            (items, nextToken);
-          | _ => (None, None)
-          };
-        let _ =
-          switch (query) {
-          | Data(_) =>
             let newItemId =
               switch (itemId) {
               | Some(itemId) => Some(itemId)
@@ -63,6 +58,17 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
                 ->Belt.Option.flatMap(items => items->Belt.Array.get(0))
                 ->Belt.Option.map(item => item##id)
               };
+
+            /** No items, refetch without coordinates */
+            let _ =
+              setIgnoreGeolocation(ignoreGeolocation =>
+                switch (items) {
+                | None => true
+                | Some(items) when Js.Array.length(items) === 0 => true
+                | Some(_) => ignoreGeolocation
+                }
+              );
+
             if (newItemId !== itemId || newNextToken !== nextToken) {
               onVisibleItemChange(
                 ~nextToken=newNextToken,
@@ -70,20 +76,23 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
                 (),
               );
             };
-          | _ => ()
+          | Loading
+          | Error(_)
+          | NoData => ()
           };
         None;
       },
       [|query|],
     );
 
-  let handleIdxChange = (~itemWindow, ~itemId, idx) =>
+  let handleIdxChange = (~itemWindow, ~itemId, idx) => {
     switch (Belt.Array.get(itemWindow, idx)) {
     | Some(Some(item)) when item##id !== itemId =>
       let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
       ();
     | _ => ()
     };
+  };
 
   switch (query) {
   | Loading =>
@@ -105,7 +114,6 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       ->Belt.Option.flatMap(l => l##items)
       ->Belt.Option.map(i => i->Belt.Array.keepMap(i => i))
       ->Belt.Option.getWithDefault([||]);
-
     let activeItemId =
       switch (itemId, Belt.Array.get(items, 0)) {
       | (Some(itemId), _) => Some(itemId)
@@ -116,49 +124,84 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       activeItemId->Belt.Option.flatMap(activeItemId =>
         items->Belt.Array.getIndexBy(i => activeItemId === i##id)
       );
-    let activeItem =
-      activeItemIdx->Belt.Option.flatMap(Belt.Array.get(items));
-    let itemWindow =
-      activeItemIdx->Belt.Option.map(activeItemIdx =>
-        Belt.Array.makeBy(activeItemIdx + 2, idx =>
-          if (idx <= activeItemIdx + 1 && idx >= activeItemIdx - 1) {
-            items->Belt.Array.get(idx);
-          } else {
-            None;
-          }
-        )
-      );
-    switch (itemWindow, activeItem, activeItemIdx, activeItemId) {
-    | (
-        Some(itemWindow),
-        Some(activeItem),
-        Some(activeItemIdx),
-        Some(activeItemId),
-      ) =>
+
+    switch (activeItemIdx, activeItemId) {
+    | (Some(activeItemIdx), Some(activeItemId)) =>
+      let itemWindow =
+        Belt.Array.concatMany([|
+          Belt.Array.makeBy(activeItemIdx - 1, _ => None),
+          items
+          ->Belt.Array.slice(~offset=max(0, activeItemIdx - 1), ~len=3)
+          ->Belt.Array.map(item => Some(item)),
+        |]);
+      let itemWindowIdx =
+        itemWindow
+        ->Belt.Array.getIndexBy(
+            fun
+            | Some(item) => item##id === activeItemId
+            | None => false,
+          )
+        ->Belt.Option.getExn;
+
+      let isItemLastInFeed =
+        itemWindowIdx === Js.Array.length(itemWindow) - 1;
+      let isGeolocationRequired =
+        switch (geolocationPermission) {
+        | Service.Permission.Unknown
+        | Service.Permission.PermissionGranted(Some(_)) => false
+        | _ => true
+        };
+
       <>
-        <ItemTopOverlay onPromptGeolocation geolocationPermission />
+        <DelayedMount timeout=3000>
+          <Notification.GeolocationRequired
+            _in={!isItemLastInFeed && isGeolocationRequired}
+            onClick={_ => {
+              let _ = onPromptGeolocation();
+              ();
+            }}
+            permission=geolocationPermission
+          />
+        </DelayedMount>
+        <DelayedMount timeout=3000 paused={!isItemLastInFeed}>
+          <Notification.LastItemInFeed
+            _in=isItemLastInFeed
+            onClick={_ => {Js.log("LastItemInFeed Clicked!")}}
+          />
+        </DelayedMount>
         <ScrollSnapList.Container
           direction=ScrollSnapList.Vertical
           onIdxChange={handleIdxChange(~itemWindow, ~itemId=activeItemId)}
-          initialIdx=activeItemIdx>
-          {itemWindow->Belt.Array.map(item =>
-             switch (item) {
+          initialIdx=itemWindowIdx>
+          {itemWindow->Belt.Array.map(
+             fun
+             | None =>
+               <ScrollSnapList.Item direction=ScrollSnapList.Vertical />
              | Some(item) =>
                <ScrollSnapList.Item
-                 key=item##id direction=ScrollSnapList.Vertical>
+                 key={item##id} direction=ScrollSnapList.Vertical>
                  <Container_Item
-                   key=item##id
+                   key={item##id}
                    itemFragment=item##itemFragment
                    autoPlay={item##id === activeItemId && isActive}
                  />
-               </ScrollSnapList.Item>
-             | None =>
-               <ScrollSnapList.Item direction=ScrollSnapList.Vertical />
-             }
+               </ScrollSnapList.Item>,
            )}
         </ScrollSnapList.Container>
-      </>
-    | (_, _, _, _) => <Error />
+      </>;
+    | _ when Array.length(items) === 0 =>
+      <div
+        className={cn([
+          "w-screen",
+          "h-screen",
+          "flex",
+          "justify-center",
+          "items-center",
+          "flex-col",
+        ])}>
+        <Progress />
+      </div>
+    | _ => <Error />
     };
   };
 };

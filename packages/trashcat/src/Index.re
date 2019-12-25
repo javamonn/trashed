@@ -8,7 +8,10 @@ let _ =
            Externals.ServiceWorker.(
              registerWithOptions(Env.serviceWorkerUrl, options(~scope="/"))
            );
-         let _ = Sentry.(init(config(~dsn=Env.sentryDsn)));
+         let _ =
+           if (Env.nodeEnv !== "development") {
+             Sentry.(init(config(~dsn=Env.sentryDsn)));
+           };
          ();
        })
   );

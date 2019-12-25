@@ -29,6 +29,6 @@ let make = (~onApprove, ~onReject, ~src) => {
         />
       </div>
     </ScreenBottomEdgeAligned>
-    <VideoSurface ?src autoPlay=true />
+    <VideoSurface src autoPlay=true />
   </div>;
 };

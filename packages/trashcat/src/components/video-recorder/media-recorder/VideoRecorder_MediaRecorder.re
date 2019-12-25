@@ -7,15 +7,13 @@ type recording = {stream: MediaStream.t};
 type geolocation = {
   data: File.t,
   objectUrl: string,
+  stream: MediaStream.t,
 };
 type review = {
   position: Geolocation.position,
   data: File.t,
   objectUrl: string,
-};
-type complete = {
-  data: File.t,
-  position: Geolocation.position,
+  stream: MediaStream.t,
 };
 
 [@bs.deriving accessors]
@@ -51,21 +49,23 @@ let make = (~mimeType, ~onFile, ~isActive) => {
           | SetPhaseRecording(stream) => PhaseRecording({stream: stream})
           | SetPhaseReview(position) =>
             switch (state) {
-            | PhaseGetGeolocation({data, objectUrl}) =>
-              PhaseReview({position, data, objectUrl})
+            | PhaseGetGeolocation({data, objectUrl, stream}) =>
+              PhaseReview({position, data, objectUrl, stream})
             | _ => PhaseError(`InvalidPhaseTransition)
             }
           | SetPhaseGetGeolocation(data) =>
             switch (state, geolocationPermission) {
-            | (PhaseRecording(_), PermissionGranted(Some(position))) =>
+            | (PhaseRecording({stream}), PermissionGranted(Some(position))) =>
               PhaseReview({
+                stream,
                 position,
                 data,
                 objectUrl: Webapi.Url.createObjectURL(data),
               })
-            | (PhaseRecording(_), _) =>
+            | (PhaseRecording({stream}), _) =>
               PhaseGetGeolocation({
                 data,
+                stream,
                 objectUrl: Webapi.Url.createObjectURL(data),
               })
             | _ => PhaseError(`InvalidPhaseTransition)
@@ -84,16 +84,8 @@ let make = (~mimeType, ~onFile, ~isActive) => {
           switch (prevPhaseState, phaseState) {
           | (PhaseGetUserMedia, _) => ()
           | (PhaseError(_), _) => ()
-          | (PhaseRecording({stream}), _) =>
-            let _ =
-              stream
-              ->MediaStream.getTracks
-              ->Belt.Array.forEach(MediaStream.Track.stop);
-            ();
-          | (PhaseGetGeolocation({objectUrl}), None) =>
-            let _ = Webapi.Url.revokeObjectURL(objectUrl);
-            ();
-          | (PhaseGetGeolocation(_), Some(_)) =>
+          | (PhaseRecording(_), _) => ()
+          | (PhaseGetGeolocation(_), _) =>
             let _ = onGeolocationPrompt();
             ();
           | (PhaseReview({objectUrl}), _) =>
@@ -101,13 +93,34 @@ let make = (~mimeType, ~onFile, ~isActive) => {
             ();
           };
         if (prevPhaseState !== phaseState) {
-          let _ = handlePhaseTransition(prevPhaseState, Some(phaseState));
+          let _ = handlePhaseTransition(prevPhaseState, phaseState);
           ();
         };
-        Some(() => handlePhaseTransition(phaseState, None));
+        None;
       },
       (phaseState, prevPhaseState),
     );
+  let _ =
+    React.useEffect0(() => {
+      let stopMediaStream = stream =>
+        stream
+        ->MediaStream.getTracks
+        ->Belt.Array.forEach(MediaStream.Track.stop);
+
+      Some(
+        () => {
+          switch (phaseState) {
+          | PhaseRecording({stream}) => stopMediaStream(stream)
+          | PhaseGetGeolocation({stream}) => stopMediaStream(stream)
+          | PhaseReview({objectUrl, stream}) =>
+            let _ = stopMediaStream(stream);
+            let _ = Webapi.Url.revokeObjectURL(objectUrl);
+            ();
+          | _ => ()
+          }
+        },
+      );
+    });
 
   /**
     * Geolocation may update after initital prompt due to refresh,
@@ -141,13 +154,9 @@ let make = (~mimeType, ~onFile, ~isActive) => {
 
   let handleReviewApprove = () =>
     switch (phaseState) {
-    | PhaseReview(review) =>
-      let _ = setPhaseGetUserMedia->dispatchPhaseAction;
-      let _ =
-        onFile(
-          ~file=review.data,
-          ~location=review.position->Geolocation.coordsGet,
-        );
+    | PhaseReview({stream, data, position}) =>
+      let _ = stream->setPhaseRecording->dispatchPhaseAction;
+      let _ = onFile(~file=data, ~location=position->Geolocation.coordsGet);
       ();
     | _ =>
       let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
@@ -156,8 +165,8 @@ let make = (~mimeType, ~onFile, ~isActive) => {
 
   let handleReviewReject = () =>
     switch (phaseState) {
-    | PhaseReview(_review) =>
-      let _ = setPhaseGetUserMedia->dispatchPhaseAction;
+    | PhaseReview({stream}) =>
+      let _ = stream->setPhaseRecording->dispatchPhaseAction;
       ();
     | _ =>
       let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
@@ -193,8 +202,7 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       mimeType
     />
   | PhaseReview({objectUrl}) =>
-    let src =
-      [|(objectUrl, mimeType)|]->VideoSurface.srcElement->Js.Option.some;
+    let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
     <MediaRecorder_PhaseReview
       onApprove=handleReviewApprove
       onReject=handleReviewReject

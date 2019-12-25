@@ -27,13 +27,8 @@ module CreateMediaConvertJobMutation = [%graphql
 module ListMediaConvertJobsQuery = [%graphql
   {|
     query ListMediaConvertJobs($mediaConvertJobVideoId: ID!) {
-      listMediaConvertJobs(
-        filter: {
-          mediaConvertJobVideoId: {
-            eq: $mediaConvertJobVideoId
-          }
-        },
-        limit: 1
+      mediaConvertJobsByVideoId(
+        mediaConvertJobVideoId: $mediaConvertJobVideoId
       ) {
         items {
           id
@@ -62,7 +57,7 @@ let handle = r => {
   |> Js.Promise.then_(r => {
        let queryResult = r->ListMediaConvertJobsQuery.parse;
        switch (
-         queryResult##listMediaConvertJobs->Belt.Option.flatMap(i => i##items),
+         queryResult##mediaConvertJobsByVideoId->Belt.Option.flatMap(i => i##items),
          video##files
          ->DynamoDBStreamRecord.ArrayField.get
          ->Belt.Array.get(0)
@@ -106,7 +101,7 @@ let handle = r => {
                         createdJob
                         ->AWSSDK.MediaConvert.Job.jobGet
                         ->AWSSDK.MediaConvert.Job.idGet,
-                      "id": None,
+                      "id": UUID.makeV4(),
                     },
                     (),
                   );

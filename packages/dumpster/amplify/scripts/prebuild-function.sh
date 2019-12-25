@@ -17,3 +17,7 @@ MEDIA_CONVERT_JOB_STATE_CHANGE_TRIGGER="$FUNCTION_DIR/MediaConvertJobStateChange
 (cd $POST_CONFIRMATION_SRC_DIR && npm install)
 (cd $DYNAMODB_STREAM_TRIGGER_SRC_DIR && npm install)
 (cd $MEDIA_CONVERT_JOB_STATE_CHANGE_TRIGGER && npm install)
+
+# Sync against the currently deployed GraphQL schema.
+(cd $DYNAMODB_STREAM_TRIGGER_SRC_DIR && npm run graphql:sync-schema)
+(cd $MEDIA_CONVERT_JOB_STATE_CHANGE_TRIGGER && npm run graphql:sync-schema)

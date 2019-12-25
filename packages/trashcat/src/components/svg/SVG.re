@@ -23,6 +23,8 @@ let emojiWhiteCheckMark: string = [%raw
 
 let emojiHourglass: string = [%raw "require('./emoji-hourglass.svg')"];
 
+let emojiRecycle: string = [%raw "require('./emoji-recycle.svg')"];
+
 type state = {
   isLoading: bool,
   src: string,

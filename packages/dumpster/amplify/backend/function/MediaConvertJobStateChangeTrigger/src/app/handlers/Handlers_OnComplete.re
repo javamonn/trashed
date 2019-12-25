@@ -35,14 +35,7 @@ module MediaConvertOutput = {
 module ListMediaConvertJobsQuery = [%graphql
   {|
     query ListMediaConvertJobs($externalId: ID!) {
-      listMediaConvertJobs(
-        filter: {
-          externalId: {
-            eq: $externalId
-          }
-        },
-        limit: 1
-      ) {
+      mediaConvertJobsByExternalId(externalId: $externalId) {
         items {
           id
           state
@@ -58,7 +51,6 @@ module ListMediaConvertJobsQuery = [%graphql
               }
               mimeType
               userUpload
-              cloudfrontUrl
             }
           }
         }
@@ -80,7 +72,7 @@ let getMediaConvertJob = externalId => {
          ->Js.Json.decodeObject
          ->Belt.Option.flatMap(o => o->Js.Dict.get("data"))
          ->Belt.Option.flatMap(d =>
-             d->ListMediaConvertJobsQuery.parse->(r => r##listMediaConvertJobs)
+             d->ListMediaConvertJobsQuery.parse->(r => r##mediaConvertJobsByExternalId)
            )
          ->Belt.Option.flatMap(r => r##items)
          ->Belt.Option.flatMap(r =>
@@ -163,7 +155,6 @@ let handle = eventDetail => {
                         },
                         "mimeType": m##mimeType,
                         "userUpload": m##userUpload,
-                        "cloudfrontUrl": m##cloudfrontUrl,
                       }
                     )
                   ->Js.Option.some,
@@ -194,7 +185,6 @@ let handle = eventDetail => {
                                 )
                               ->Belt.Option.getExn,
                             "userUpload": false,
-                            "cloudfrontUrl": None,
                           },
                         |]),
                       ),

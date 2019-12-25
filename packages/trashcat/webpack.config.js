@@ -118,9 +118,9 @@ module.exports = {
     }),
   ].filter(p => Boolean(p)),
   devServer: {
-    liveReload: true,
     port: 8080,
-    host: 'localhost.trashed.today',
+    // liveReload: true,
+    // host: 'localhost.trashed.today',
     index: 'index.html',
     contentBase: DIST_DIR,
     historyApiFallback: true
