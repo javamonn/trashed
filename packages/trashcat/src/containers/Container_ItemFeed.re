@@ -166,7 +166,12 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         <DelayedMount timeout=3000 paused={!isItemLastInFeed}>
           <Notification.LastItemInFeed
             _in=isItemLastInFeed
-            onClick={_ => {Js.log("LastItemInFeed Clicked!")}}
+            onClick={_ => {
+              let _ =
+                Webapi.Dom.location
+                |> Webapi.Dom.Location.assign("/item/feed");
+              ();
+            }}
           />
         </DelayedMount>
         <ScrollSnapList.Container
