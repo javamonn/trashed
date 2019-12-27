@@ -1,4 +1,5 @@
 open Externals;
+open VideoRecorder_Phase;
 
 type error = [ | `InvalidPhaseTransition | `MediaRecorderError];
 
@@ -187,15 +188,15 @@ let make = (~mimeType, ~onFile, ~isActive) => {
 
   switch (phaseState) {
   | PhaseGetUserMedia =>
-    <MediaRecorder_PhaseGetUserMedia onGranted=handleGrantedUserMedia />
+    <PermissionPromptCamera.MediaRecorder onGranted=handleGrantedUserMedia />
   | PhaseGetGeolocation(_) =>
-    <MediaRecorder_PhaseGetGeolocation
+    <PermissionPromptGeolocation
       onGranted=handleGrantedGeolocation
       onPrompt=onGeolocationPrompt
       permission=geolocationPermission
     />
   | PhaseRecording({stream}) =>
-    <MediaRecorder_PhaseRecording
+    <Recording
       stream
       onComplete=handleRecordingComplete
       onError=handleRecordingError
@@ -203,11 +204,7 @@ let make = (~mimeType, ~onFile, ~isActive) => {
     />
   | PhaseReview({objectUrl}) =>
     let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
-    <MediaRecorder_PhaseReview
-      onApprove=handleReviewApprove
-      onReject=handleReviewReject
-      src
-    />;
+    <Review onApprove=handleReviewApprove onReject=handleReviewReject src />;
   | PhaseError(_) => <Error />
   };
 };
