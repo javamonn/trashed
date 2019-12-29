@@ -21,26 +21,50 @@ module NearbyItemsQuery = [%graphql
   |}
 ];
 
+module Location = {
+  let make = pos => {
+    {
+      "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
+      "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
+    };
+  };
+
+  let parse = json => {
+    let decodeField = key =>
+      json
+      ->Js.Json.decodeObject
+      ->Belt.Option.flatMap(o => o->Js.Dict.get(key))
+      ->Belt.Option.flatMap(Js.Json.decodeNumber);
+    switch (decodeField("lat"), decodeField("lon")) {
+    | (Some(lat), Some(lon)) => Some({"lat": lat, "lon": lon})
+    | _ => None
+    };
+  };
+
+  let eq = (l1, l2) => l1##lat === l2##lat && l1##lon === l2##lon;
+};
+
 [@react.component]
 let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let (geolocationPermission, onPromptGeolocation, _) =
     Service.Permission.Geolocation.use();
-  let (ignoreGeolocation, setIgnoreGeolocation) = React.useState(() => false);
 
-  let location =
-    switch (geolocationPermission) {
-    | Service.Permission.PermissionGranted(Some(pos)) when !ignoreGeolocation =>
-      Some({
-        "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
-        "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
-      })
-    | _ => None
-    };
+  let (queryVariables, setQueryVariables) =
+    React.useState(() => {
+      let location =
+        switch (geolocationPermission) {
+        | Service.Permission.PermissionGranted(Some(pos)) =>
+          Some(Location.make(pos))
+        | _ => None
+        };
+      NearbyItemsQuery.makeVariables(~location?, ~m=1000, ());
+    });
+  let fetchMoreVariablesRef = React.useRef(queryVariables);
 
-  let (query, _) =
+  let (query, fullQuery) =
     ApolloHooks.useQuery(
       ~fetchPolicy=ApolloHooksTypes.CacheAndNetwork,
-      ~variables=NearbyItemsQuery.makeVariables(~location?, ~m=1000, ()),
+      ~variables=queryVariables,
       NearbyItemsQuery.definition,
     );
 
@@ -67,21 +91,29 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
 
             /** No items, refetch without coordinates */
             let _ =
-              setIgnoreGeolocation(ignoreGeolocation =>
+              setQueryVariables(variables =>
                 switch (items) {
-                | None => true
-                | Some(items) when Js.Array.length(items) === 0 => true
-                | Some(_) => ignoreGeolocation
+                | None => NearbyItemsQuery.makeVariables(~m=1000, ())
+                | Some(items) when Js.Array.length(items) === 0 =>
+                  NearbyItemsQuery.makeVariables(~m=1000, ())
+                | Some(_) => variables
                 }
               );
 
-            if (newItemId !== itemId || newNextToken !== nextToken) {
-              onVisibleItemChange(
-                ~nextToken=newNextToken,
-                ~itemId=newItemId,
-                (),
-              );
-            };
+            /**
+             * If itemId is unset, or if nextToken has been updated,
+             * propagate changes into URL.
+             */
+            let _ =
+              if (!Belt.Option.eq(newItemId, itemId, (==))
+                  || !Belt.Option.eq(newNextToken, nextToken, (==))) {
+                onVisibleItemChange(
+                  ~nextToken=newNextToken,
+                  ~itemId=newItemId,
+                  (),
+                );
+              };
+            ();
           | Loading
           | Error(_)
           | NoData => ()
@@ -89,6 +121,66 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         None;
       },
       [|query|],
+    );
+
+  let _ =
+    React.useEffect1(
+      () => {
+        let location =
+          fetchMoreVariablesRef
+          ->React.Ref.current
+          ->Js.Json.decodeObject
+          ->Belt.Option.flatMap(o => o->Js.Dict.get("location"))
+          ->Belt.Option.flatMap(Location.parse);
+
+        let nextLocation =
+          switch (geolocationPermission) {
+          | Service.Permission.PermissionGranted(Some(pos)) =>
+            Some(Location.make(pos))
+          | _ => None
+          };
+
+        if (!Belt.Option.eq(location, nextLocation, Location.eq)) {
+          let nextVariables =
+            NearbyItemsQuery.makeVariables(
+              ~location=?nextLocation,
+              ~m=1000,
+              (),
+            );
+          let _ = fetchMoreVariablesRef->React.Ref.setCurrent(nextVariables);
+          let _ =
+            fullQuery.fetchMore(
+              ~variables=nextVariables,
+              ~updateQuery=
+                (previousResult, fetchMoreOptions) => {
+                  let parseItems = json =>
+                    json
+                    ->Js.Json.decodeObject
+                    ->Belt.Option.flatMap(o => o->Js.Dict.get("nearbyItems"))
+                    ->Belt.Option.flatMap(Js.Json.decodeObject)
+                    ->Belt.Option.flatMap(o => o->Js.Dict.get("items"))
+                    ->Belt.Option.flatMap(Js.Json.decodeArray)
+                    ->Belt.Option.map(arr =>
+                        arr->Belt.Array.keepMap(Js.Json.decodeObject)
+                      )
+                    ->Belt.Option.getWithDefault([||]);
+
+                  let previousItems = previousResult->parseItems;
+                  let items =
+                    fetchMoreOptions
+                    ->ApolloHooksQuery.fetchMoreResultGet
+                    ->Belt.Option.map(parseItems)
+                    ->Belt.Option.getWithDefault([||]);
+
+                  previousResult;
+                },
+              (),
+            );
+          ();
+        };
+        None;
+      },
+      [|geolocationPermission|],
     );
 
   let handleIdxChange = (~itemWindow, ~itemId, idx) => {
