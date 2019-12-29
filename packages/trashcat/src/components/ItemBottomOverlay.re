@@ -24,9 +24,16 @@ let make = (~location, ~createdAt) => {
 
   <ScreenBottomEdgeAligned
     className={cn(["flex", "justify-between", "py-4", "px-6"])}>
-    <div className={cn(["flex", "flex-col", "justify-end"])}>
+    <div
+      className={cn([
+        "flex",
+        "flex-col",
+        "justify-end",
+        "items-start",
+        "flex-auto",
+      ])}>
       <div
-        className={cn(["flex", "flex-row", "justify-center", "items-center"])}>
+        className={cn(["flex", "flex-row", "items-center"])}>
         <SVG
           icon=SVG.emojiHourglass
           className={cn(["w-10", "h-10"])}
