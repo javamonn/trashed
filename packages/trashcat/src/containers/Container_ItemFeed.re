@@ -104,8 +104,8 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   | Loading =>
     <div
       className={cn([
-        "w-screen",
-        "h-screen",
+        "w-full",
+        "h-full",
         "flex",
         "justify-center",
         "items-center",
@@ -198,8 +198,8 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
     | _ when Array.length(items) === 0 =>
       <div
         className={cn([
-          "w-screen",
-          "h-screen",
+          "w-full",
+          "h-full",
           "flex",
           "justify-center",
           "items-center",

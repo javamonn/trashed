@@ -4,8 +4,8 @@ open Lib.Styles;
 let make = () => {
   <div
     className={cn([
-      "w-screen",
-      "h-screen",
+      "w-full",
+      "h-full",
       "bg-brandBlue",
       "flex",
       "justify-center",
@@ -32,7 +32,7 @@ let make = () => {
     </Marquee>
     <div className={cn(["my-32", "h-56", "w-56"])}>
       <SVG
-        className={cn(["w-fill", "h-fill"])}
+        className={cn(["w-full", "h-full"])}
         icon=SVG.trashIconOnBackground
         placeholderViewBox="0 0 224 224"
       />

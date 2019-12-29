@@ -94,8 +94,8 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
     <div
       ?style
       className={cn([
-        "w-screen",
-        "h-screen",
+        "w-full",
+        "h-full",
         "flex",
         "justify-center",
         "items-center",
@@ -106,7 +106,7 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
   | Data({src, poster}) =>
     <div
       ?style
-      className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
+      className={cn(["w-full", "h-full", "relative", "overflow-hidden"])}>
       <VideoSurface src autoPlay ?poster />
       <ItemBottomOverlay
         location=(item##location##lat, item##location##lon)

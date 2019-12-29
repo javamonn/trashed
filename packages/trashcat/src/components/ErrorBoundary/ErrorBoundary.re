@@ -23,8 +23,8 @@ let make = (~children) => {
     renderErrorBoundary={() =>
       <div
         className={cn([
-          "w-screen",
-          "h-screen",
+          "w-full",
+          "h-full",
           "bg-brandBlue",
           "flex",
           "justify-center",

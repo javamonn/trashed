@@ -19,7 +19,7 @@ let renderLink = (~text, ~href) =>
 
 [@react.component]
 let make = () => {
-  <div className={cn(["w-screen", "h-screen", "flex", "flex-row"])}>
+  <div className={cn(["w-full", "h-full", "flex", "flex-row"])}>
     <div className={cn(["flex", "flex-auto", "flex-col"])}>
       <div
         className={cn([

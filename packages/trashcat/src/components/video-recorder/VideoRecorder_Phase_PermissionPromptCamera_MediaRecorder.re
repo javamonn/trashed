@@ -31,8 +31,8 @@ let make = (~onGranted) => {
 
   <div
     className={cn([
-      "w-screen",
-      "h-screen",
+      "w-fill",
+      "h-fill",
       "flex",
       "justify-center",
       "items-center",

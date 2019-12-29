@@ -183,7 +183,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     });
 
   <div
-    className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}
+    className={cn(["w-full", "h-full", "relative", "overflow-hidden"])}
     onTouchStart=handleTouchStart
     onTouchEnd=handleTouchEnd>
     <ScreenBottomEdgeAligned className={cn(["h-5", "m-8"])}>

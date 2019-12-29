@@ -94,8 +94,8 @@ let make = (~onGranted, ~onPrompt, ~permission) => {
 
   <div
     className={cn([
-      "w-screen",
-      "h-screen",
+      "w-full",
+      "h-full",
       "flex",
       "justify-center",
       "items-center",

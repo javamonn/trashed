@@ -10,8 +10,8 @@ let make = (~onFile) => {
 
   <div
     className={cn([
-      "w-screen",
-      "h-screen",
+      "w-full",
+      "h-full",
       "flex",
       "justify-center",
       "items-center",
