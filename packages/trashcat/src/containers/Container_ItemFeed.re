@@ -1,6 +1,12 @@
 open Lib.Styles;
 open Externals;
 
+[@bs.deriving jsConverter]
+type error = [
+  | [@bs.as "InvalidState_ExpectedData"] `InvalidState_ExpectedData
+  | [@bs.as "InvalidState_ExpectedActiveItem"] `InvalidState_ExpectedActiveItem
+];
+
 module NearbyItemsQuery = [%graphql
   {|
     query NearbyItems($location: LocationInput, $m: Int, $nextToken: String)  {
@@ -107,7 +113,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       <Progress />
     </div>
   | Error(_)
-  | NoData => <Error />
+  | NoData => `InvalidState_ExpectedData->errorToJs->Js.Exn.raiseError
   | Data(data) =>
     let items =
       data##nearbyItems
@@ -201,7 +207,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         ])}>
         <Progress />
       </div>
-    | _ => <Error />
+    | _ => `InvalidState_ExpectedActiveItem->errorToJs->Js.Exn.raiseError
     };
   };
 };

@@ -18,7 +18,12 @@ let make = (~onFile) => {
     ])}>
     <VideoRecorder_Phase_PermissionPromptCamera_Prompt
       renderButton={() =>
-        <div className={cn(["h-56", "w-56"])}>
+        <div className={cn(["h-56", "w-56", "relative"])}>
+          <SVG
+            className={cn(["inset-x-0", "inset-y-0", "absolute"])}
+            icon=SVG.videoIconOnBackground
+            placeholderViewBox="0 0 224 224"
+          />
           {ReactDOMRe.createElementVariadic(
              "input",
              ~props=
@@ -27,14 +32,11 @@ let make = (~onFile) => {
                  "accept": "video/*",
                  "onChange": onFileInputChange,
                  "capture": "environment",
+                 "className":
+                   cn(["absolute", "inset-x-0", "inset-y-0", "opacity-0"]),
                }),
              [||],
            )}
-          <SVG
-            className={cn(["inset-x-0", "inset-y-0", "absolute"])}
-            icon=SVG.videoIconOnBackground
-            placeholderViewBox="0 0 224 224"
-          />
         </div>
       }
     />

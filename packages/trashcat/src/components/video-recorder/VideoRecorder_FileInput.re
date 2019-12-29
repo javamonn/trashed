@@ -1,7 +1,17 @@
 open Externals;
 open VideoRecorder_Phase;
 
-type error = [ | `InvalidPhaseTransition];
+[@bs.deriving jsConverter]
+type error = [
+  | [@bs.as "InvalidPhaseTransitionAttempt_GetGeolocation"]
+    `InvalidPhaseTransitionAttempt_GetGeolocation
+  | [@bs.as "InvalidPhaseTransitionAttempt_Review"]
+    `InvalidPhaseTransitionAttempt_Review
+  | [@bs.as "InvalidPhaseTransitionAttempt_Approve"]
+    `InvalidPhaseTransitionAttempt_Approve
+  | [@bs.as "InvalidPhaseTransitionAttempt_Reject"]
+    `InvalidPhaseTransitionAttempt_Reject
+];
 
 type geolocation = {
   data: File.t,
@@ -45,13 +55,13 @@ let make = (~mimeType, ~onFile) => {
               data,
               objectUrl: Webapi.Url.createObjectURL(data),
             })
-          | _ => PhaseError(`InvalidPhaseTransition)
+          | _ => PhaseError(`InvalidPhaseTransitionAttempt_GetGeolocation)
           }
         | SetPhaseReview(position) =>
           switch (state) {
           | PhaseGetGeolocation({data, objectUrl}) =>
             PhaseReview({data, objectUrl, position})
-          | _ => PhaseError(`InvalidPhaseTransition)
+          | _ => PhaseError(`InvalidPhaseTransitionAttempt_Review)
           }
         | SetPhaseGetFile => PhaseGetFile
         | SetPhaseError(error) => PhaseError(error)
@@ -71,7 +81,10 @@ let make = (~mimeType, ~onFile) => {
       let _ = onFile(~file=data, ~location=position->Geolocation.coordsGet);
       ();
     | _ =>
-      let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
+      let _ =
+        `InvalidPhaseTransitionAttempt_Approve
+        ->setPhaseError
+        ->dispatchPhaseAction;
       ();
     };
 
@@ -81,7 +94,10 @@ let make = (~mimeType, ~onFile) => {
       let _ = setPhaseGetFile->dispatchPhaseAction;
       ();
     | _ =>
-      let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
+      let _ =
+        `InvalidPhaseTransitionAttempt_Reject
+        ->setPhaseError
+        ->dispatchPhaseAction;
       ();
     };
 
@@ -95,11 +111,7 @@ let make = (~mimeType, ~onFile) => {
     />
   | PhaseReview({objectUrl}) =>
     let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
-    <Review
-      onApprove=handleReviewApprove
-      onReject=handleReviewReject
-      src
-    />
-  | PhaseError(_) => <Error />
+    <Review onApprove=handleReviewApprove onReject=handleReviewReject src />;
+  | PhaseError(error) => error->errorToJs->Js.Exn.raiseError
   };
 };

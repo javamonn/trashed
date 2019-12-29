@@ -12,18 +12,14 @@ let trashIconOnBackground: string = [%raw
   "require('./trash-icon-on-background.svg')"
 ];
 let iconBackground: string = [%raw "require('./icon-background.svg')"];
-
 let trashedText: string = [%raw "require('./trashed-text.svg')"];
-
 let emojiCrossMark: string = [%raw "require('./emoji-cross-mark.svg')"];
-
 let emojiWhiteCheckMark: string = [%raw
   "require('./emoji-white-check-mark.svg')"
 ];
-
 let emojiHourglass: string = [%raw "require('./emoji-hourglass.svg')"];
-
 let emojiRecycle: string = [%raw "require('./emoji-recycle.svg')"];
+let emojiWarning: string = [%raw "require('./emoji-warning.svg')"];
 
 type state = {
   isLoading: bool,

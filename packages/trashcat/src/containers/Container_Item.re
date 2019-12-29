@@ -1,6 +1,11 @@
 open Externals;
 open Lib.Styles;
 
+[@bs.deriving jsConverter]
+type error = [
+  | [@bs.as "InvalidState_FailedS3Resolution"] `InvalidState_FailedS3Resolution
+];
+
 module GetItemFragment = [%graphql
   {|
     fragment itemFragment on Item {
@@ -45,7 +50,8 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
   let (hasPoster, s3Objects) = {
     let videoFileS3Objects =
       item##video##files->Belt.Array.map(i => i##file->S3Object.fromJs);
-    let posterS3Object = item##video##poster->Belt.Option.map(S3Object.fromJs);
+    let posterS3Object =
+      item##video##poster->Belt.Option.map(S3Object.fromJs);
     switch (posterS3Object) {
     | Some(posterS3Object) => (
         true,
@@ -107,6 +113,6 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
         createdAt={item##createdAt}
       />
     </div>
-  | Error => React.string("Nothing here!")
+  | Error => `InvalidState_FailedS3Resolution->errorToJs->Js.Exn.raiseError
   };
 };

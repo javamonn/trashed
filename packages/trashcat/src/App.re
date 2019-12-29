@@ -59,8 +59,8 @@ let make = () => {
     );
 
   switch (url.path) {
-  | [] => <Screen.Landing />
-  | ["coming-soon"] => <Screen.ComingSoon />
+  | [] => <ErrorBoundary> <Screen.Landing /> </ErrorBoundary>
+  | ["coming-soon"] => <ErrorBoundary> <Screen.ComingSoon /> </ErrorBoundary>
   | ["item", ...rest] =>
     let tab =
       switch (rest) {
@@ -72,7 +72,9 @@ let make = () => {
 
     switch (tab) {
     | Some(tab) =>
-      <Providers.Apollo> <Screen.Item tab url /> </Providers.Apollo>
+      <ErrorBoundary>
+        <Providers.Apollo> <Screen.Item tab url /> </Providers.Apollo>
+      </ErrorBoundary>
     | None => <Redirect to_="/item/feed" />
     };
   | _ => ReasonReact.string("Nothing here!")
