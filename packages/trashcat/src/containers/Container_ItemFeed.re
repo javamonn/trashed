@@ -21,6 +21,28 @@ module NearbyItemsQuery = [%graphql
   |}
 ];
 
+module QueryJson = {
+  type dict = Js.Dict.t(string);
+
+  [@decco]
+  type item = {
+    id: string,
+    itemFragment: [@decco.codec Decco.Codecs.magic] dict,
+  };
+
+  [@decco]
+  type nearbyItems = {
+    nextToken: option(string),
+    items: option(array(item)),
+  };
+
+  [@decco]
+  type t = {nearbyItems: option(nearbyItems)};
+
+  let decode = t_decode;
+  let encode = t_encode;
+};
+
 module Location = {
   let make = pos => {
     {
@@ -123,6 +145,65 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       [|query|],
     );
 
+  let updateQuery = (previousResult, nextFetchMore) => {
+    let prev = previousResult->QueryJson.decode;
+    let next =
+      switch (nextFetchMore->ApolloHooksQuery.fetchMoreResultGet) {
+      | Some(nextResult) => nextResult->QueryJson.decode
+      | None => Decco.error("fetchMoreResult is None", Js.Json.null)
+      };
+
+    let result = switch (prev, next) {
+      | (Belt.Result.Ok(prev), Belt.Result.Ok(next)) => () /** combine prev and next **/
+      | (Belt.Result.Error(_), Belt.Result.Error(_))
+      | (Belt.Result.Ok(_), Belt.Result.Error(_)) => () /** Only prev **/
+      | (Belt.Result.Error(_), Belt.Result.Ok(next)) => () /** Only next **/
+    }
+  };
+
+  /**
+    let parseItems = json =>
+      json
+      ->Js.Json.decodeObject
+      ->Belt.Option.flatMap(o => o->Js.Dict.get("nearbyItems"))
+      ->Belt.Option.flatMap(Js.Json.decodeObject)
+      ->Belt.Option.flatMap(o => o->Js.Dict.get("items"))
+      ->Belt.Option.flatMap(Js.Json.decodeArray)
+      ->Belt.Option.map(arr => arr->Belt.Array.keepMap(Js.Json.decodeObject))
+      ->Belt.Option.getWithDefault([||]);
+    let previousItems = previousResult->parseItems;
+    let items =
+      fetchMoreOptions
+      ->ApolloHooksQuery.fetchMoreResultGet
+      ->Belt.Option.map(parseItems)
+      ->Belt.Option.getWithDefault([||]);
+    let nextToken =
+      fetchMoreOptions
+      ->ApolloHooksQuery.fetchMoreResultGet
+      ->Belt.Option.flatMap(Js.Json.decodeObject)
+      ->Belt.Option.flatMap(o => o->Js.Dict.get("nearbyItems"));
+
+    let activeItemIdx =
+      previousItems->Belt.Array.getIndexBy(item => {
+        switch (
+          item->Js.Dict.get("id")->Belt.Option.flatMap(Js.Json.decodeString),
+          itemId,
+        ) {
+        | (Some(parsedItemId), Some(itemId)) when parsedItemId === itemId =>
+          true
+        | _ => false
+        }
+      });
+    let updatedItems =
+      switch (activeItemIdx) {
+      | Some(idx) =>
+        Belt.Array.(
+          concat(slice(previousItems, ~offset=0, ~len=idx + 1), items)
+        )
+      | None => Belt.Array.concat(previousItems, items)
+      };
+      **/
+
   let _ =
     React.useEffect1(
       () => {
@@ -149,33 +230,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
             );
           let _ = fetchMoreVariablesRef->React.Ref.setCurrent(nextVariables);
           let _ =
-            fullQuery.fetchMore(
-              ~variables=nextVariables,
-              ~updateQuery=
-                (previousResult, fetchMoreOptions) => {
-                  let parseItems = json =>
-                    json
-                    ->Js.Json.decodeObject
-                    ->Belt.Option.flatMap(o => o->Js.Dict.get("nearbyItems"))
-                    ->Belt.Option.flatMap(Js.Json.decodeObject)
-                    ->Belt.Option.flatMap(o => o->Js.Dict.get("items"))
-                    ->Belt.Option.flatMap(Js.Json.decodeArray)
-                    ->Belt.Option.map(arr =>
-                        arr->Belt.Array.keepMap(Js.Json.decodeObject)
-                      )
-                    ->Belt.Option.getWithDefault([||]);
-
-                  let previousItems = previousResult->parseItems;
-                  let items =
-                    fetchMoreOptions
-                    ->ApolloHooksQuery.fetchMoreResultGet
-                    ->Belt.Option.map(parseItems)
-                    ->Belt.Option.getWithDefault([||]);
-
-                  previousResult;
-                },
-              (),
-            );
+            fullQuery.fetchMore(~variables=nextVariables, ~updateQuery, ());
           ();
         };
         None;

@@ -24,10 +24,9 @@
     "bs-date-fns",
     "bs-fetch",
     "reason-apollo",
-    "reason-apollo-hooks"
+    "reason-apollo-hooks",
+    "decco"
   ],
-  "ppx-flags": [
-    "@baransu/graphql_ppx_re/ppx6"
-  ],
+  "ppx-flags": ["decco/ppx", "@baransu/graphql_ppx_re/ppx6"],
   "refmt": 3
 }
