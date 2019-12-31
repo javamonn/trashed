@@ -1,6 +1,8 @@
 open Lib.Styles;
 open Externals;
 
+module GraphQL = Container_ItemFeed_GraphQL;
+
 [@bs.deriving jsConverter]
 type error = [
   | [@bs.as "InvalidState_ExpectedData"] `InvalidState_ExpectedData
@@ -8,83 +10,36 @@ type error = [
   | [@bs.as "InvalidState_UnableToParseQuery"] `InvalidState_UnableToParseQuery
 ];
 
-module NearbyItemsQuery = [%graphql
-  {|
-    query NearbyItems($location: LocationInput, $m: Int, $nextToken: String)  {
-      nearbyItems(location: $location, m: $m, nextToken: $nextToken, limit: 30) {
-        nextToken
-        items {
-          id
-          ...Container_Item.GetItemFragment.ItemFragment @bsField(name: "itemFragment")
-        }
-      }
-    }
-  |}
-];
-
-module QueryJson = {
-  type dict = Js.Dict.t(string);
-
-  [@decco]
-  type nearbyItems = {
-    nextToken: option(string),
-    items: option(array([@decco.codec Decco.Codecs.magic] dict)),
-    [@decco.key "__typename"]
-    typename: option(string),
-  };
-
-  [@decco]
-  type t = {nearbyItems: option(nearbyItems)};
-
-  let decode = t_decode;
-  let encode = t_encode;
-};
-
-module Location = {
-  let make = pos => {
-    {
-      "lat": pos->Geolocation.coordsGet->Geolocation.latitudeGet,
-      "lon": pos->Geolocation.coordsGet->Geolocation.longitudeGet,
-    };
-  };
-
-  let parse = json => {
-    let decodeField = key =>
-      json
-      ->Js.Json.decodeObject
-      ->Belt.Option.flatMap(o => o->Js.Dict.get(key))
-      ->Belt.Option.flatMap(Js.Json.decodeNumber);
-    switch (decodeField("lat"), decodeField("lon")) {
-    | (Some(lat), Some(lon)) => Some({"lat": lat, "lon": lon})
-    | _ => None
-    };
-  };
-
-  let eq = (l1, l2) => l1##lat === l2##lat && l1##lon === l2##lon;
-};
-
 [@react.component]
 let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let (geolocationPermission, onPromptGeolocation, _) =
     Service.Permission.Geolocation.use();
 
   let (queryVariables, setQueryVariables) =
-    React.useState(() => {
-      let location =
-        switch (geolocationPermission) {
-        | Service.Permission.PermissionGranted(Some(pos)) =>
-          Some(Location.make(pos))
-        | _ => None
-        };
-      NearbyItemsQuery.makeVariables(~location?, ~m=1000, ());
-    });
-  let fetchMoreVariablesRef = React.useRef(queryVariables);
+    React.useState(() =>
+      GraphQL.Variables.{
+        location:
+          switch (geolocationPermission) {
+          | Service.Permission.PermissionGranted(Some(pos)) =>
+            GraphQL.Variables.{
+              lat: Geolocation.(pos->coordsGet->latitudeGet),
+              lon: Geolocation.(pos->coordsGet->longitudeGet),
+            }
+            ->Js.Option.some
+          | _ => None
+          },
+        m: Some(1000),
+        nextToken: None,
+      }
+    );
+
+  let fetchMoreVariablesRef = queryVariables->React.useRef;
 
   let (query, fullQuery) =
     ApolloHooks.useQuery(
       ~fetchPolicy=ApolloHooksTypes.CacheAndNetwork,
-      ~variables=queryVariables,
-      NearbyItemsQuery.definition,
+      ~variables=GraphQL.Variables.encode(queryVariables),
+      GraphQL.Config.definition,
     );
 
   let _ =
@@ -110,14 +65,18 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
 
             /** No items, refetch without coordinates */
             let _ =
-              setQueryVariables(variables =>
-                switch (items) {
-                | None => NearbyItemsQuery.makeVariables(~m=1000, ())
-                | Some(items) when Js.Array.length(items) === 0 =>
-                  NearbyItemsQuery.makeVariables(~m=1000, ())
-                | Some(_) => variables
-                }
-              );
+              setQueryVariables(variables => {
+                let newVariables =
+                  switch (items) {
+                  | None => GraphQL.Variables.make(~m=1000, ())
+                  | Some(items) when Js.Array.length(items) === 0 =>
+                    GraphQL.Variables.make(~m=1000, ())
+                  | Some(_) => variables
+                  };
+                let _ =
+                  fetchMoreVariablesRef->React.Ref.setCurrent(newVariables);
+                newVariables;
+              });
 
             /**
              * If itemId is unset, or if nextToken has been updated,
@@ -142,11 +101,16 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       [|query|],
     );
 
-  let updateQuery = (previousResult, nextFetchMore) => {
-    let prev = previousResult->QueryJson.decode;
+  let updateQuery =
+      (
+        ~truncatePreviousResultToActiveItem=false,
+        previousResult,
+        nextFetchMore,
+      ) => {
+    let prev = previousResult->GraphQL.Json.decode;
     let next =
       switch (nextFetchMore->ApolloHooksQuery.fetchMoreResultGet) {
-      | Some(nextResult) => nextResult->QueryJson.decode
+      | Some(nextResult) => nextResult->GraphQL.Json.decode
       | None => Decco.error("fetchMoreResult is None", Js.Json.null)
       };
 
@@ -163,13 +127,13 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
               Belt.Option.eq(Js.Dict.get(item, "id"), itemId, (===))
             )
           ) {
-          | Some(idx) =>
+          | Some(idx) when truncatePreviousResultToActiveItem =>
             Belt.Array.slice(prevNearbyItems, ~offset=0, ~len=idx + 1)
-          | None => prevNearbyItems
+          | _ => prevNearbyItems
           };
 
         Belt.Result.Ok(
-          QueryJson.{
+          GraphQL.Json.{
             typename:
               next.nearbyItems
               ->Belt.Option.flatMap(nearbyItems => nearbyItems.typename),
@@ -194,7 +158,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       };
     switch (nearbyItems) {
     | Belt.Result.Ok(nearbyItems) =>
-      {nearbyItems: Some(nearbyItems)}->QueryJson.encode
+      {nearbyItems: Some(nearbyItems)}->GraphQL.Json.encode
     | Belt.Result.Error(err) =>
       let _ =
         try(err->errorToJs->Js.Exn.raiseError) {
@@ -207,45 +171,47 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
   let _ =
     React.useEffect1(
       () => {
-        let location =
-          fetchMoreVariablesRef
-          ->React.Ref.current
-          ->Js.Json.decodeObject
-          ->Belt.Option.flatMap(o => o->Js.Dict.get("location"))
-          ->Belt.Option.flatMap(Location.parse);
-
+        let variables = React.Ref.current(fetchMoreVariablesRef);
         let nextLocation =
           switch (geolocationPermission) {
           | Service.Permission.PermissionGranted(Some(pos)) =>
-            Some(Location.make(pos))
+            Some(
+              GraphQL.Variables.{
+                lat: Geolocation.(pos->coordsGet->latitudeGet),
+                lon: Geolocation.(pos->coordsGet->longitudeGet),
+              },
+            )
           | _ => None
           };
 
-        if (!Belt.Option.eq(location, nextLocation, Location.eq)) {
-          let nextVariables =
-            NearbyItemsQuery.makeVariables(
-              ~location=?nextLocation,
-              ~m=1000,
+        if (!
+              Belt.Option.eq(variables.location, nextLocation, (l1, l2) =>
+                l1.lat === l2.lat && l1.lon === l2.lon
+              )) {
+          let _ =
+            fetchMoreVariablesRef->React.Ref.setCurrent(
+              GraphQL.Variables.{
+                nextToken: None,
+                m: Some(1000),
+                location: nextLocation,
+              },
+            );
+          let _ =
+            fullQuery.fetchMore(
+              ~variables=
+                fetchMoreVariablesRef
+                ->React.Ref.current
+                ->GraphQL.Variables.encode,
+              ~updateQuery=
+                updateQuery(~truncatePreviousResultToActiveItem=true),
               (),
             );
-          let _ = fetchMoreVariablesRef->React.Ref.setCurrent(nextVariables);
-          let _ =
-            fullQuery.fetchMore(~variables=nextVariables, ~updateQuery, ());
           ();
         };
         None;
       },
       [|geolocationPermission|],
     );
-
-  let handleIdxChange = (~itemWindow, ~itemId, idx) => {
-    switch (Belt.Array.get(itemWindow, idx)) {
-    | Some(Some(item)) when item##id !== itemId =>
-      let _ = onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
-      ();
-    | _ => ()
-    };
-  };
 
   switch (fullQuery.data, fullQuery.loading, fullQuery.error) {
   | (None, true, None) =>
@@ -306,6 +272,58 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         | _ => true
         };
 
+      let handleIdxChange = idx => {
+        let _ =
+          switch (Belt.Array.get(itemWindow, idx)) {
+          | Some(Some(item)) when item##id !== activeItemId =>
+            let _ =
+              onVisibleItemChange(~nextToken, ~itemId=Some(item##id), ());
+            ();
+          | _ => ()
+          };
+
+        let shouldFetchMore =
+          switch (query) {
+          | Data(data) =>
+            data##nearbyItems
+            ->Belt.Option.flatMap(nearbyItems => nearbyItems##nextToken)
+            ->Belt.Option.map(nextToken =>
+                if (activeItemIdx
+                    > int_of_float(
+                        items->Js.Array.length->float_of_int *. 0.75,
+                      )) {
+                  let _ =
+                    fetchMoreVariablesRef->React.Ref.setCurrent(
+                      GraphQL.Variables.{
+                        ...fetchMoreVariablesRef->React.Ref.current,
+                        nextToken: Some(nextToken),
+                      },
+                    );
+                  true;
+                } else {
+                  false;
+                }
+              )
+            ->Belt.Option.getWithDefault(false)
+          | _ => false
+          };
+        let _ =
+          if (shouldFetchMore) {
+            let _ =
+              fullQuery.fetchMore(
+                ~variables=
+                  fetchMoreVariablesRef
+                  ->React.Ref.current
+                  ->GraphQL.Variables.encode,
+                ~updateQuery=
+                  updateQuery(~truncatePreviousResultToActiveItem=false),
+                (),
+              );
+            ();
+          };
+        ();
+      };
+
       <>
         <DelayedMount timeout=3000>
           <Notification.GeolocationRequired
@@ -325,7 +343,7 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         </DelayedMount>
         <ScrollSnapList.Container
           direction=ScrollSnapList.Vertical
-          onIdxChange={handleIdxChange(~itemWindow, ~itemId=activeItemId)}
+          onIdxChange=handleIdxChange
           initialIdx=itemWindowIdx>
           {itemWindow->Belt.Array.map(
              fun
