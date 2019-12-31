@@ -5,6 +5,7 @@ open Externals;
 type error = [
   | [@bs.as "InvalidState_ExpectedData"] `InvalidState_ExpectedData
   | [@bs.as "InvalidState_ExpectedActiveItem"] `InvalidState_ExpectedActiveItem
+  | [@bs.as "InvalidState_UnableToParseQuery"] `InvalidState_UnableToParseQuery
 ];
 
 module NearbyItemsQuery = [%graphql
@@ -25,15 +26,11 @@ module QueryJson = {
   type dict = Js.Dict.t(string);
 
   [@decco]
-  type item = {
-    id: string,
-    itemFragment: [@decco.codec Decco.Codecs.magic] dict,
-  };
-
-  [@decco]
   type nearbyItems = {
     nextToken: option(string),
-    items: option(array(item)),
+    items: option(array([@decco.codec Decco.Codecs.magic] dict)),
+    [@decco.key "__typename"]
+    typename: option(string),
   };
 
   [@decco]
@@ -153,56 +150,59 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       | None => Decco.error("fetchMoreResult is None", Js.Json.null)
       };
 
-    let result = switch (prev, next) {
-      | (Belt.Result.Ok(prev), Belt.Result.Ok(next)) => () /** combine prev and next **/
+    let nearbyItems =
+      switch (prev, next) {
+      | (Belt.Result.Ok(prev), Belt.Result.Ok(next)) =>
+        let prevNearbyItems =
+          prev.nearbyItems
+          ->Belt.Option.flatMap(nearbyItems => nearbyItems.items)
+          ->Belt.Option.getWithDefault([||]);
+        let retainedPrevItems =
+          switch (
+            Belt.Array.getIndexBy(prevNearbyItems, item =>
+              Belt.Option.eq(Js.Dict.get(item, "id"), itemId, (===))
+            )
+          ) {
+          | Some(idx) =>
+            Belt.Array.slice(prevNearbyItems, ~offset=0, ~len=idx + 1)
+          | None => prevNearbyItems
+          };
+
+        Belt.Result.Ok(
+          QueryJson.{
+            typename:
+              next.nearbyItems
+              ->Belt.Option.flatMap(nearbyItems => nearbyItems.typename),
+            nextToken:
+              next.nearbyItems
+              ->Belt.Option.flatMap(nearbyItems => nearbyItems.nextToken),
+            items:
+              Some(
+                Belt.Array.concat(
+                  retainedPrevItems,
+                  next.nearbyItems
+                  ->Belt.Option.flatMap(nearbyItems => nearbyItems.items)
+                  ->Belt.Option.getWithDefault([||]),
+                ),
+              ),
+          },
+        );
       | (Belt.Result.Error(_), Belt.Result.Error(_))
-      | (Belt.Result.Ok(_), Belt.Result.Error(_)) => () /** Only prev **/
-      | (Belt.Result.Error(_), Belt.Result.Ok(next)) => () /** Only next **/
-    }
-  };
-
-  /**
-    let parseItems = json =>
-      json
-      ->Js.Json.decodeObject
-      ->Belt.Option.flatMap(o => o->Js.Dict.get("nearbyItems"))
-      ->Belt.Option.flatMap(Js.Json.decodeObject)
-      ->Belt.Option.flatMap(o => o->Js.Dict.get("items"))
-      ->Belt.Option.flatMap(Js.Json.decodeArray)
-      ->Belt.Option.map(arr => arr->Belt.Array.keepMap(Js.Json.decodeObject))
-      ->Belt.Option.getWithDefault([||]);
-    let previousItems = previousResult->parseItems;
-    let items =
-      fetchMoreOptions
-      ->ApolloHooksQuery.fetchMoreResultGet
-      ->Belt.Option.map(parseItems)
-      ->Belt.Option.getWithDefault([||]);
-    let nextToken =
-      fetchMoreOptions
-      ->ApolloHooksQuery.fetchMoreResultGet
-      ->Belt.Option.flatMap(Js.Json.decodeObject)
-      ->Belt.Option.flatMap(o => o->Js.Dict.get("nearbyItems"));
-
-    let activeItemIdx =
-      previousItems->Belt.Array.getIndexBy(item => {
-        switch (
-          item->Js.Dict.get("id")->Belt.Option.flatMap(Js.Json.decodeString),
-          itemId,
-        ) {
-        | (Some(parsedItemId), Some(itemId)) when parsedItemId === itemId =>
-          true
-        | _ => false
-        }
-      });
-    let updatedItems =
-      switch (activeItemIdx) {
-      | Some(idx) =>
-        Belt.Array.(
-          concat(slice(previousItems, ~offset=0, ~len=idx + 1), items)
-        )
-      | None => Belt.Array.concat(previousItems, items)
+      | (Belt.Result.Ok(_), Belt.Result.Error(_))
+      | (Belt.Result.Error(_), Belt.Result.Ok(_)) =>
+        Belt.Result.Error(`InvalidState_UnableToParseQuery)
       };
-      **/
+    switch (nearbyItems) {
+    | Belt.Result.Ok(nearbyItems) =>
+      {nearbyItems: Some(nearbyItems)}->QueryJson.encode
+    | Belt.Result.Error(err) =>
+      let _ =
+        try(err->errorToJs->Js.Exn.raiseError) {
+        | Js.Exn.Error(err) => Sentry.captureException(err)
+        };
+      previousResult;
+    };
+  };
 
   let _ =
     React.useEffect1(
@@ -247,8 +247,8 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
     };
   };
 
-  switch (query) {
-  | Loading =>
+  switch (fullQuery.data, fullQuery.loading, fullQuery.error) {
+  | (None, true, None) =>
     <div
       className={cn([
         "w-full",
@@ -259,9 +259,10 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
       ])}>
       <Progress />
     </div>
-  | Error(_)
-  | NoData => `InvalidState_ExpectedData->errorToJs->Js.Exn.raiseError
-  | Data(data) =>
+  | (None, false, None)
+  | (_, _, Some(_)) =>
+    `InvalidState_ExpectedData->errorToJs->Js.Exn.raiseError
+  | (Some(data), _, _) =>
     let items =
       data##nearbyItems
       ->Belt.Option.flatMap(l => l##items)
