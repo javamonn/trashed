@@ -97,6 +97,7 @@ module Container = {
               },
             ),
             ("scrollSnapStop", "always"),
+            ("-webkit-overflow-scrolling", "touch"),
           ])
       }>
       {React.array(children)}
