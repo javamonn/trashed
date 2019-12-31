@@ -134,6 +134,7 @@ let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
         "preload": "auto",
         "onError": handleError,
         "disableRemotePlayback": true,
+        "playsInline": true,
         "onLoadedMetadata": handleLoadedMetadata,
         "className":
           cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),
