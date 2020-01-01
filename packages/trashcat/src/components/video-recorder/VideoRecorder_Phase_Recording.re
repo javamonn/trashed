@@ -49,9 +49,9 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
       (state, action) =>
         switch (action, state) {
         | (State.SetState(newState), _) => newState
-        | (RecorderEvent((MediaRecorder.Event.Start, ev)), State.NotStarted) =>
+        | (RecorderEvent((MediaRecorder.Event.Start, _)), State.NotStarted) =>
           State.InProgress([||])
-        | (RecorderEvent((MediaRecorder.Event.Start, ev)), _) =>
+        | (RecorderEvent((MediaRecorder.Event.Start, _)), _) =>
           State.Error(`InvalidState)
         | (
             RecorderEvent((MediaRecorder.Event.DataAvailable, ev)),
@@ -64,7 +64,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
           let _ = Js.Array.push(eventData, data);
           state;
         | (
-            RecorderEvent((MediaRecorder.Event.Stop, ev)),
+            RecorderEvent((MediaRecorder.Event.Stop, _)),
             State.InProgress(data),
           ) =>
           if (time->TimerProgress.isComplete) {
@@ -77,7 +77,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
           } else {
             NotStarted;
           }
-        | (RecorderEvent((MediaRecorder.Event.Error, _)), ev) =>
+        | (RecorderEvent((MediaRecorder.Event.Error, _)), _) =>
           Error(`MediaRecorderError)
         | _ => Error(`InvalidState)
         },
@@ -138,12 +138,13 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     };
   };
 
-  let handleTouchEnd = ev => {
+  let handleTouchEnd = _ev => {
     switch (state) {
     | InProgress(_) =>
       let _ = recorder->MediaRecorder.stop;
       let _ = stopTimer();
       ();
+    | _ => ()
     };
     ();
   };
@@ -186,12 +187,12 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     className={cn(["w-full", "h-full", "relative", "overflow-hidden"])}
     onTouchStart=handleTouchStart
     onTouchEnd=handleTouchEnd>
-    <ScreenBottomEdgeAligned className={cn(["h-5", "m-8"])}>
+    <div className={cn(["absolute", "inset-x-0", "bottom-0", "h-5", "m-8"])}>
       <Progress
         className={cn(["w-full", "h-full"])}
         value={time->TimerProgress.percent->Js.Float.toString}
       />
-    </ScreenBottomEdgeAligned>
+    </div>
     <VideoSurface src={stream->VideoSurface.srcObject} autoPlay=true />
   </div>;
 };

@@ -22,8 +22,16 @@ let formatAge = age => {
 let make = (~location, ~createdAt) => {
   let age = formatAge(createdAt);
 
-  <ScreenBottomEdgeAligned
-    className={cn(["flex", "justify-between", "py-4", "px-6"])}>
+  <div
+    className={cn([
+      "absolute",
+      "inset-x-0",
+      "bottom-0",
+      "flex",
+      "justify-between",
+      "py-4",
+      "px-6",
+    ])}>
     <div
       className={cn([
         "flex",
@@ -32,8 +40,7 @@ let make = (~location, ~createdAt) => {
         "items-start",
         "flex-auto",
       ])}>
-      <div
-        className={cn(["flex", "flex-row", "items-center"])}>
+      <div className={cn(["flex", "flex-row", "items-center"])}>
         <SVG
           icon=SVG.emojiHourglass
           className={cn(["w-10", "h-10"])}
@@ -55,5 +62,5 @@ let make = (~location, ~createdAt) => {
     </div>
     <Map className={cn(["block", "z-10"])} location />
     <VideoSurface.ContrastOverlay height=12.5 />
-  </ScreenBottomEdgeAligned>;
+  </div>;
 };

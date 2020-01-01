@@ -3,8 +3,11 @@ open Lib.Styles;
 let make = (~onApprove, ~onReject, ~src) => {
   <div
     className={cn(["w-full", "h-full", "relative", "overflow-hidden"])}>
-    <ScreenBottomEdgeAligned
+    <div
       className={cn([
+        "absolute",
+        "inset-x-0",
+        "bottom-0",
         "flex",
         "flex-row",
         "justify-between",
@@ -28,7 +31,7 @@ let make = (~onApprove, ~onReject, ~src) => {
           placeholderViewBox="0 0 128 128"
         />
       </div>
-    </ScreenBottomEdgeAligned>
+    </div>
     <VideoSurface src autoPlay=true />
   </div>;
 };
