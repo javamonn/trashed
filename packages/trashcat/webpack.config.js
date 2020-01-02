@@ -122,6 +122,7 @@ module.exports = {
     // liveReload: true,
     // host: 'localhost.trashed.today',
     index: 'index.html',
+    https: true,
     contentBase: DIST_DIR,
     historyApiFallback: true
   }

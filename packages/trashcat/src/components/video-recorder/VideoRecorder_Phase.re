@@ -1,0 +1,4 @@
+module PermissionPromptCamera = VideoRecorder_Phase_PermissionPromptCamera;
+module PermissionPromptGeolocation = VideoRecorder_Phase_PermissionPromptGeolocation;
+module Recording = VideoRecorder_Phase_Recording;
+module Review = VideoRecorder_Phase_Review;

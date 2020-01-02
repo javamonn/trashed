@@ -1,6 +1,11 @@
 open Externals;
 open Lib.Styles;
 
+[@bs.deriving jsConverter]
+type error = [
+  | [@bs.as "InvalidState_FailedS3Resolution"] `InvalidState_FailedS3Resolution
+];
+
 module GetItemFragment = [%graphql
   {|
     fragment itemFragment on Item {
@@ -45,7 +50,8 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
   let (hasPoster, s3Objects) = {
     let videoFileS3Objects =
       item##video##files->Belt.Array.map(i => i##file->S3Object.fromJs);
-    let posterS3Object = item##video##poster->Belt.Option.map(S3Object.fromJs);
+    let posterS3Object =
+      item##video##poster->Belt.Option.map(S3Object.fromJs);
     switch (posterS3Object) {
     | Some(posterS3Object) => (
         true,
@@ -88,8 +94,8 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
     <div
       ?style
       className={cn([
-        "w-screen",
-        "h-screen",
+        "w-full",
+        "h-full",
         "flex",
         "justify-center",
         "items-center",
@@ -100,13 +106,13 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
   | Data({src, poster}) =>
     <div
       ?style
-      className={cn(["w-screen", "h-screen", "relative", "overflow-hidden"])}>
+      className={cn(["w-full", "h-full", "relative", "overflow-hidden"])}>
       <VideoSurface src autoPlay ?poster />
       <ItemBottomOverlay
         location=(item##location##lat, item##location##lon)
         createdAt={item##createdAt}
       />
     </div>
-  | Error => React.string("Nothing here!")
+  | Error => `InvalidState_FailedS3Resolution->errorToJs->Js.Exn.raiseError
   };
 };

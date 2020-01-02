@@ -4,8 +4,8 @@ open Lib.Styles;
 let make = () => {
   <div
     className={cn([
-      "w-screen",
-      "h-screen",
+      "w-full",
+      "h-full",
       "bg-brandBlue",
       "flex",
       "justify-center",
@@ -13,57 +13,47 @@ let make = () => {
       "flex-col",
       "relative",
     ])}>
-    {ReactDOMRe.createElementVariadic(
-       "marquee",
-       ~props=
-         ReactDOMRe.objToDOMProps({
-           "className":
-             cn([
-               "text-white",
-               "font-bold",
-               "italic",
-               "uppercase",
-               "text-6xl",
-               "leading-none",
-               "text-center",
-               "absolute",
-               "top-0",
-               "left-0",
-               "right-0",
-             ]),
-           "scrollamount": 20,
-         }),
-       [|React.string("Coming Soon to NYC")|],
-     )}
+    <Marquee
+      className={cn([
+        "text-white",
+        "font-bold",
+        "italic",
+        "uppercase",
+        "text-6xl",
+        "leading-none",
+        "text-center",
+        "absolute",
+        "top-0",
+        "left-0",
+        "right-0",
+      ])}
+      scrollAmount=20>
+      {React.string("Coming Soon to NYC")}
+    </Marquee>
     <div className={cn(["my-32", "h-56", "w-56"])}>
       <SVG
-        className={cn(["w-fill", "h-fill"])}
+        className={cn(["w-full", "h-full"])}
         icon=SVG.trashIconOnBackground
         placeholderViewBox="0 0 224 224"
       />
     </div>
-    {ReactDOMRe.createElementVariadic(
-       "marquee",
-       ~props=
-         ReactDOMRe.objToDOMProps({
-           "className":
-             cn([
-               "text-white",
-               "font-bold",
-               "italic",
-               "uppercase",
-               "text-6xl",
-               "leading-none",
-               "text-center",
-               "absolute",
-               "bottom-0",
-               "left-0",
-               "right-0",
-             ]),
-           "direction": "right",
-           "scrollamount": 20,
-         }),
-       [|React.string("Coming Soon to NYC")|],
-     )}
+    <Marquee
+      className={cn([
+        "text-white",
+        "font-bold",
+        "italic",
+        "uppercase",
+        "text-6xl",
+        "leading-none",
+        "text-center",
+        "absolute",
+        "bottom-0",
+        "left-0",
+        "right-0",
+      ])}
+      scrollAmount=20
+      direction="right">
+      {React.string("Coming Soon to NYC")}
+    </Marquee>
   </div>;
 };

@@ -1,5 +1,7 @@
 open Lib.Constants;
 
+let _ = Service.RootHeightManager.make();
+
 let _ =
   Webapi.Dom.(
     window

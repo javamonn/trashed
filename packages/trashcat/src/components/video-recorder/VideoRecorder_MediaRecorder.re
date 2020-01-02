@@ -1,6 +1,18 @@
 open Externals;
+open VideoRecorder_Phase;
 
-type error = [ | `InvalidPhaseTransition | `MediaRecorderError];
+[@bs.deriving jsConverter]
+type error = [
+  | [@bs.as "InvalidPhaseTransitionAttempt_Review"]
+    `InvalidPhaseTransitionAttempt_Review
+  | [@bs.as "InvalidPhaseTransitionAttempt_GetGeolocation"]
+    `InvalidPhaseTransitionAttempt_GetGeolocation
+  | [@bs.as "InvalidPhaseTransitionAttempt_Approve"]
+    `InvalidPhaseTransitionAttempt_Approve
+  | [@bs.as "InvalidPhaseTransitionAttempt_Reject"]
+    `InvalidPhaseTransitionAttempt_Reject
+  | [@bs.as "MediaRecorderError"] `MediaRecorderError
+];
 
 /** FIXME: graphql_ppx breaks on inline record definitions, ideally these are in `t` directly. **/
 type recording = {stream: MediaStream.t};
@@ -51,7 +63,7 @@ let make = (~mimeType, ~onFile, ~isActive) => {
             switch (state) {
             | PhaseGetGeolocation({data, objectUrl, stream}) =>
               PhaseReview({position, data, objectUrl, stream})
-            | _ => PhaseError(`InvalidPhaseTransition)
+            | _ => PhaseError(`InvalidPhaseTransitionAttempt_Review)
             }
           | SetPhaseGetGeolocation(data) =>
             switch (state, geolocationPermission) {
@@ -68,7 +80,7 @@ let make = (~mimeType, ~onFile, ~isActive) => {
                 stream,
                 objectUrl: Webapi.Url.createObjectURL(data),
               })
-            | _ => PhaseError(`InvalidPhaseTransition)
+            | _ => PhaseError(`InvalidPhaseTransitionAttempt_GetGeolocation)
             }
           };
         (nextState, state);
@@ -159,7 +171,10 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       let _ = onFile(~file=data, ~location=position->Geolocation.coordsGet);
       ();
     | _ =>
-      let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
+      let _ =
+        `InvalidPhaseTransitionAttempt_Approve
+        ->setPhaseError
+        ->dispatchPhaseAction;
       ();
     };
 
@@ -169,7 +184,10 @@ let make = (~mimeType, ~onFile, ~isActive) => {
       let _ = stream->setPhaseRecording->dispatchPhaseAction;
       ();
     | _ =>
-      let _ = `InvalidPhaseTransition->setPhaseError->dispatchPhaseAction;
+      let _ =
+        `InvalidPhaseTransitionAttempt_Reject
+        ->setPhaseError
+        ->dispatchPhaseAction;
       ();
     };
 
@@ -187,15 +205,15 @@ let make = (~mimeType, ~onFile, ~isActive) => {
 
   switch (phaseState) {
   | PhaseGetUserMedia =>
-    <MediaRecorder_PhaseGetUserMedia onGranted=handleGrantedUserMedia />
+    <PermissionPromptCamera.MediaRecorder onGranted=handleGrantedUserMedia />
   | PhaseGetGeolocation(_) =>
-    <MediaRecorder_PhaseGetGeolocation
+    <PermissionPromptGeolocation
       onGranted=handleGrantedGeolocation
       onPrompt=onGeolocationPrompt
       permission=geolocationPermission
     />
   | PhaseRecording({stream}) =>
-    <MediaRecorder_PhaseRecording
+    <Recording
       stream
       onComplete=handleRecordingComplete
       onError=handleRecordingError
@@ -203,11 +221,7 @@ let make = (~mimeType, ~onFile, ~isActive) => {
     />
   | PhaseReview({objectUrl}) =>
     let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
-    <MediaRecorder_PhaseReview
-      onApprove=handleReviewApprove
-      onReject=handleReviewReject
-      src
-    />;
-  | PhaseError(_) => <Error />
+    <Review onApprove=handleReviewApprove onReject=handleReviewReject src />;
+  | PhaseError(error) => error->errorToJs->Js.Exn.raiseError
   };
 };

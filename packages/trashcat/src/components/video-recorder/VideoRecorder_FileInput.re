@@ -1,182 +1,117 @@
 open Externals;
-open Lib.Styles;
-open Lib.Utils;
+open VideoRecorder_Phase;
 
-module HtmlInputElement = {
-  type t = Webapi.Dom.HtmlInputElement.t;
-  external ofHtmlElement: Webapi.Dom.HtmlElement.t => t = "%identity";
+[@bs.deriving jsConverter]
+type error = [
+  | [@bs.as "InvalidPhaseTransitionAttempt_GetGeolocation"]
+    `InvalidPhaseTransitionAttempt_GetGeolocation
+  | [@bs.as "InvalidPhaseTransitionAttempt_Review"]
+    `InvalidPhaseTransitionAttempt_Review
+  | [@bs.as "InvalidPhaseTransitionAttempt_Approve"]
+    `InvalidPhaseTransitionAttempt_Approve
+  | [@bs.as "InvalidPhaseTransitionAttempt_Reject"]
+    `InvalidPhaseTransitionAttempt_Reject
+];
+
+type geolocation = {
+  data: File.t,
+  objectUrl: string,
+};
+type review = {
+  position: Geolocation.position,
+  data: File.t,
+  objectUrl: string,
 };
 
-module PhaseState = {
-  module GetGeolocation = {
-    [@bs.deriving abstract]
-    type t = {data: File.t};
-    let make = t;
-  };
+[@bs.deriving accessors]
+type t =
+  | PhaseGetFile
+  | PhaseGetGeolocation(geolocation)
+  | PhaseReview(review)
+  | PhaseError(error);
 
-  module Complete = {
-    [@bs.deriving abstract]
-    type t = {
-      data: File.t,
-      coordinates: Geolocation.coordinates,
-    };
-    let make = t;
-  };
-
-  [@bs.deriving accessors]
-  type t =
-    | PhaseGetFile
-    | PhaseGetGeolocation(GetGeolocation.t)
-    | PhaseComplete(Complete.t);
-
-  [@bs.deriving accessors]
-  type action =
-    | SetPhase(t);
-};
+[@bs.deriving accessors]
+type action =
+  | SetPhase(t)
+  | SetPhaseGetFile
+  | SetPhaseGetGeolocation(File.t)
+  | SetPhaseReview(Geolocation.position)
+  | SetPhaseError(error);
 
 [@react.component]
 let make = (~mimeType, ~onFile) => {
-  let inputRef = React.useRef(Js.Nullable.null);
+  let (geolocationPermission, onGeolocationPrompt, _) =
+    Service.Permission.Geolocation.use();
+
   let (phaseState, dispatchPhaseAction) =
     React.useReducer(
-      (_state, action) =>
+      (state, action) =>
         switch (action) {
-        | PhaseState.SetPhase(p) => p
+        | SetPhase(p) => p
+        | SetPhaseGetGeolocation(data) =>
+          switch (state) {
+          | PhaseGetFile =>
+            PhaseGetGeolocation({
+              data,
+              objectUrl: Webapi.Url.createObjectURL(data),
+            })
+          | _ => PhaseError(`InvalidPhaseTransitionAttempt_GetGeolocation)
+          }
+        | SetPhaseReview(position) =>
+          switch (state) {
+          | PhaseGetGeolocation({data, objectUrl}) =>
+            PhaseReview({data, objectUrl, position})
+          | _ => PhaseError(`InvalidPhaseTransitionAttempt_Review)
+          }
+        | SetPhaseGetFile => PhaseGetFile
+        | SetPhaseError(error) => PhaseError(error)
         },
-      PhaseState.PhaseGetFile,
+      PhaseGetFile,
     );
 
-  let proxyClick = () => {
-    let _ =
-      inputRef
-      ->React.Ref.current
-      ->Js.Nullable.toOption
-      ->Belt.Option.flatMap(Webapi.Dom.HtmlElement.ofElement)
-      ->Belt.Option.map(Webapi.Dom.HtmlElement.click);
-    ();
-  };
-  let _ =
-    React.useEffect0(() => {
-      proxyClick();
-      None;
-    });
+  let handleGrantedGeolocation = position =>
+    position->setPhaseReview->dispatchPhaseAction;
 
-  let handleChange = _ev => {
-    inputRef
-    ->React.Ref.current
-    ->Js.Nullable.toOption
-    ->Belt.Option.map(elem => {
-        let _ =
-          elem
-          ->Webapi.Dom.HtmlElement.ofElement
-          ->Belt.Option.map(HtmlInputElement.ofHtmlElement)
-          ->Belt.Option.map(Webapi.Dom.HtmlInputElement.value)
-          ->Belt.Option.map(File.fromString)
-          ->Belt.Option.map(f =>
-              PhaseState.(
-                GetGeolocation.make(~data=f)
-                ->phaseGetGeolocation
-                ->setPhase
-                ->dispatchPhaseAction
-              )
-            );
-        ();
-      });
-  };
+  let handleFile = file => file->setPhaseGetGeolocation->dispatchPhaseAction;
 
-  let handleGetGeolocation = () =>
-    Js.Promise.make((~resolve, ~reject) =>
-      Geolocation.getCurrentPosition(
-        position => {
-          let _ =
-            PhaseState.(
-              switch (phaseState) {
-              | PhaseGetGeolocation(getGeolocation) =>
-                let _ =
-                  Complete.make(
-                    ~coordinates=position->Geolocation.coordsGet,
-                    ~data=getGeolocation->GetGeolocation.dataGet,
-                  )
-                  ->phaseComplete
-                  ->setPhase
-                  ->dispatchPhaseAction;
-                let _ =
-                  onFile(
-                    ~file=getGeolocation->GetGeolocation.dataGet,
-                    ~location=position->Geolocation.coordsGet,
-                  );
-                ();
-              | _ => ()
-              }
-            );
-          let _ =
-            Permissions.Status.make(~state=`Granted)
-            ->Js.Option.some
-            ->wrapBs(resolve);
-          ();
-        },
-        _positionError => {
-          /** FIXME: may have errored for other reasons */
-          let _ =
-            Permissions.Status.make(~state=`Denied)
-            ->Js.Option.some
-            ->wrapBs(resolve);
-          ();
-        },
-        Geolocation.currentPositionOptions(~enableHighAccuracy=true, ()),
-      )
-    );
-  let handleGetGeolocationGranted = () => {
+  let handleReviewApprove = () =>
     switch (phaseState) {
-    | PhaseGetGeolocation(_) =>
-      let _ = handleGetGeolocation();
+    | PhaseReview({data, position}) =>
+      let _ = setPhaseGetFile->dispatchPhaseAction;
+      let _ = onFile(~file=data, ~location=position->Geolocation.coordsGet);
       ();
-    | _ => ()
+    | _ =>
+      let _ =
+        `InvalidPhaseTransitionAttempt_Approve
+        ->setPhaseError
+        ->dispatchPhaseAction;
+      ();
     };
-  };
+
+  let handleReviewReject = () =>
+    switch (phaseState) {
+    | PhaseReview(_) =>
+      let _ = setPhaseGetFile->dispatchPhaseAction;
+      ();
+    | _ =>
+      let _ =
+        `InvalidPhaseTransitionAttempt_Reject
+        ->setPhaseError
+        ->dispatchPhaseAction;
+      ();
+    };
 
   switch (phaseState) {
-  | PhaseState.PhaseGetFile =>
-    let input =
-      ReactDOMRe.createElementVariadic(
-        "input",
-        ~props=
-          ReactDOMRe.objToDOMProps({
-            "type": "file",
-            "accept": "video/*",
-            "onChange": handleChange,
-            "capture": "environment",
-            "ref": inputRef->ReactDOMRe.Ref.domRef,
-          }),
-        [||],
-      );
-    <div
-      onClick={_ev => proxyClick()}
-      className={cn(["w-screen", "h-screen", "opacity-0"])}>
-      input
-    </div>;
-  | PhaseState.PhaseGetGeolocation(_) =>
-    <div
-      className={cn([
-        "w-screen",
-        "h-screen",
-        "flex",
-        "justify-center",
-        "align-center",
-        "flex-col",
-      ])}>
-      <PermissionPrompt
-        renderPrompt={(~onClick) =>
-          <PermissionPrompt.Basic
-            text="Trashed needs to access your location to know where things (and you) are."
-            onClick
-          />
-        }
-        onPrompt=handleGetGeolocation
-        onPermissionGranted=handleGetGeolocationGranted
-        permission=`Geolocation
-      />
-    </div>
-  | PhaseState.PhaseComplete(_) => React.null
+  | PhaseGetFile => <PermissionPromptCamera.FileInput onFile=handleFile />
+  | PhaseGetGeolocation(_) =>
+    <PermissionPromptGeolocation
+      permission=geolocationPermission
+      onPrompt=onGeolocationPrompt
+      onGranted=handleGrantedGeolocation
+    />
+  | PhaseReview({objectUrl}) =>
+    let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
+    <Review onApprove=handleReviewApprove onReject=handleReviewReject src />;
+  | PhaseError(error) => error->errorToJs->Js.Exn.raiseError
   };
 };

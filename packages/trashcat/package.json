@@ -67,6 +67,7 @@
     "bs-fetch": "^0.5.0",
     "bs-sentry": "^1.0.0",
     "bs-webapi": "^0.15.3",
+    "decco": "^1.1.1",
     "js-cookie": "^2.2.1",
     "re-classnames": "^4.0.0",
     "reason-apollo": "^0.18.0",

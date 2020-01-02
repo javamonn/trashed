@@ -78,12 +78,12 @@ module Container = {
       onScroll=?{hasScrolledToInitialIdx ? Some(onScroll) : None}
       ref={containerRef->ReactDOMRe.Ref.domRef}
       className={cn([
-        "h-screen",
-        "w-screen",
+        "h-full",
+        "w-full",
         "invisible"->Cn.ifTrue(!hasScrolledToInitialIdx),
         switch (direction) {
-        | Horizontal => cn(["overflow-x-scroll", "flex"])
-        | Vertical => cn(["overflow-y-scroll"])
+        | Horizontal => cn(["overflow-x-scroll", "flex", "overflow-y-hidden"])
+        | Vertical => cn(["overflow-y-scroll", "overflow-x-hidden"])
         },
       ])}
       style={
@@ -97,6 +97,7 @@ module Container = {
               },
             ),
             ("scrollSnapStop", "always"),
+            ("-webkit-overflow-scrolling", "touch"),
           ])
       }>
       {React.array(children)}
@@ -116,10 +117,10 @@ module Item = {
           ])
       }
       className={cn([
-        "w-screen",
-        "h-screen",
+        "w-full",
+        "h-full",
         switch (direction) {
-        | Horizontal => cn(["min-w-full"])
+        | Horizontal => cn(["flex-shrink-0"])
         | Vertical => ""
         },
         className->Cn.unpack,
