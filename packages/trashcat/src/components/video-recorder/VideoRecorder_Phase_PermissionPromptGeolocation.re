@@ -38,7 +38,13 @@ module Prompt = {
           "items-center",
         ])}>
         {isInProgress
-           ? <div className={cn(["relative"])}>
+           ? <div
+               className={cn([
+                 "relative",
+                 "flex",
+                 "justify-center",
+                 "items-center",
+               ])}>
                <SVG
                  className={cn(["h-56", "w-56"])}
                  icon=SVG.iconBackground
@@ -55,13 +61,12 @@ module Prompt = {
                  <Progress />
                </div>
              </div>
-           : <div onClick={_ => onClick()}>
-               <SVG
-                 className={cn(["h-56", "w-56"])}
-                 icon=SVG.geolocationIconOnBackground
-                 placeholderViewBox="0 0 224 224"
-               />
-             </div>}
+           : <SVG
+               className={cn(["h-56", "w-56"])}
+               icon=SVG.geolocationIconOnBackground
+               placeholderViewBox="0 0 224 224"
+               onClick={_ => onClick()}
+             />}
       </div>
     </div>;
 };
@@ -88,6 +93,7 @@ let make = (~onGranted, ~onPrompt, ~permission) => {
     );
 
   let handlePrompt = () => {
+    Js.log("on prompt");
     let _ = onPrompt();
     ();
   };

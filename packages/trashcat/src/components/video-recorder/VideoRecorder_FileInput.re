@@ -110,7 +110,7 @@ let make = (~mimeType, ~onFile) => {
       onGranted=handleGrantedGeolocation
     />
   | PhaseReview({objectUrl}) =>
-    let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
+    let src = objectUrl->VideoSurface.srcUrl;
     <Review onApprove=handleReviewApprove onReject=handleReviewReject src />;
   | PhaseError(error) => error->errorToJs->Js.Exn.raiseError
   };
