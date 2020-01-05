@@ -1,6 +1,6 @@
-let make: (string, string, string) => Js.t('a) = [%raw
+let make: (string, string, string, bool) => Js.t('a) = [%raw
   {|
-  (iamRole, sourceS3Path, destinationS3Path) => ({
+  (iamRole, sourceS3Path, destinationS3Path, autoRotationEnabled) => ({
     "Role": iamRole,
     "Settings": {
       "OutputGroups": [
@@ -106,6 +106,11 @@ let make: (string, string, string) => Js.t('a) = [%raw
         {
           "VideoSelector": {
             "ColorSpace": "FOLLOW",
+            ...(
+              autoRotationEnabled
+              ? { "Rotate": "AUTO" }
+              : {}
+            )
           },
           "FilterEnable": "AUTO",
           "PsiControl": "USE_PSI",
@@ -124,9 +129,17 @@ let make: (string, string, string) => Js.t('a) = [%raw
 |}
 ];
 
-let make = (~iamRole, ~sourceS3Object, ~destinationS3Object) =>
+let make = (~iamRole, ~sourceS3Object, ~destinationS3Object) => {
+  let autoRotationEnabled =
+    switch (Externals.S3Object.mimeType(sourceS3Object)) {
+    | Some("MP4")
+    | Some("QUICKTIME") => true
+    | _ => false
+    };
   make(
     iamRole,
     sourceS3Object->Externals.S3Object.toString,
     destinationS3Object->Externals.S3Object.toString,
+    autoRotationEnabled,
   );
+};

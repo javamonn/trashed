@@ -65,27 +65,29 @@ let handle = r => {
        ) {
        | (None, Some(f)) =>
          let s3Object =
-           S3Object.make(
-             ~key=
+           S3Object.{
+             key:
                DynamoDBStreamRecord.(
                  f##file->MapField.get->(f => f##key)->StringField.get
                ),
-             ~bucket=
+             bucket:
                DynamoDBStreamRecord.(
                  f##file->MapField.get->(f => f##bucket)->StringField.get
                ),
-           );
+             mimeType: DynamoDBStreamRecord.(f##mimeType->StringField.get->Js.Option.some)
+           };
          switch (s3Object->S3Object.namePathPartGet) {
-         | Some(namePath) =>
+         | Some(_namePath) =>
            let job =
              MediaConvertJob.make(
                ~iamRole=Constants.Env.mediaConvertIamRoleArn,
                ~sourceS3Object=s3Object,
                ~destinationS3Object=
-                 S3Object.make(
-                   ~bucket=s3Object->S3Object.bucketGet,
-                   ~key="public/item-video/",
-                 ),
+                 S3Object.{
+                   bucket: s3Object->S3Object.bucket,
+                   key: "public/item-video/",
+                   mimeType: None
+                 },
              );
            Constants.mediaConvertService
            ->AWSSDK.MediaConvert.createJob(job)
