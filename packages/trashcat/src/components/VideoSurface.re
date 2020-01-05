@@ -3,7 +3,11 @@ open Lib.Styles;
 open Lib.Utils;
 
 [@bs.deriving jsConverter]
-type mimeType = [ | [@bs.as "video/webm"] `WEBM | [@bs.as "video/mp4"] `MP4];
+type mimeType = [
+  | [@bs.as "video/webm"] `WEBM
+  | [@bs.as "video/mp4"] `MP4
+  | [@bs.as "video/quicktime"] `QUICKTIME
+];
 
 [@bs.deriving accessors]
 type src =

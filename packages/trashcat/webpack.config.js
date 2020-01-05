@@ -51,6 +51,7 @@ module.exports = {
                 process.env.NODE_ENV === 'production'
                   ? require('@fullhuman/postcss-purgecss')({
                     content: ['./src/**/*.bs.js'],
+                    whitelist: ['awsappsync', 'app', 'progress'],
                   })
                   : null,
               ].filter(p => Boolean(p)),
@@ -121,9 +122,10 @@ module.exports = {
     port: 8080,
     // liveReload: true,
     // host: 'localhost.trashed.today',
+    // https: true,
     index: 'index.html',
-    https: true,
     contentBase: DIST_DIR,
-    historyApiFallback: true
+    historyApiFallback: true,
+    disableHostCheck: true
   }
 };

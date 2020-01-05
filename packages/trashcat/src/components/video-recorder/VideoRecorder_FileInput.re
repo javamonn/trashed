@@ -39,7 +39,7 @@ type action =
   | SetPhaseError(error);
 
 [@react.component]
-let make = (~mimeType, ~onFile) => {
+let make = (~onFile) => {
   let (geolocationPermission, onGeolocationPrompt, _) =
     Service.Permission.Geolocation.use();
 
@@ -72,7 +72,11 @@ let make = (~mimeType, ~onFile) => {
   let handleGrantedGeolocation = position =>
     position->setPhaseReview->dispatchPhaseAction;
 
-  let handleFile = file => file->setPhaseGetGeolocation->dispatchPhaseAction;
+  let handleFile = file => {
+    Js.log2("handleFile", file);
+    let _ = file->setPhaseGetGeolocation->dispatchPhaseAction;
+    ();
+  };
 
   let handleReviewApprove = () =>
     switch (phaseState) {

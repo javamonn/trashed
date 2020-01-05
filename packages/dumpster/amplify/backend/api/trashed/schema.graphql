@@ -30,6 +30,7 @@ input LocationInput {
 enum VideoMimeType {
   WEBM
   MP4
+  QUICKTIME
 }
 
 type S3Object @aws_iam {
