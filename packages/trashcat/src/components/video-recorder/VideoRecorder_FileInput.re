@@ -73,7 +73,6 @@ let make = (~onFile) => {
     position->setPhaseReview->dispatchPhaseAction;
 
   let handleFile = file => {
-    Js.log2("handleFile", file);
     let _ = file->setPhaseGetGeolocation->dispatchPhaseAction;
     ();
   };

@@ -15,8 +15,17 @@ type src =
   | SrcUrl(string)
   | SrcElement(array((string, mimeType)));
 
+let maxDuration = 5.0;
+
 [@react.component]
-let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
+let make =
+    (
+      ~autoPlay=false,
+      ~controls=false,
+      ~forceLimitDuration=false,
+      ~src,
+      ~poster=?,
+    ) => {
   let videoRef = React.useRef(Js.Nullable.null);
 
   let _ =
@@ -113,6 +122,25 @@ let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
     ();
   };
 
+  let handleTimeUpdate = _ev => {
+    let _ =
+      if (forceLimitDuration) {
+        let _ =
+          videoRef
+          ->React.Ref.current
+          ->Js.Nullable.toOption
+          ->Belt.Option.map(elem => {
+              let videoElement = elem->VideoElement.unsafeAsVideoElement;
+              if (VideoElement.getCurrentTime(videoElement) >= maxDuration) {
+                let _ = VideoElement.setCurrentTime(videoElement, 0.);
+                ();
+              };
+            });
+        ();
+      };
+    ();
+  };
+
   let handleError = ev => {
     Js.log2("error", ev);
   };
@@ -139,7 +167,8 @@ let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
         "onError": handleError,
         "disableRemotePlayback": true,
         "playsInline": true,
-        "onLoadedMetadata": handleLoadedMetadata,
+        "onLoadedMetadata": autoPlay ? Some(handleLoadedMetadata) : None,
+        "onTimeUpdate": forceLimitDuration ? Some(handleTimeUpdate) : None,
         "className":
           cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),
         "ref": videoRef->ReactDOMRe.Ref.domRef,

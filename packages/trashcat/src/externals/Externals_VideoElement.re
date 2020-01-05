@@ -44,6 +44,9 @@ let setMuted = doto1(setMuted);
 external setOnLoadedMetadata: (t, loadedMetadataEvent => unit) => unit =
   "onloadedmetadata";
 
+[@bs.get] external getCurrentTime: t => float = "currentTime";
+[@bs.set] external setCurrentTime: (t, float) => unit = "currentTime";
+
 include Webapi.Dom.Element.Impl({
   type nonrec t = t;
 });

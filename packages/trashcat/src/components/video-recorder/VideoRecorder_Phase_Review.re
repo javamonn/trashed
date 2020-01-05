@@ -27,6 +27,6 @@ let make = (~onApprove, ~onReject, ~src) => {
         placeholderViewBox="0 0 128 128"
       />
     </div>
-    <VideoSurface src autoPlay=true />
+    <VideoSurface src autoPlay=true forceLimitDuration=true />
   </div>;
 };
