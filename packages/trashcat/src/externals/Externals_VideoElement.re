@@ -47,6 +47,12 @@ external setOnLoadedMetadata: (t, loadedMetadataEvent => unit) => unit =
 [@bs.get] external getCurrentTime: t => float = "currentTime";
 [@bs.set] external setCurrentTime: (t, float) => unit = "currentTime";
 
+type mediaError = {
+  code: int,
+  message: string,
+};
+[@bs.get] external getError: t => mediaError = "error";
+
 include Webapi.Dom.Element.Impl({
   type nonrec t = t;
 });

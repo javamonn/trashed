@@ -163,8 +163,26 @@ let make =
     ();
   };
 
-  let handleError = ev => {
-    Js.log2("error", ev);
+  let handleError = _ev => {
+    let _ =
+      videoRef
+      ->React.Ref.current
+      ->Js.Nullable.toOption
+      ->Belt.Option.map(elem => {
+          let videoError =
+            elem->VideoElement.unsafeAsVideoElement->VideoElement.getError;
+          let errorText =
+            "VideoSurface error: "
+            ++ videoError.message
+            ++ ", code :"
+            ++ string_of_int(videoError.code);
+          let _ =
+            try(errorText->Js.Exn.raiseError) {
+            | Js.Exn.Error(err) => Sentry.captureException(err)
+            };
+          ();
+        });
+    ();
   };
 
   let children =
