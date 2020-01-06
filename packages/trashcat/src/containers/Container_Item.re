@@ -74,17 +74,16 @@ let make = (~itemFragment as item, ~autoPlay=false, ~style=?) => {
         };
       let srcElements =
         Belt.Array.zip(videos, item##video##files)
-        ->Belt.Array.map(((src, file)) => (src, file##mimeType));
-      let _ =
-        Js.Array.sortInPlaceWith(
-          ((_, mime1), (_, mime2)) =>
-            switch (mime1, mime2) {
-            | (`WEBM, `MP4) => (-1)
-            | (`MP4, `WEBM) => 1
-            | _ => 0
-            },
-          srcElements,
-        );
+        ->Belt.Array.map(((src, file)) => (src, file##mimeType))
+        ->Belt.Array.keep(((_, mimeType)) =>
+            VideoSurface.MimeType.isSupported(mimeType)
+          )
+        ->Belt.SortArray.stableSortBy(((_, mime1), (_, mime2)) =>
+            VideoSurface.MimeType.(
+              sortPreference(mime1) - sortPreference(mime2)
+            )
+          );
+
       Data({src: srcElements->VideoSurface.srcElement, poster});
     | _ => Loading
     };

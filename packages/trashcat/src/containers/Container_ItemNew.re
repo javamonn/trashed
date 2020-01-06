@@ -93,7 +93,7 @@ let make = (~isActive) => {
                   "mimeType":
                     file
                     ->File._type
-                    ->VideoSurface.mimeTypeFromJs
+                    ->VideoSurface.MimeType.fromJs
                     ->Belt.Option.getWithDefault(`WEBM),
                   "file": {
                     "bucket":

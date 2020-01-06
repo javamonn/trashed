@@ -2,18 +2,40 @@ open Externals;
 open Lib.Styles;
 open Lib.Utils;
 
-[@bs.deriving jsConverter]
-type mimeType = [
-  | [@bs.as "video/webm"] `WEBM
-  | [@bs.as "video/mp4"] `MP4
-  | [@bs.as "video/quicktime"] `QUICKTIME
-];
+module MimeType = {
+  [@bs.deriving jsConverter]
+  type t = [
+    | [@bs.as "video/webm"] `WEBM
+    | [@bs.as "video/mp4"] `MP4
+    | [@bs.as "video/quicktime"] `QUICKTIME
+  ];
+
+  let toJs = tToJs;
+  let fromJs = tFromJs;
+
+  let isSupported = mimeType => {
+    switch (mimeType, Lib.Constants.browser->Bowser.getBrowserName) {
+    | (_, None) => false
+    | (`WEBM, Some(`Safari)) => false
+    | (`WEBM, Some(_)) => true
+    | (`MP4, Some(_)) => true
+    | (`QUICKTIME, Some(`Safari)) => true
+    | (`QUICKTIME, Some(_)) => false
+    };
+  };
+
+  let sortPreference =
+    fun
+    | `WEBM => 1
+    | `MP4 => 2
+    | `QUICKTIME => 3;
+};
 
 [@bs.deriving accessors]
 type src =
   | SrcObject(MediaStream.t)
   | SrcUrl(string)
-  | SrcElement(array((string, mimeType)));
+  | SrcElement(array((string, MimeType.t)));
 
 let maxDuration = 5.0;
 
@@ -150,7 +172,7 @@ let make =
     | SrcElement(ss) =>
       ss
       ->Belt.Array.map(((src, type_)) =>
-          <source type_={type_->mimeTypeToJs} src key=src />
+          <source type_={type_->MimeType.toJs} src key=src />
         )
       ->ReasonReact.array
     | _ => React.null

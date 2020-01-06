@@ -36,7 +36,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
     React.useState(() =>
       MediaRecorder.make(
         stream,
-        MediaRecorder.options(~mimeType=mimeType->VideoSurface.mimeTypeToJs)
+        MediaRecorder.options(~mimeType=mimeType->VideoSurface.MimeType.toJs)
         |> Js.Nullable.return,
       )
     );
@@ -71,7 +71,7 @@ let make = (~stream, ~mimeType, ~onError, ~onComplete) => {
             let blob =
               File.makeBlob(
                 data,
-                File.blobOptions(~type_=mimeType->VideoSurface.mimeTypeToJs),
+                File.blobOptions(~type_=mimeType->VideoSurface.MimeType.toJs),
               );
             Complete(blob);
           } else {
