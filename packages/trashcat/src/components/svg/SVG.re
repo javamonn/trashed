@@ -27,7 +27,14 @@ type state = {
 };
 
 [@react.component]
-let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) => {
+let make =
+    (
+      ~className=?,
+      ~placeholderClassName=?,
+      ~onClick=?,
+      ~placeholderViewBox,
+      ~icon,
+    ) => {
   let ({isLoading, src}, setState) =
     React.useState(() => {isLoading: true, src: icon});
 
@@ -51,23 +58,29 @@ let make = (~className=?, ~placeholderClassName=?, ~placeholderViewBox, ~icon) =
       xmlns="http://www.w3.org/2000/svg"
     />;
 
-  <>
-    {isLoading ? renderPlaceholder() : React.null}
-    <object
-      onLoad={_ => setState(_ => {isLoading: false, src})}
-      type_="image/svg+xml"
-      className={
-        isLoading
-          ? cn([
-              "invisible",
-              "absolute",
-              "w-0",
-              "h-0",
-              "pointer-events-none",
-            ])
-          : cn(["pointer-events-none", className->Cn.unpack])
-      }
-      data=src
-    />
-  </>;
+  let base =
+    <>
+      {isLoading ? renderPlaceholder() : React.null}
+      <object
+        onLoad={_ => setState(_ => {isLoading: false, src})}
+        type_="image/svg+xml"
+        className={
+          isLoading
+            ? cn(["invisible", "absolute", "w-0", "h-0", "relative"])
+            : cn([className->Cn.unpack])
+        }
+        data=src
+      />
+    </>;
+  switch (onClick) {
+  | Some(onClick) =>
+    <div className={cn([className->Cn.unpack, "relative"])}>
+      base
+      <div
+        className={cn(["absolute", "inset-x-0", "inset-y-0"])}
+        onClick={_ => onClick()}
+      />
+    </div>
+  | None => base
+  };
 };

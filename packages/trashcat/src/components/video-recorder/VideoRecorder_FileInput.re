@@ -39,7 +39,7 @@ type action =
   | SetPhaseError(error);
 
 [@react.component]
-let make = (~mimeType, ~onFile) => {
+let make = (~onFile) => {
   let (geolocationPermission, onGeolocationPrompt, _) =
     Service.Permission.Geolocation.use();
 
@@ -72,7 +72,10 @@ let make = (~mimeType, ~onFile) => {
   let handleGrantedGeolocation = position =>
     position->setPhaseReview->dispatchPhaseAction;
 
-  let handleFile = file => file->setPhaseGetGeolocation->dispatchPhaseAction;
+  let handleFile = file => {
+    let _ = file->setPhaseGetGeolocation->dispatchPhaseAction;
+    ();
+  };
 
   let handleReviewApprove = () =>
     switch (phaseState) {
@@ -110,7 +113,7 @@ let make = (~mimeType, ~onFile) => {
       onGranted=handleGrantedGeolocation
     />
   | PhaseReview({objectUrl}) =>
-    let src = [|(objectUrl, mimeType)|]->VideoSurface.srcElement;
+    let src = objectUrl->VideoSurface.srcUrl;
     <Review onApprove=handleReviewApprove onReject=handleReviewReject src />;
   | PhaseError(error) => error->errorToJs->Js.Exn.raiseError
   };

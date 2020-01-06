@@ -1,12 +1,17 @@
-open Externals;
 open Lib.Styles;
 
 [@react.component]
 let make = (~onFile) => {
   let onFileInputChange = ev => {
-    let _ = ReactEvent.Form.target(ev)##value->File.fromString->onFile;
+    let _ = ReactEvent.Form.target(ev)##files->Belt.Array.getExn(0)->onFile;
     ();
   };
+
+  /** On prompt, browser chrome shrinks, but grow event is not fired upon return to browser context. **/
+  let _ =
+    React.useEffect0(() => {
+      Some(() => Service.RootHeightManager.calculateRootHeight())
+    });
 
   <div
     className={cn([

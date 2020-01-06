@@ -3,7 +3,7 @@
 set -ex
 
 OWN_PATH=`realpath $0`
-FUNCTION_DIR=`readlink -f "$(dirname $OWN_PATH)/../backend/function/"`
+FUNCTION_DIR=`realpath "$(dirname $OWN_PATH)/../backend/function/"`
 
 DYNAMODB_STREAM_TRIGGER_SRC_DIR="$FUNCTION_DIR/DynamoDBStreamTrigger/src"
 MEDIA_CONVERT_JOB_STATE_CHANGE_TRIGGER_SRC_DIR="$FUNCTION_DIR/MediaConvertJobStateChangeTrigger/src"

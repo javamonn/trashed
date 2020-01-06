@@ -2,17 +2,52 @@ open Externals;
 open Lib.Styles;
 open Lib.Utils;
 
-[@bs.deriving jsConverter]
-type mimeType = [ | [@bs.as "video/webm"] `WEBM | [@bs.as "video/mp4"] `MP4];
+module MimeType = {
+  [@bs.deriving jsConverter]
+  type t = [
+    | [@bs.as "video/webm"] `WEBM
+    | [@bs.as "video/mp4"] `MP4
+    | [@bs.as "video/quicktime"] `QUICKTIME
+  ];
+
+  let toJs = tToJs;
+  let fromJs = tFromJs;
+
+  let isSupported = mimeType => {
+    switch (mimeType, Lib.Constants.browser->Bowser.getBrowserName) {
+    | (_, None) => false
+    | (`WEBM, Some(`Safari)) => false
+    | (`WEBM, Some(_)) => true
+    | (`MP4, Some(_)) => true
+    | (`QUICKTIME, Some(`Safari)) => true
+    | (`QUICKTIME, Some(_)) => false
+    };
+  };
+
+  let sortPreference =
+    fun
+    | `WEBM => 1
+    | `MP4 => 2
+    | `QUICKTIME => 3;
+};
 
 [@bs.deriving accessors]
 type src =
   | SrcObject(MediaStream.t)
   | SrcUrl(string)
-  | SrcElement(array((string, mimeType)));
+  | SrcElement(array((string, MimeType.t)));
+
+let maxDuration = 5.0;
 
 [@react.component]
-let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
+let make =
+    (
+      ~autoPlay=false,
+      ~controls=false,
+      ~forceLimitDuration=false,
+      ~src,
+      ~poster=?,
+    ) => {
   let videoRef = React.useRef(Js.Nullable.null);
 
   let _ =
@@ -109,8 +144,45 @@ let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
     ();
   };
 
-  let handleError = ev => {
-    Js.log2("error", ev);
+  let handleTimeUpdate = _ev => {
+    let _ =
+      if (forceLimitDuration) {
+        let _ =
+          videoRef
+          ->React.Ref.current
+          ->Js.Nullable.toOption
+          ->Belt.Option.map(elem => {
+              let videoElement = elem->VideoElement.unsafeAsVideoElement;
+              if (VideoElement.getCurrentTime(videoElement) >= maxDuration) {
+                let _ = VideoElement.setCurrentTime(videoElement, 0.);
+                ();
+              };
+            });
+        ();
+      };
+    ();
+  };
+
+  let handleError = _ev => {
+    let _ =
+      videoRef
+      ->React.Ref.current
+      ->Js.Nullable.toOption
+      ->Belt.Option.map(elem => {
+          let videoError =
+            elem->VideoElement.unsafeAsVideoElement->VideoElement.getError;
+          let errorText =
+            "VideoSurface error: "
+            ++ videoError.message
+            ++ ", code :"
+            ++ string_of_int(videoError.code);
+          let _ =
+            try(errorText->Js.Exn.raiseError) {
+            | Js.Exn.Error(err) => Sentry.captureException(err)
+            };
+          ();
+        });
+    ();
   };
 
   let children =
@@ -118,7 +190,7 @@ let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
     | SrcElement(ss) =>
       ss
       ->Belt.Array.map(((src, type_)) =>
-          <source type_={type_->mimeTypeToJs} src key=src />
+          <source type_={type_->MimeType.toJs} src key=src />
         )
       ->ReasonReact.array
     | _ => React.null
@@ -135,7 +207,8 @@ let make = (~autoPlay=false, ~controls=false, ~src, ~poster=?) => {
         "onError": handleError,
         "disableRemotePlayback": true,
         "playsInline": true,
-        "onLoadedMetadata": handleLoadedMetadata,
+        "onLoadedMetadata": autoPlay ? Some(handleLoadedMetadata) : None,
+        "onTimeUpdate": forceLimitDuration ? Some(handleTimeUpdate) : None,
         "className":
           cn(["w-full", "h-full", "object-cover", "overflow-hidden"]),
         "ref": videoRef->ReactDOMRe.Ref.domRef,

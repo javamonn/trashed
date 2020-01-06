@@ -3,7 +3,6 @@
 set -e
 IFS='|'
 OWN_PATH=`realpath $0`
-ROOT_DIR=`readlink -f "$(dirname $OWN_PATH)/../"`
 AWSCLOUDFORMATIONCONFIG="{\
   \"Region\": \"us-east-1\",\
   \"DeploymentBucketName\": \"trashed-production-20190824131356-deployment\",\
@@ -28,5 +27,3 @@ amplify env import \
   --config $PROVIDER_CONFIG \
   --awsInfo $AWS_CONFIG \
   --yes
-
-cp "$ROOT_DIR/../dumpster/aws-exports.js" "$ROOT_DIR/src/aws-exports.js"

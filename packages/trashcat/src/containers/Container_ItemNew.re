@@ -93,7 +93,7 @@ let make = (~isActive) => {
                   "mimeType":
                     file
                     ->File._type
-                    ->VideoSurface.mimeTypeFromJs
+                    ->VideoSurface.MimeType.fromJs
                     ->Belt.Option.getWithDefault(`WEBM),
                   "file": {
                     "bucket":
@@ -154,8 +154,7 @@ let make = (~isActive) => {
   <>
     <Notification.ItemPosted _in=notificationIn />
     {switch (Constants.browser->Bowser.getBrowserName) {
-     | Some(`Safari) =>
-       <VideoRecorder.FileInput mimeType=`WEBM onFile=handleFile />
+     | Some(`Safari) => <VideoRecorder.FileInput onFile=handleFile />
      | _ =>
        <VideoRecorder.MediaRecorder
          mimeType=`WEBM
