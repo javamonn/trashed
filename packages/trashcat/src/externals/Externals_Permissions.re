@@ -7,22 +7,27 @@ type permission = [
   | [@bs.as "microphone"] `Microphone
 ];
 
-[@bs.deriving jsConverter]
-type status = [
-  | [@bs.as "granted"] `Granted
-  | [@bs.as "denied"] `Denied
-  | [@bs.as "prompt"] `Prompt
-];
-
 module Status = {
-  [@bs.deriving abstract]
-  type t = {state: status};
-  let make = t;
+  [@bs.deriving jsConverter]
+  type state = [
+    | [@bs.as "granted"] `Granted
+    | [@bs.as "denied"] `Denied
+    | [@bs.as "prompt"] `Prompt
+  ];
 
-  type js = {. "state": string};
+  let state_encode = s => s->stateToJs->Js.Json.string;
+  let state_decode = s =>
+    switch (s->Js.Json.decodeString->Belt.Option.flatMap(stateFromJs)) {
+    | Some(s) => Belt.Result.Ok(s)
+    | None => Decco.error("Unable to decode state", Js.Json.null)
+    };
 
-  let fromJs = inst =>
-    inst##state->statusFromJs->Belt.Option.map(state => make(~state));
+  [@decco]
+  [@bs.deriving accessors]
+  type t = {state};
+
+  let encode = t_encode;
+  let decode = t_decode;
 };
 
 module Descriptor = {
@@ -45,7 +50,7 @@ module External = {
   external api: option(t) = "permissions";
 
   [@bs.send]
-  external query: (t, Descriptor.js) => Js.Promise.t(Status.js) = "query";
+  external query: (t, Descriptor.js) => Js.Promise.t(Status.t) = "query";
 
   let query = descriptor =>
     api->Belt.Option.map(api => api->query(descriptor));
@@ -56,6 +61,5 @@ let query = d =>
   ->Descriptor.toJs
   ->External.query
   ->Belt.Option.map(p =>
-      p
-      |> Js.Promise.then_(result => result->Status.fromJs->Js.Promise.resolve)
+      p |> Js.Promise.then_(result => result->Js.Promise.resolve)
     );

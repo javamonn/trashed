@@ -1,4 +1,6 @@
 open Lib.Styles;
+open Externals;
+open Lib;
 
 type direction =
   | Horizontal
@@ -68,8 +70,13 @@ module Container = {
           let windowWidth = Webapi.Dom.(window->Window.innerWidth);
           (scrollLeft, windowWidth);
         };
+      let relativePos = scroll /. float_of_int(containerDimen);
       let activeIdx =
-        int_of_float(Js.Math.round(scroll /. float_of_int(containerDimen)));
+        switch (Constants.browser->Bowser.getBrowserName) {
+        | Some(`Chrome) => relativePos->Js.Math.round->int_of_float
+        | Some(`Safari)
+        | _ => relativePos->Js.Math.floor
+        };
       let _ = onIdxChange->Belt.Option.map(fn => fn(activeIdx));
       ();
     };

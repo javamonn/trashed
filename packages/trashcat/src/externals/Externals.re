@@ -13,6 +13,7 @@ module Bowser = Externals_Bowser;
 module UUID = Externals_UUID;
 module Workbox = Externals_Workbox;
 module Cookie = Externals_Cookie;
+module Lodash = Externals_Lodash;
 
 module AppSync = Externals_AppSync;
 module S3Object = Externals_S3Object;

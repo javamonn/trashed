@@ -69,6 +69,7 @@
     "bs-webapi": "^0.15.3",
     "decco": "^1.1.1",
     "js-cookie": "^2.2.1",
+    "lodash-es": "^4.17.15",
     "re-classnames": "^4.0.0",
     "reason-apollo": "^0.18.0",
     "reason-apollo-hooks": "^4.0.0",

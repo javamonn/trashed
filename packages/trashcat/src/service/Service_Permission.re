@@ -1,6 +1,7 @@
 module Permissions = Externals_Permissions;
 module MediaStream = Externals_MediaStream;
 module MediaDevices = Externals_MediaDevices;
+module LocalStorage = Externals_LocalStorage;
 
 [@bs.deriving accessors]
 type status('data) =
@@ -11,7 +12,42 @@ type status('data) =
   | PermissionRejected;
 
 let permissionStatusChangeEvent = "trashcat-permissionStatusChange";
+module Storage = {
+  let localStorageNamespace = "trashcat-servicePermission-";
+  let getKey = permissionName =>
+    localStorageNamespace ++ Permissions.permissionToJs(permissionName);
 
+  let writePermission = (name, permission) => {
+    let json =
+      permission
+      ->Belt.Option.getWithDefault(Permissions.Status.{state: `Prompt})
+      ->Permissions.Status.encode
+      ->Js.Json.stringify;
+    let _ = name->getKey->LocalStorage.setItem(json);
+    ();
+  };
+
+  let readPermission = name =>
+    name
+    ->getKey
+    ->LocalStorage.getItem
+    ->Belt.Option.flatMap(p =>
+        try(p->Js.Json.parseExn->Js.Option.some) {
+        | _ => None
+        }
+      )
+    ->Belt.Option.flatMap(json =>
+        switch (json->Permissions.Status.decode) {
+        | Belt.Result.Ok(s) => s->Js.Option.some
+        | Belt.Result.Error(_) => None
+        }
+      );
+};
+
+/**
+ * A wrapper that emulates window.navigator.permissions in environments in which
+ * it does not exist by persisting permission state to localstorage.
+ */
 module Make =
        (
          Conf: {
@@ -39,12 +75,13 @@ module Make =
       Conf.onPrompt()
       |> Js.Promise.then_(((perm, data)) => {
            let nextStatus =
-             switch (perm->Belt.Option.map(Permissions.Status.stateGet)) {
+             switch (perm->Belt.Option.map(Permissions.Status.state)) {
              | Some(`Granted) => PermissionGranted(data)
              | Some(`Denied) => PermissionRejected
              | _ => Unprompted
              };
-           handleStatusChange(nextStatus);
+           let _ = handleStatusChange(nextStatus);
+           let _ = Storage.writePermission(Conf.name, perm);
            Js.Promise.resolve(nextStatus);
          })
       |> transitionInProgress;
@@ -53,21 +90,21 @@ module Make =
   };
 
   let initialize = () => {
+    let statusFromState = s =>
+      switch (s->Permissions.Status.state) {
+      | `Prompt => Unprompted
+      | `Granted => prompt()
+      | `Denied => PermissionRejected
+      };
     let initialStatus =
       switch (Permissions.(query(Descriptor.make(~name=Conf.name)))) {
       | Some(p) =>
-        p
-        |> Js.Promise.then_(s => {
-             let status =
-               switch (s->Belt.Option.map(Permissions.Status.stateGet)) {
-               | Some(`Prompt) => Unprompted
-               | Some(`Granted) => prompt()
-               | Some(`Denied) => PermissionRejected
-               | None => Unprompted
-               };
-             Js.Promise.resolve(status);
-           })
-      | None => Js.Promise.resolve(Unprompted)
+        p |> Js.Promise.then_(s => {s->statusFromState->Js.Promise.resolve})
+      | None =>
+        Storage.readPermission(Conf.name)
+        ->Belt.Option.map(statusFromState)
+        ->Belt.Option.getWithDefault(Unprompted)
+        ->Js.Promise.resolve
       };
 
     initialStatus
@@ -124,12 +161,11 @@ module Camera =
       )
       |> MediaDevices.getUserMedia
       |> Js.Promise.then_(stream => {
-           let perm =
-             Permissions.Status.make(~state=`Granted)->Js.Option.some;
+           let perm = Some(Permissions.Status.{state: `Granted});
            Js.Promise.resolve((perm, Some(stream)));
          })
       |> Js.Promise.catch(_ex => {
-           let perm = Permissions.Status.make(~state=`Denied)->Js.Option.some;
+           let perm = Some(Permissions.Status.{state: `Denied});
            Js.Promise.resolve((perm, None));
          });
   });
@@ -140,17 +176,15 @@ module Geolocation =
     type data = Externals_Geolocation.position;
 
     let onPrompt = () =>
-      Js.Promise.make((~resolve, ~reject) =>
+      Js.Promise.make((~resolve, ~reject as _reject) =>
         Externals_Geolocation.getCurrentPosition(
           position => {
-            let perm =
-              Permissions.Status.make(~state=`Granted)->Js.Option.some;
+            let perm = Some(Permissions.Status.{state: `Granted});
             let _ = resolve(. (perm, Some(position)));
             ();
           },
           _positionError => {
-            let perm =
-              Permissions.Status.make(~state=`Denied)->Js.Option.some;
+            let perm = Some(Permissions.Status.{state: `Denied});
             let _ = resolve(. (perm, None));
             ();
           },

@@ -338,17 +338,26 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
         <DelayedMount timeout=3000 paused={!isItemLastInFeed}>
           <Notification.LastItemInFeed
             _in=isItemLastInFeed
-            onClick={_ => {Js.log("LastItemInFeed Clicked!")}}
+            onClick={_ => {
+              let _ =
+                Webapi.Dom.(
+                  window->Window.location->Location.setPathname("/item")
+                );
+              ();
+            }}
           />
         </DelayedMount>
         <ScrollSnapList.Container
           direction=ScrollSnapList.Vertical
           onIdxChange=handleIdxChange
           initialIdx=itemWindowIdx>
-          {itemWindow->Belt.Array.map(
-             fun
+          {itemWindow->Belt.Array.mapWithIndex((idx, item) =>
+             switch (item) {
              | None =>
-               <ScrollSnapList.Item direction=ScrollSnapList.Vertical />
+               <ScrollSnapList.Item
+                 key={string_of_int(activeItemIdx + idx)}
+                 direction=ScrollSnapList.Vertical
+               />
              | Some(item) =>
                <ScrollSnapList.Item
                  key={item##id} direction=ScrollSnapList.Vertical>
@@ -357,7 +366,8 @@ let make = (~isActive, ~onVisibleItemChange, ~itemId=?, ~nextToken=?) => {
                    itemFragment=item##itemFragment
                    autoPlay={item##id === activeItemId && isActive}
                  />
-               </ScrollSnapList.Item>,
+               </ScrollSnapList.Item>
+             }
            )}
         </ScrollSnapList.Container>
       </>;
