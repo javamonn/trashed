@@ -1,0 +1,44 @@
+{{!< default}}
+{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+
+{{!-- The main content area on the author archive page --}}
+<div id="content" class="site-content">
+	<main id="main" class="site-main inner">
+		{{!-- Everything inside the #author tags pulls data from the author --}}
+		{{#author}}
+		<header class="page-header">
+			<h1 class="page-title">{{plural ../pagination.total empty='No posts' singular='% post' plural='% posts'}} by <span class="vcard highlight">{{name}}</span></h1>
+			<div class="author-box">
+				<div class="author-info">
+					{{#if profile_image}}
+					<div class="avatar-container">
+						<img src="{{profile_image}}" alt="{{name}}" class="avatar" />
+					</div>
+					{{/if}}
+					<div class="author-details">
+						<h2 class="author-title">About {{name}}</h2>
+						{{#if bio}}
+						<p class="author-description">{{bio}}</p>
+						{{/if}}
+						<div class="author-links">
+							{{#if website}}
+							<a href="{{website}}" target="_blank"><i class="fa-globe" aria-hidden="true"></i><span class="screen-reader-text">Website</span></a>
+							{{/if}}
+							{{#if facebook}}
+							<a href="{{facebook_url}}" target="_blank"><i class="fa-facebook" aria-hidden="true"></i><span class="screen-reader-text">Facebook</span></a>
+							{{/if}}
+							{{#if twitter}}
+							<a href="{{twitter_url}}" target="_blank"><i class="fa-twitter" aria-hidden="true"></i><span class="screen-reader-text">Twitter</span></a>
+							{{/if}}
+						</div>
+					</div>
+				</div><!-- .author-info -->
+			</div><!-- .author-box -->
+		</header><!-- .page-header -->
+		{{/author}}
+		{{!-- The tag below includes the post loop - partials/loop.hbs --}}
+		{{> "loop"}}
+		{{!-- Previous/next page links - displayed on every page --}}
+		{{pagination}}
+	</main><!-- .site-main -->
+</div><!-- .site-content -->

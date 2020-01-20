@@ -1,0 +1,19 @@
+<header class="site-header">
+	<div class="inner">
+		<div class="site-branding">
+			{{#if @site.logo}}
+			<p class="custom-logo"><a href="{{@site.url}}"><img src="{{@site.logo}}" alt="{{@site.title}}" /></a></p>
+			{{/if}}
+			{{#is "index"}}
+			<h1 class="site-title"><a href="{{@site.url}}">{{@site.title}}</a></h1>
+			{{else}}
+			<p class="site-title"><a href="{{@site.url}}">{{@site.title}}</a></p>
+			{{/is}}
+			{{#if @site.description}}
+			<p class="site-description">{{@site.description}}</p>
+			{{/if}}
+		</div><!-- .site-branding -->
+		<button id="show-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Discover More</span><span aria-hidden="true" class="icon-plus"></span></button>
+		<button id="show-search" class="toggle-search"><span class="screen-reader-text">Search</span><span aria-hidden="true" class="fa-search"></span></button>
+	</div><!-- .inner -->
+</header><!-- .site-header -->

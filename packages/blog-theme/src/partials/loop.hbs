@@ -1,0 +1,21 @@
+{{!-- This is the post loop - each post will be output using this markup --}}
+<div id="post-wrapper" class="post-wrapper">
+{{#foreach posts}}
+	<article class="{{post_class}}">
+		<div class="post-inside">
+			{{#if feature_image }}
+			<a href="{{url}}" class="post-thumbnail"><img src="{{feature_image}}" alt="{{title}}" /></a>
+			{{/if}}
+			<header class="entry-header">
+				<h2 class="entry-title"><a href="{{url}}">{{{title}}}</a></h2>
+				<div class="entry-meta">
+					{{#primary_author}}<span class="post-author"><a href="{{url}}">{{name}}</a></span>{{/primary_author}}<span class="post-date"><time class="published" datetime="{{date format='YYYY-MM-DD'}}">{{date format="MMMM DD, YYYY"}}</time></span>
+				</div><!-- .entry-meta -->
+			</header><!-- .entry-header -->
+			<div class="entry-content">
+				<p>{{excerpt words="70"}}&hellip;</p>
+			</div><!-- .entry-content -->
+		</div><!-- .post-inside -->
+	</article><!-- .post -->
+{{/foreach}}
+</div><!-- .post-wrapper -->

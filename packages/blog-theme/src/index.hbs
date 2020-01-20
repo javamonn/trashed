@@ -1,0 +1,14 @@
+{{!< default}}
+{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+
+{{!-- The main content area on the blog page --}}
+<div id="content" class="site-content">
+	<main id="main" class="site-main inner">
+		{{#get "posts" include="authors,tags" limit=@config.posts_per_page filter="featured:false" page=pagination.page}}
+			{{!-- The tag below includes the post loop - partials/loop.hbs --}}
+			{{> "loop"}}
+			{{!-- Previous/next page links - displayed on every page --}}
+			{{pagination}}
+		{{/get}}
+	</main><!-- .site-main -->
+</div><!-- .site-content -->

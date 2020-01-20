@@ -1,0 +1,20 @@
+{{!< default}}
+{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+
+{{!-- The main content area on the tag archive page --}}
+<div id="content" class="site-content">
+	<main id="main" class="site-main inner">
+		{{#tag}}
+		<header class="page-header">
+			<h1 class="page-title">{{plural ../pagination.total empty='No posts' singular='% post' plural='% posts'}} tagged <span class="highlight">{{name}}</span></h1>
+			{{#if description}}
+				<p class="page-description">{{description}}</p>
+			{{/if}}
+		</header><!-- .page-header -->
+		{{/tag}}
+		{{!-- The tag below includes the post loop - partials/loop.hbs --}}
+		{{> "loop"}}
+		{{!-- Previous/next page links - displayed on every page --}}
+		{{pagination}}
+	</main><!-- .site-main -->
+</div><!-- .site-content -->

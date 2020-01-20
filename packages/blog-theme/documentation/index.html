@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Forma | Ghost Theme Documentation</title>
+	<link rel="stylesheet" href="assets/css/style.css" type="text/css" media="all">
+</head>
+<body>
+	<div class="wrap">
+		<header class="site-header">
+			<h1 class="site-title">Forma - Ghost Theme v1.4.1</h1>
+			<p class="site-description">Theme Documentation</p>
+		</header><!-- .site-header -->
+		<main id="main" class="site-main">
+			<div class="intro">
+				<p>First of all a huge thanks for purchasing this theme! If you have any questions that are not answered here, please feel free to contact us via email (<a href="mailto:hello@justgoodthemes.com">hello@justgoodthemes.com</a>) or the contact form on our user page <a href="https://justgoodthemes.com/contact/">here</a>. Thanks so much!</p>
+			</div><!-- .intro -->
+			<div id="content" class="site-content">
+				<nav class="table-of-contents">
+					<h2 id="toc">Table of Contents</h2>
+					<ol>
+						<li><a href="#ThemeInfo"><strong>Theme Information</strong></a></li>
+						<li><a href="#ThemeFiles"><strong>Theme File Structure</strong></a></li>
+						<li><a href="#GettingStarted"><strong>How to Upload a Theme to Your Ghost Blog</strong></a>
+							<ol>
+								<li><a href="#GhostAdmin">Upload Through Admin</a></li>
+								<li><a href="#Manually">Upload Manually</a></li>
+							</ol>
+						</li>
+						<li><a href="#ThemeFeatures"><strong>Theme Features</strong></a>
+							<ol>
+								<li><a href="#Favicon">Favicon</a></li>
+								<li><a href="#Navigation">Navigation</a></li>
+								<li><a href="#StaticPages">Static Pages</a></li>
+								<li><a href="#CoverImages">Cover Images</a></li>
+								<li><a href="#FeaturedCarousel">Featured Content Carousel</a></li>
+								<li><a href="#Subscribers">Subscribers</a></li>
+								<li><a href="#ImageStyles">Image and Blockquotes Styles</a></li>
+								<li><a href="#DisqusComments">Disqus Comments</a></li>
+								<li><a href="#Sidebar">Sidebar</a></li>
+								<li><a href="#FooterWidgets">Footer Widgets</a></li>
+								<li><a href="#SocialMediaLinks">Social Media Links (Footer)</a></li>
+								<li><a href="#CopyrightInformation">Copyright Information (Footer)</a></li>
+								<li><a href="#GoogleAnalytics">Google Analytics</a></li>
+								<li><a href="#Search">Search</a></li>
+							</ol>
+						</li>
+						<li><a href="#Credits"><strong>Credits</strong></a></li>
+						<li><a href="#Support"><strong>Support</strong></a></li>
+						<li><a href="#Updates"><strong>Updates</strong></a></li>
+					</ol>
+					<hr />
+				</nav>
+				<section>
+					<h2 id="ThemeInfo">A. Theme Information</h2>
+					<ul>
+						<li>Name: <strong>Forma</strong></li>
+						<li>Description: bold masonry theme for <a href="https://ghost.org/">Ghost</a></li>
+						<li>Current Version: 1.4.1</li>
+						<li>Updated: 19/05/2019</li>
+						<li>Creator: <a href="https://justgoodthemes.com">JustGoodThemes.com</a></li>
+						<li><a href="https://ghost.org/">Ghost</a> version: >= 2.22.x</li>
+					</ul>
+					<hr />
+				</section>
+				<section>
+					<h2 id="ThemeFiles">B. Theme Structure</h2>
+					<p>Here's an overview of the theme file structure.</p>
+<pre><code>.
+├── assets
+│   ├── css
+│   │   └── style.css
+│   ├── fonts
+│   │   ├── fontawesome.eot
+│   │   ├── fontawesome.svg
+│   │   ├── fontawesome.ttf
+│   │   └── fontawesome.woff
+│   ├── images
+│   │   └── ajax-loader.gif
+│   └── js
+│       ├── custom.js
+│       └── plugins.js
+├── author.hbs
+├── default.hbs [Add Disqus shortname, Instagram user ID and access token here]
+├── home.hbs
+├── index.hbs
+├── package.json
+├── page.hbs
+├── partials
+│   ├── comments.hbs
+│   ├── footer-widgets.hbs
+│   ├── footer.hbs [Edit copyright info and social links here]
+│   ├── header.hbs
+│   ├── loop.hbs
+│   ├── navigation.hbs
+│   ├── pagination.hbs
+│   ├── search-box.hbs
+│   └── sidebar.hbs [Edit about info here]
+├── post.hbs
+└── tag.hbs</code></pre>
+					<hr />
+				</section>
+				<section>
+					<h2 id="GettingStarted">C. How to Upload a Theme to Your Ghost Blog - <a href="#toc">top</a></h2>
+					<h3 id="GhostAdmin">1. Upload Through Admin</h3>
+					<ol>
+						<li>Log into the admin section of your Ghost blog: <code>yourblog.com/ghost</code>.</li>
+						<li>Click on <strong>General</strong> under settings in the left hand column and scroll to the very bottom.</li>
+						<li>Click on <strong>Upload a theme</strong>.</li>
+						<li>Drag-and-drop or click and locate the zip file for your theme.</li>
+						<li>Once it is uploaded, click on either <strong>Activate Now</strong> to activate the theme immediately or <strong>Close</strong> if you want to activate later on.</li>
+					</ol>
+					<h3 id="Manually">2. Upload Manually</h3>
+					<ul>
+						<li>Locate the theme directory within the download files. It can be found at <strong>theme/forma</strong>.</li>
+						<li>Login to FTP/SFTP of your blog, or the file browser of your provided hosting service.</li>
+						<li>Navigate to the <strong>/content/theme</strong> directory within your Ghost installation.</li>
+						<li>Upload the <strong>forma</strong> directory found in step one into the remote <strong>/content/theme</strong> directory.</li>
+						<li>Restart your Ghost service. The process for this will change dependent on your provider. If you are unaware how to restart the service please raise a support issue with your host.</li>
+						<li>Log into the admin section of your Ghost blog: <code>yourblog.com/ghost</code>.</li>
+						<li>Click on <strong>General</strong> under settings in the left hand column and scroll to the very bottom.</li>
+						<li>Click on <strong>Activate</strong> next to the theme you want to activate and it will be activated.</li>
+					</ul>
+					<hr />
+
+				</section>
+
+				<section>
+					<h2 id="ThemeFeatures">D. Theme Features - <a href="#toc">top</a></h2>
+
+					<h3 id="Favicon">1. Favicon</h3>
+					<p>To add a favicon, navigate to <strong>General</strong> settings in your Ghost blog admin dashboard and click <strong>Upload Image</strong> next to <strong>Publication icon</strong>.</p>
+
+					<h3 id="Navigation">2. Navigation</h3>
+					<p>You can add, edit, delete and reorder menu links on your Ghost blog, directly from the navigation tool within the blog admin area, located at <strong>/ghost/settings/navigation/</strong>.</p>
+					<p><img src="assets/images/navigation.png" alt="navigation menu"/></p>
+					<p>To include a static page on your navigation menu, first type the name of the page as you’d like it to appear on your menu in the label field.</p>
+					<p><img src="assets/images/label-field.jpg" alt="label field"/></p>
+					<p>Next, click inside the <strong>URL field</strong> of the menu item. The blog URL will auto-populate with http://yourdomain.com/. You will need to add in the page slug after the final <strong>/</strong>. Once satisfied with your page link, click the blue <strong>Save button</strong> to add the page to the navigation menu.</p>
+
+					<h3 id="StaticPages">3. Static Pages</h3>
+					<p>In order to create a static page you create a new post, just like you would any other post. Once you have opened up the new post, there is a cog wheel icon next to where it says "Save Draft" or "Update Post" depending on if you have published the post or not. Click on that cog, and check the "Turn this post into a static page" box. This will convert your post to a static page.</p>
+					<p><img src="assets/images/staticpage.png" alt="static page"/></p>
+
+					<h3 id="CoverImages">4. Cover Images</h3>
+					<p>You can add cover images to all of your posts and static pages. Open your post/page settings menu, drag and drop or locate the image on your computer, save it and you're all set.</p>
+
+					<h3 id="FeaturedCarousel">5. Featured Content Carousel</h3>
+					<p>The featured content carousel showcases up to five of your latest featured posts in a bold post carousel on the homepage. To mark a post as featured, open the post settings menu by clicking on the "gear" icon at the top right of the Ghost editor and check the "Feature this post" box.</p>
+					<p class="highlight"><strong>Important!</strong> You need to enable Public API for the featured content carousel to work. To do this navigate to Labs in your Ghost admin dashboard and check the "Public API - For full instructions, read the developer guide" box.</p>
+
+					<h3 id="Subscribers">6. Subscribers</h3>
+					<p>To enable the "Subscribers" feature, navigate to Labs in your Ghost admin dashboard and tick the "Subscribers" checkbox. When the "Subscribers" feature in labs is enabled, the subscription form is displayed below the post content on the single post page and the optional Subscribe widget is displayed in the theme sidebar.</p>
+
+					<h3 id="ImageStyles">7. Image and Blockquotes Styles</h3>
+					<p>When inserting images into your posts and pages, you can use special CSS classes to create a more attractive flow of content.</p>
+					<p>For instance, you can align your image left or right, by wrapping it in a <code>div</code> tag with the CSS class <code>full-width</code>, <code>alignleft</code> or <code>alignright</code> like this:</p>
+<pre><code>&lt;div class="full-width"&gt;
+
+&lt;img src="/content/images/2017/12/my_image.jpg" alt="Alt Text"&gt;
+
+&lt;/div&gt;</code></pre>
+<pre><code>&lt;div class="alignleft"&gt;
+
+&lt;img src="/content/images/2017/12/my_image.jpg" alt="Alt Text"&gt;
+
+&lt;/div&gt;</code></pre>
+<pre><code>&lt;div class="alignright"&gt;
+
+&lt;img src="/content/images/2017/12/my_image.jpg" alt="Alt Text"&gt;
+
+&lt;/div&gt;</code></pre>
+					<p>You can also add captions to your images. For this wrap your image in a <code>figure</code> tag with the CSS class <code>caption</code> and add your caption inside a <code>figcaption</code> tag with the CSS class <code>caption-text</code> like this:</p>
+<pre><code>&lt;figure class="caption"&gt;
+
+&lt;img src="/content/images/2017/12/my_image.jpg" alt="Alt Text"&gt;
+
+&lt;figcaption class="caption-text"&gt;This is the caption&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+					<p>If you want to add a caption and align an image left or right, use the following:</p>
+<pre><code>&lt;figure class="caption alignleft"&gt;
+
+&lt;img src="/content/images/2017/12/my_image.jpg" alt="Alt Text"&gt;
+
+&lt;figcaption class="caption-text"&gt;This is the caption&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+					<p><code>alignleft</code> or <code>alignright</code> classes can be applied for blockquotes as well. For instance:</p>
+<pre><code>&lt;blockquote class="alignleft"&gt;
+In the beginner’s mind there are many possibilities, but in the expert’s mind there are few.
+&lt;/blockquote&gt;</code></pre>
+<pre><code>&lt;blockquote class="alignright"&gt;
+In the beginner’s mind there are many possibilities, but in the expert’s mind there are few.
+&lt;/blockquote&gt;</code></pre>
+
+					<h3 id="DisqusComments">8. Disqus Comments</h3>
+					<p><strong>Forma</strong> theme comes with Disqus commenting built-in, you just need to have a Disqus account (create it at <a href="https://disqus.com/">Disqus.com</a>). To enable commenting, you need to change the default Disqus account shortname "your_disqus_shortname" on line 17 in the <strong>default.hbs</strong> file located in the main theme folder <strong>(Ghost/content/themes/forma)</strong>.</p>
+<pre><code>disqus_shortname = 'your_disqus_shortname', // add your Disqus shortname</code></pre>
+					<p>If you wish to disable commenting, just remove the following lines from the <strong>post.hbs</strong> file located in the main theme folder:</p>
+<pre><code>{{!-- The tag below includes the theme comments - partials/comments.hbs --}}
+{{> comments}}</code></pre>
+
+					<h3 id="Sidebar">9. Sidebar</h3>
+					<p>The theme sidebar contains main site navigation, hardcoded text widget and Ghost newsleter subscription form. The <strong>sidebar.hbs</strong> file is located in the <strong>partials</strong> folder <strong>(Ghost/content/themes/forma/partials)</strong> of the theme.</p>
+					<h4>Newsletter Subscription Form</h4>
+					<p>If you have enabled the <a href="#Subscribers">"Subscribers" feature</a> in labs, Ghost subscription form widget is displayed in the sidebar.</p>
+					<p>If you want to integrate the MailChimp newsletter subscriptions, first, you need to generate the signup form code and add it istead.</p>
+					<h4>Text Widget</h4>
+					<p>You will find hardcoded text widget "About" in the sidebar of the theme.</p>
+					<p>To change the "About" widget information, edit the text on line 12 in the <strong>sidebar.hbs</strong> file located in the <strong>partials</strong> folder <strong>(Ghost/content/themes/forma/partials)</strong>. If you do not need this widget, simply delete the <code>section</code> element:</p>
+<pre><code>&lt;section class="widget widget-text"&gt;
+  &lt;h2 class="widget-title"&gt;About {{@blog.title}}&lt;/h2&gt;
+  &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed lacus id tortor iaculis iaculis dignissim eget justo. Maecenas posuere eros nisl, ut pharetra turpis faucibus a. In imperdiet urna mattis lacus mollis, sit amet pulvinar purus vehicula.&lt;/p&gt;
+&lt;/section&gt;&lt;!-- .widget --&gt;</code></pre>
+
+					<h3 id="FooterWidgets">10. Footer Widgets</h3>
+					<p>The theme footer widgets contains "Latest Posts", "Tags" and "Instagram Feed" widgets. The footer-widgets.hbs file is located in the partials folder (Ghost/content/themes/forma/partials) of the theme.</p>
+					<h4>Latest Posts Widget</h4>
+					<p>The widget displays 3 latest posts by default, but you can change the number of posts on line 7 in the <strong>footer-widgets.hbs</strong> file located in the <strong>partials</strong> folder (Ghost/content/themes/forma/partials):</p>
+<pre><code>{{#get "posts" limit="3"}}</code></pre>
+					<p class="highlight"><strong>Important!</strong> You need to enable Public API for the widget to work. To do this navigate to Labs in your Ghost admin dashboard and check the "Public API - For full instructions, read the developer guide" box.</p>
+					<h4>Tag Cloud Widget</h4>
+					<p>The widget displays all blog tags ordered by name. You can change the order of tags or limit their number on line 27 in the <strong>footer-widgets.hbs</strong> file located in the <strong>partials</strong> folder (Ghost/content/themes/forma/partials):</p>
+<pre><code>{{#get "tags" limit="all" order="name asc"}}{{tags separator=""}}{{/get}}</code></pre>
+					<p class="highlight"><strong>Important!</strong> You need to enable Public API for the widget to work. To do this navigate to Labs in your Ghost admin dashboard and check the "Public API - For full instructions, read the developer guide" box.</p>
+					<h4>Footer Instagram Feed</h4>
+					<p>To display Instagram photos you need to change the default <code>instagram_user_id</code> and <code>instagram_access_token</code> on lines 18, 19 in the <strong>default.hbs</strong> file located in the main theme folder <strong>(Ghost/content/themes/forma)</strong>.</p>
+<pre><code>instagram_user_id = 'your_instagram_user_id',
+instagram_access_token = 'your_instagram_access_token',</code></pre>
+					<p>To obtain an Access Token first you need to get a Client ID. Go to <a href="https://instagram.com/developer/">Instagram Developer</a> page and log in. Click on <strong>Register your application</strong>. If this is your first application, register as developer by filling the information asked, accept the API terms of use and brand guidelines and click <strong>Sign up</strong> button. Click <strong>Register your Application</strong> again to proceed and then click <strong>Register a New Client</strong> at the top right. Set application name to your website name, type in a description, add the url of your site in the "Website URL" and "Valid redirect URIs" fields and enter your email. Click "Security" tab and uncheck the box "Disable implicit OAuth". Hit register.</p>
+					<p>Now, paste the following url into your web browser. Be sure to replace CLIENT-ID and REDIRECT-URI with your Client ID and Redirect URI you received when you registered your application in the previous step.</p>
+<pre><code>https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&amp;redirect_uri=REDIRECT-URI&amp;response_type=token</code></pre>
+					<p>Hit enter, and you will connect to Instagram's servers. Instagram will ask you whether you want to grant the client you registered access to your account. Once your client has been granted access to your account, Instagram will redirect you to your Redirect URI with the access_token in the url fragment. It will look like this:</p>
+<pre><code>http://your-redirect-uri#access_token=ACCESS-TOKEN</code></pre>
+					<p>Simply grab the access_token off the URL fragment and add it to the default.hbs file.</p>
+					<p>To get your user ID paste the following url into your web browser. Be sure to replace ACCESS-TOKEN with your Access Token obtained previously.</p>
+<pre><code>https://api.instagram.com/v1/users/self/?access_token=ACCESS-TOKEN</code></pre>
+					<p>Hit enter. The response (JSON object) will look similar to this and will have user ID and other user information:</p>
+					<p><img src="assets/images/userid.png" alt="Instagram User ID"/></p>
+
+					<h3 id="SocialMediaLinks">11. Social Media Links (Footer)</h3>
+					<p>The social media icons/links at the bottom can be altered within the <strong>footer.hbs</strong> partial within the <strong>partials</strong> folder <strong>(Ghost/content/themes/forma/partials)</strong> of the theme.</p>
+					<p>You may use any of the following social icons:</p>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-twitter"></span> fa-twitter</div>
+						<div class="one-third"><span class="icon fa-facebook"></span> fa-facebook</div>
+						<div class="one-third"><span class="icon fa-github"></span> fa-github</div>
+					</div>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-feed"></span> fa-feed</div>
+						<div class="one-third"><span class="icon fa-pinterest"></span> fa-pinterest</div>
+						<div class="one-third"><span class="icon fa-google-plus"></span> fa-google-plus</div>
+					</div>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-envelope"></span> fa-envelope</div>
+						<div class="one-third"><span class="icon fa-linkedin"></span> fa-linkedin</div>
+						<div class="one-third"><span class="icon fa-xing"></span> fa-xing</div>
+					</div>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-youtube-play"></span> fa-youtube-play</div>
+						<div class="one-third"><span class="icon fa-instagram"></span> fa-instagram</div>
+						<div class="one-third"><span class="icon fa-flickr"></span> fa-flickr</div>
+					</div>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-tumblr"></span> fa-tumblr</div>
+						<div class="one-third"><span class="icon fa-dribbble"></span> fa-dribbble</div>
+						<div class="one-third"><span class="icon fa-behance"></span> fa-behance</div>
+					</div>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-deviantart"></span> fa-deviantart</div>
+						<div class="one-third"><span class="icon fa-codepen"></span> fa-codepen</div>
+						<div class="one-third"><span class="icon fa-medium"></span> fa-medium</div>
+					</div>
+					<div class="row">
+						<div class="one-third"><span class="icon fa-500px"></span> fa-500px</div>
+						<div class="one-third"><span class="icon fa-vimeo"></span> fa-vimeo</div>
+					</div>
+					<p>Ghost added Facebook and Twitter support in version 0.8.0. You can add the links to your Facebook and Twitter profiles in the Ghost admin dashboard.</p>
+					<h3 id="CopyrightInformation">12. Copyright Information (Footer)</h3>
+					<p>You will find all copyright information inside the <code>div</code> element with the class <code>site-info</code> in the <strong>footer.hbs</strong> file within the <strong>partials</strong> folder <strong>(Ghost/content/themes/forma/partials)</strong> of the theme. If you want to remove copyright information in the footer, simply delete the <code>p</code> element with the class <code>site-info</code> and all code in it.</p>
+
+					<h3 id="GoogleAnalytics">13. Google Analytics</h3>
+					<p>First, you need to create a Google Account. If you already have one, you should be able to <a href="https://analytics.google.com/analytics/web/">sign into Google Analytics</a> using your existing Google Account credentials.</p>
+					<p>Once you've logged into Google Analytics, follow <a href="https://support.google.com/analytics/answer/1009694?hl=en">their guide</a> to create an account for your blog. Once the account has been created, you'll receive a tracking code. Copy your tracking code and head over to your Ghost blog admin dashboard. Navigate to <strong>Code Injection</strong> settings and paste your tracking code into the Blog Header field.</p>
+					<p>Or you can paste your tracking code inside the <strong>&lt;head&gt;</strong> tag in the <strong>default.hbs</strong> file located in the main theme folder, right below the <strong>{{ghost_head}}</strong> and above <strong>&lt;/head&gt;</strong>.</p>
+
+					<h3 id="Search">14. Search</h3>
+					<p>The search functionality implemented in the theme requires Content API Key.</p>
+					<p>To obtain Content API Key, navigate to <strong>Settings &rarr; Integrations</strong> in your Ghost admin dashboard and click <strong>Add custom Integration</strong> button. Type the name of your custom integration and click <strong>Create</strong>. Copy your <strong>Content API key</strong> and click <strong>Save</strong>.</p>
+					<p><img src="assets/images/custom-integration.png" alt="custom integration"/></p>
+					<p>Next, open the <strong>default.hbs</strong> file located in the main theme folder <strong>(Ghost/content/themes/wildbird/)</strong> and replace <code>your_search_key</code> with your generated Content API Key on line 20:</p>
+<pre><code>search_key = 'your_search_key', // add your Content API key</code></pre>
+					<hr />
+				</section>
+
+				<section>
+					<h2 id="Credits">E. Credits - <a href="#toc">top</a></h2>
+					<p>We have used the following scripts, fonts or other files as listed.</p>
+					<ul>
+						<li>Roboto font: <a href="https://fonts.google.com/specimen/Roboto">https://fonts.google.com/specimen/Roboto</a></li>
+						<li>Cousine font: <a href="https://fonts.google.com/specimen/Cousine">https://fonts.google.com/specimen/Cousine</a></li>
+						<li>Font Awesome icons: <a href=" http://fontawesome.io"> http://fontawesome.io</a></li>
+						<li>FitVids plugin: <a href="http://fitvidsjs.com/">http://fitvidsjs.com/</a></li>
+						<li>Fuse.js plugin: <a href="https://fusejs.io/">https://fusejs.io/</a></li>
+						<li>Masonry plugin: <a href="http://masonry.desandro.com">http://masonry.desandro.com</a></li>
+						<li>imagesLoaded plugin: <a href="https://imagesloaded.desandro.com/">https://imagesloaded.desandro.com/</a></li>
+						<li>Slick Carousel plugin: <a href="http://kenwheeler.github.io/slick/">http://kenwheeler.github.io/slick/</a></li>
+						<li>Instafeed plugin: <a href="http://instafeedjs.com/">http://instafeedjs.com/</a></li>
+					</ul>
+					<hr />
+				</section>
+
+				<section>
+					<h2 id="Support">D. Support - <a href="#toc">top</a></h2>
+					<p>The documentation included provides all the information needed to get the theme installed and customized. However, if you have any questions you can email us at <a href="mailto:hello@justgoodthemes.com">hello@justgoodthemes.com</a>, and we will be happy to help you.</p>
+					<p>If you have any bug reports, or feature requests, please let us know!</p>
+					<hr />
+				</section>
+
+				<section>
+					<h2 id="Updates">E. Updates - <a href="#toc">top</a></h2>
+					<p>As Ghost platform grows, so will this theme. We’re dedicated to keeping our <strong>Forma</strong> up to date.</p>
+					<hr />
+				</section>
+
+				<p><a href="#toc">Go To Table of Contents</a></p>
+			</div><!-- #content -->
+		</main><!-- #main -->
+		<footer class="site-info">
+			<p>© 2019 Just Good Themes. All rights reserved.</p>
+		</footer><!-- .site-info -->
+	</div><!-- .wrap -->
+</body>
+</html>
