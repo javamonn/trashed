@@ -28,38 +28,8 @@
 					<span class="meta-before">Share:</span>
 					<a target="_blank" href="https://twitter.com/intent/tweet?text={{encode title}}&amp;url={{url absolute="true"}}"><i class="fa-twitter" aria-hidden="true"></i><span class="screen-reader-text">Twitter</span></a>
 					<a target="_blank" href="https://www.facebook.com/sharer.php?u={{url absolute="true"}}"><i class="fa-facebook" aria-hidden="true"></i><span class="screen-reader-text">Facebook</span></a>
-					<a target="_blank" href="https://plus.google.com/share?url={{url absolute="true"}}"><i class="fa-google-plus" aria-hidden="true"></i><span class="screen-reader-text">Google+</span></a>
 				</div>
 			</footer><!-- .entry-footer -->
-			{{!-- Everything inside the #primary_author tags pulls data from the author --}}
-			{{#primary_author}}
-			<div class="author-box">
-				<div class="author-info">
-					{{#if profile_image}}
-					<div class="avatar-container">
-						<img src="{{profile_image}}" alt="{{name}}" class="avatar" />
-					</div>
-					{{/if}}
-					<div class="author-details">
-						<h2 class="author-title">About <a href="{{url}}">{{name}}</a></h2>
-						{{#if bio}}
-						<p class="author-description">{{bio}}</p>
-						{{/if}}
-						<div class="author-links">
-							{{#if website}}
-							<a href="{{website}}" target="_blank"><i class="fa-globe" aria-hidden="true"></i><span class="screen-reader-text">Website</span></a>
-							{{/if}}
-							{{#if facebook}}
-							<a href="{{facebook_url}}" target="_blank"><i class="fa-facebook" aria-hidden="true"></i><span class="screen-reader-text">Facebook</span></a>
-							{{/if}}
-							{{#if twitter}}
-							<a href="{{twitter_url}}" target="_blank"><i class="fa-twitter" aria-hidden="true"></i><span class="screen-reader-text">Twitter</span></a>
-							{{/if}}
-						</div>
-					</div>
-				</div><!-- .author-info -->
-			</div><!-- .author-box -->
-			{{/primary_author}}
 		</article><!-- .post -->
 
 		{{!-- Email subscribe form --}}

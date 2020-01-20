@@ -1,24 +1,23 @@
 <footer id="colophon" class="site-footer">
-	<div class="inner">
+  <div class="inner">
 
-		{{!-- The tag below includes the theme footer widget area - partials/footer-widgets.hbs --}}
-		{{> footer-widgets}}
+    {{!-- The tag below includes the theme footer widget area - partials/footer-widgets.hbs --}}
+    {{> footer-widgets}}
 
-		<div class="footer-bottom">
-			<div class="social-links">
-				{{#if @site.twitter}}
-				<a href="{{twitter_url}}" target="_blank"><i class="fa-twitter" aria-hidden="true"></i><span class="screen-reader-text">Twitter</span></a>
-				{{/if}}
-				{{#if @site.facebook}}
-				<a href="{{facebook_url}}" target="_blank"><i class="fa-facebook" aria-hidden="true"></i><span class="screen-reader-text">Facebook</span></a>
-				{{/if}}
-				<a href="https://plus.google.com/{{! Add Google+ handle }}" target="_blank"><i class="fa-google-plus" aria-hidden="true"></i><span class="screen-reader-text">Google+</span></a>
-				<a href="https://www.instagram.com/{{! Add Instagram handle }}" target="_blank"><i class="fa-instagram" aria-hidden="true"></i><span class="screen-reader-text">Instagram</span></a>
-				<a href="https://www.pinterest.com/{{! Add Pinterest handle }}" target="_blank"><i class="fa-pinterest" aria-hidden="true"></i><span class="screen-reader-text">Pinterest</span></a>
-			</div><!-- .social-links -->
-			<div class="site-info">
-				&copy; {{date format="YYYY"}} <a href="{{@site.url}}">{{@site.title}}</a> <br />Forma theme by <a target="_blank" href="https://justgoodthemes.com/">JustGoodThemes</a>
-			</div><!-- .site-info -->
+    <div class="footer-bottom">
+      <div class="social-links">
+        <a href="{{twitter_url}}" target="_blank">
+          <i class="fa-twitter" aria-hidden="true"></i>
+          <span class="screen-reader-text">Twitter</span>
+        </a>
+        <a href="https://github.com/javamonn/trashed" target="_blank">
+          <i class="fa-github" aria-hidden="true"></i>
+          <span class="screen-reader-text">GitHub</span>
+        </a>
+      </div><!-- .social-links -->
+      <div class="site-info">
+        &copy; {{date format="YYYY"}} <a href="{{@site.url}}">{{@site.title}}</a>
+      </div><!-- .site-info -->
 			<a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
 		</div><!-- .footer-bottom -->
 

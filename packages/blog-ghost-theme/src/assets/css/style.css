@@ -439,7 +439,7 @@ address {
 
 mark,
 ins {
-	background-color: var(--secondary-color);
+	background-color: var(--primary-color);
 	color: #111;
 	padding: 0 3px;
 	text-decoration: none;
@@ -705,13 +705,13 @@ input[type="reset"]:active {
 
 /* Text selection */
 ::-moz-selection {
-	background: var(--secondary-color);
+	background: var(--primary-color);
 	color: #111;
 	text-shadow: none;
 }
 
 ::selection {
-	background: var(--secondary-color);
+	background: var(--primary-color);
 	color: #111;
 	text-shadow: none;
 }
