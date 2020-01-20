@@ -349,6 +349,10 @@ table {
  * 2. General
  * ----------------------------------------------------------------------------
  */
+:root {
+  --primary-color: rgb(253,229,143);
+}
+
 html,
 button,
 input,
@@ -365,7 +369,7 @@ body {
 }
 
 a {
-	border-bottom: 1px solid #00ffff;
+	border-bottom: 1px solid var(--primary-color);
 	color: #333;
 	text-decoration: none;
 	-webkit-transition: border .3s, color .3s;
@@ -465,9 +469,9 @@ blockquote {
 }
 
 blockquote:before {
-	background-color: #00ffff;
-	border-bottom: 2px solid #00ffff;
-	border-right: 2px solid #00ffff;
+	background-color: var(--primary-color);
+	border-bottom: 2px solid var(--primary-color);
+	border-right: 2px solid var(--primary-color);
 	content: "";
 	height: 100%;
 	left: 15px;
@@ -599,7 +603,7 @@ button,
 input[type="submit"],
 input[type="button"],
 input[type="reset"] {
-	background-color: #00ffff;
+	background-color: var(--primary-color);
 	border: 0;
 	color: #111;
 	font-size: 14px;
@@ -626,7 +630,7 @@ input[type="reset"]:hover,
 input[type="reset"]:focus,
 input[type="reset"]:active {
 	background-color: #111;
-	color: #00ffff;
+	color: var(--primary-color);
 	outline: 0;
 }
 
@@ -652,7 +656,7 @@ input[type="reset"]:active {
 .widget input[type="submit"],
 .widget input[type="button"],
 .widget input[type="reset"] {
-	border: 2px solid #00ffff;
+	border: 2px solid var(--primary-color);
 	font-size: 12px;
 	padding: 5px 15px;
 }
@@ -672,7 +676,7 @@ input[type="reset"]:active {
 }
 
 .gh-subscribe-submit {
-	border: 2px solid #00ffff;
+	border: 2px solid var(--primary-color);
 	padding: 0;
 	position: absolute;
 	right: 0;
@@ -1084,9 +1088,9 @@ blockquote.alignright {
 }
 
 .site-title a:before {
-	background-color: #00ffff;
-	border-bottom: 2px solid #00ffff;
-	border-right: 2px solid #00ffff;
+	background-color: var(--primary-color);
+	border-bottom: 2px solid var(--primary-color);
+	border-right: 2px solid var(--primary-color);
 	content: "";
 	height: 100%;
 	left: 8px;
@@ -1205,7 +1209,7 @@ blockquote.alignright {
 
 #hide-sidebar,
 #hide-search {
-	background-color: #00ffff;
+	background-color: var(--primary-color);
 	color: #111;
 	position: absolute;
 	right: 0;
@@ -1314,7 +1318,7 @@ a.post-thumbnail:hover img {
 
 .entry-meta a:hover,
 .entry-footer a:hover {
-	border-color: #00ffff;
+	border-color: var(--primary-color);
 }
 
 .entry-meta > span:not(:first-child):before {
@@ -1353,7 +1357,7 @@ a.post-thumbnail:hover img {
 }
 
 .share-links a:hover {
-	color: #00ffff;
+	color: var(--primary-color);
 }
 
 .post-tags + .share-links {
@@ -1388,7 +1392,7 @@ a.post-thumbnail:hover img {
 }
 
 .author-info .avatar-container:before {
-	background-color: #00ffff;
+	background-color: var(--primary-color);
 	content: "";
 	height: 100%;
 	left: 8px;
@@ -1429,7 +1433,7 @@ a.post-thumbnail:hover img {
 }
 
 .author-links a:hover {
-	color: #00ffff;
+	color: var(--primary-color);
 }
 
 /* Subscribe box */
@@ -1649,7 +1653,7 @@ a.post-thumbnail:hover img {
 }
 
 .navigation a:hover {
-	border-color: #00ffff;
+	border-color: var(--primary-color);
 }
 
 .pagination .nav-links {
@@ -1756,7 +1760,7 @@ a.post-thumbnail:hover img {
 }
 
 .nav-inside:before {
-	color: #00ffff;
+	color: var(--primary-color);
 	font-family: 'fontawesome' !important;
 	speak: none;
 	font-size: 72px;
@@ -1838,7 +1842,7 @@ a.post-thumbnail:hover img {
 }
 
 .site-info a:hover {
-	border-color: #00ffff;
+	border-color: var(--primary-color);
 	color: #fff;
 }
 
@@ -1918,7 +1922,7 @@ a.post-thumbnail:hover img {
 .menu-item a:hover,
 .widget a:hover,
 .result-title a:hover {
-	border-color: #00ffff;
+	border-color: var(--primary-color);
 }
 
 .menu,
@@ -1966,8 +1970,8 @@ a.post-thumbnail:hover img {
 
 .tagcloud a {
 	background-color: transparent;
-	border: 1px solid #00ffff;
-	color: #00ffff;
+	border: 1px solid var(--primary-color);
+	color: var(--primary-color);
 	display: inline-block;
 	font-size: 10px;
 	font-weight: bold;
@@ -1981,7 +1985,7 @@ a.post-thumbnail:hover img {
 }
 
 .tagcloud a:hover {
-	background-color: #00ffff;
+	background-color: var(--primary-color);
 	color: #111;
 }
 
