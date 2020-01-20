@@ -1,11 +1,11 @@
 {
-  "name": "blog-theme",
+  "name": "blog-ghost-theme",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "zip -d ./dist/theme.zip ./src"
+    "build": "zip ./dist/theme.zip -r -FS ./src"
   },
   "author": "",
   "license": "ISC"
