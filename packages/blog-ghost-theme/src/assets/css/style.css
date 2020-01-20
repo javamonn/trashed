@@ -351,6 +351,7 @@ table {
  */
 :root {
   --primary-color: rgb(253,229,143);
+  --secondary-color: rgb(147,181,198);
 }
 
 html,
@@ -438,7 +439,7 @@ address {
 
 mark,
 ins {
-	background-color: #ffff00;
+	background-color: var(--secondary-color);
 	color: #111;
 	padding: 0 3px;
 	text-decoration: none;
@@ -704,13 +705,13 @@ input[type="reset"]:active {
 
 /* Text selection */
 ::-moz-selection {
-	background: #ffff00;
+	background: var(--secondary-color);
 	color: #111;
 	text-shadow: none;
 }
 
 ::selection {
-	background: #ffff00;
+	background: var(--secondary-color);
 	color: #111;
 	text-shadow: none;
 }
