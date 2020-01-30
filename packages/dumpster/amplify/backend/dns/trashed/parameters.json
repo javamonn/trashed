@@ -1,5 +1,7 @@
 {
   "storageTrashcatCdnName": "trashcat-cdn",
   "rpcTrashcatName": "trashcat-rpc",
+  "blogName": "blog",
+  "blogTarget": "daniel.ghost.io",
   "route53HostedZoneId": "Z1HJH8Q98D00QO"
 }
