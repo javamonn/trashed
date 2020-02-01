@@ -1,52 +1,58 @@
 <!DOCTYPE html>
 <html lang="{{@site.lang}}">
+
 <head>
-	{{!-- Document Settings --}}
-	<meta charset="utf-8">
+  {{!-- Document Settings --}}
+  <meta charset="utf-8">
 
-	{{!-- Page Meta --}}
-	<title>{{meta_title}}</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {{!-- Page Meta --}}
+  <title>{{meta_title}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	{{!-- Styles --}}
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic%7CCousine:400,400italic,700,700italic" rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="{{asset "css/style.css"}}" />
+  {{!-- Styles --}}
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic%7CCousine:400,400italic,700,700italic"
+    rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{{asset "css/style.css"}}" />
 
-	{{!-- Theme settings --}}
-	<script>
-		var disqus_shortname = 'your_disqus_shortname', // replace your_disqus_shortname with your shortname
-			instagram_user_id = 'your_instagram_user_id', // add your Instagram user ID
-			instagram_access_token = 'your_instagram_access_token', // add your Instagram access token
-			search_key = 'your_search_key', // add your Content API key
-			search_host = '{{@site.url}}';
-	</script>
+  {{!-- Theme settings --}}
+  <script>
+    var disqus_shortname = 'your_disqus_shortname', // replace your_disqus_shortname with your shortname
+      instagram_user_id = 'your_instagram_user_id', // add your Instagram user ID
+      instagram_access_token = 'your_instagram_access_token', // add your Instagram access token
+      search_key = 'your_search_key', // add your Content API key
+      search_host = '{{@site.url}}';
+  </script>
 
-	{{!-- Ghost outputs important style and meta data with this tag --}}
-	{{ghost_head}}
+  {{!-- Ghost outputs important style and meta data with this tag --}}
+  {{ghost_head}}
 </head>
+
 <body class="{{body_class}}">
-	<div id="page" class="site">
-		{{!-- The tag below includes the theme header - partials/header.hbs --}}
-		{{> header}}
-		{{!-- Everything else gets inserted here --}}
-		{{{body}}}
-		{{!-- The tag below includes the theme header - partials/sidebar.hbs --}}
-		{{> sidebar}}
-		{{!-- The tag below includes the theme footer - partials/footer.hbs --}}
-		{{> footer}}
-		{{!-- The tag below includes the search - partials/search-box.hbs --}}
-		{{> search-box}}
-		<div id="site-overlay" class="site-overlay"></div>
-	</div><!-- #page -->
+  <div id="page" class="site">
+    {{!-- The tag below includes the theme header - partials/header.hbs --}}
+    {{> header}}
+    {{!-- Everything else gets inserted here --}}
+    {{{body}}}
+    {{!-- The tag below includes the theme header - partials/sidebar.hbs --}}
+    {{> sidebar}}
+    {{!-- The tag below includes the theme footer - partials/footer.hbs --}}
+    {{> footer}}
+    {{!-- The tag below includes the search - partials/search-box.hbs --}}
+    {{> search-box}}
+    <div id="site-overlay" class="site-overlay"></div>
+  </div><!-- #page -->
 
-	{{!-- Scripts --}}
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-	<script>window.jQuery || document.write('<script src="{{asset "js/jquery-3.2.1.min.js"}}"><\/script>');</script>
-	<script src="{{asset "js/plugins.js"}}"></script>
-	<script src="{{asset "js/custom.js"}}"></script>
+  {{!-- Scripts --}}
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="{{asset "js/jquery-3.2.1.min.js"}}"><\/script>');</script>
+  <script src="{{asset "js/plugins.js"}}"></script>
+  <script src="{{asset "js/custom.js"}}"></script>
 
-	{{!-- Ghost outputs important scripts and data with this tag --}}
-	{{ghost_foot}}
+  {{!-- Ghost outputs important scripts and data with this tag --}}
+  {{ghost_foot}}
 
 </body>
+
 </html>

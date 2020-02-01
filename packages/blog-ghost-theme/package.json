@@ -5,8 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "mkdir -p ./dist && zip ./dist/theme.zip -r -FS ./src"
+    "build": "mkdir -p ./dist && zip ./dist/theme.zip -r -FS ./src",
+    "ghost": "cd ./local-site && ghost",
+    "ghost:init": "mkdir -p ./local-site && cd ./local-site && ghost install local",
+    "ghost:install-theme": "cp -r ./src/. ./local-site/content/themes/trashed"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "ghost-cli": "^1.13.1"
+  }
 }
