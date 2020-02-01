@@ -1,359 +1,359 @@
 {
-    "providers": {
-        "awscloudformation": {
-            "AuthRoleName": "trashed-production-20190824131356-authRole",
-            "UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "trashed-production-20190824131356-deployment",
-            "UnauthRoleName": "trashed-production-20190824131356-unauthRole",
-            "StackName": "trashed-production-20190824131356",
-            "StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0",
-            "AmplifyAppId": "d2nshcjf1ypod4"
-        },
-        "categories": {
-            "auth": {
-                "trashed452c5745": {}
-            },
-            "function": {
-                "rpc": {},
-                "trashed452c5745": {},
-                "trashed": {},
-                "trashed452c5745PostConfirmation": {},
-                "trashed452c5745PreSignup": {},
-                "DynamoDBStreamTrigger": {},
-                "MediaConvertJobStateChangeTrigger": {}
-            }
-        }
-    },
-    "dns": {
-        "trashed": {
-            "service": "Route53",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "storage",
-                    "resourceName": "trashcat",
-                    "attributes": [
-                        "CloudfrontDistributionDomainName"
-                    ]
-                },
-                {
-                    "category": "hosting",
-                    "resourceName": "S3AndCloudFront",
-                    "attributes": [
-                        "CloudFrontDomainName"
-                    ]
-                },
-                {
-                    "category": "api",
-                    "resourceName": "apiRpc",
-                    "attributes": [
-                        "DistributionDomainName",
-                        "DistributionHostedZoneId"
-                    ]
-                }
-            ],
-            "output": {},
-            "lastPushTimeStamp": "2020-01-30T11:50:23.118Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/dns/template.json",
-                "logicalId": "dnstrashed"
-            },
-            "lastPushDirHash": "DQ6R+ScPWElQ0DbZZZ8jvwjaen4="
-        }
-    },
-    "auth": {
-        "trashed452c5745": {
-            "service": "Cognito",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "trashed452c5745PostConfirmation",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "trashed452c5745PreSignup",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                }
-            ],
-            "output": {
-                "AppClientSecret": "oh10fsivs5gjlh0s99qaq21eg7dltthhs918pbhe1ghudmg2p7v",
-                "UserPoolId": "us-east-1_qG3AN42lX",
-                "AppClientIDWeb": "552dnc6o7mefoba71ib814ovge",
-                "AppClientID": "3q5eclrpc48jd3bjkechq9snb8",
-                "IdentityPoolId": "us-east-1:4b017cc7-d78a-4bfc-b024-1cc6c2b92834",
-                "IdentityPoolName": "trashed452c5745_identitypool_452c5745__production",
-                "UserPoolName": "trashed452c5745_userpool_452c5745"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.121Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/auth/trashed452c5745-cloudformation-template.yml",
-                "logicalId": "authtrashed452c5745"
-            },
-            "lastPushDirHash": "CzMt5zn/4phTGrukXiedPQhKCGU="
-        }
-    },
-    "api": {
-        "trashed": {
-            "service": "AppSync",
-            "providerPlugin": "awscloudformation",
-            "output": {
-                "authConfig": {
-                    "additionalAuthenticationProviders": [
-                        {
-                            "authenticationType": "AWS_IAM"
-                        }
-                    ],
-                    "defaultAuthentication": {
-                        "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-                        "userPoolConfig": {
-                            "userPoolId": "authtrashed452c5745"
-                        }
-                    }
-                },
-                "GraphQLAPIIdOutput": "akkeqcns2fc5hn7ad3uu3euymy",
-                "GraphQLAPIEndpointOutput": "https://ewxf7cgpvrcvngjo66kv4avc7q.appsync-api.us-east-1.amazonaws.com/graphql"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.123Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-                "logicalId": "apitrashed"
-            },
-            "lastPushDirHash": "ORJIvdyaEoqa75v+BDiCxU83IZw="
-        },
-        "apiRpc": {
-            "service": "API Gateway",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "rpc",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                }
-            ],
-            "output": {
-                "ApiName": "apiRpc",
-                "RootUrl": "https://5kks7lgsej.execute-api.us-east-1.amazonaws.com/production",
-                "DistributionHostedZoneId": "Z2FDTNDATAQYW2",
-                "DistributionDomainName": "dvmjj4vbwyzvm.cloudfront.net"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.125Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/apiRpc-cloudformation-template.json",
-                "logicalId": "apiapiRpc"
-            },
-            "lastPushDirHash": "DZswTowqrgbQziXrIcyAyrW630k="
-        }
-    },
-    "function": {
-        "rpc": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "auth",
-                    "resourceName": "trashed452c5745",
-                    "attributes": [
-                        "UserPoolId"
-                    ]
-                },
-                {
-                    "category": "api",
-                    "resourceName": "trashed",
-                    "attributes": [
-                        "GraphQLAPIIdOutput",
-                        "GraphQLAPIEndpointOutput"
-                    ]
-                }
-            ],
-            "output": {
-                "Region": "us-east-1",
-                "Arn": "arn:aws:lambda:us-east-1:046525304497:function:rpc-production",
-                "Name": "rpc-production",
-                "LambdaExecutionRole": "trashedLambdaRole59092232-production"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.127Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/rpc-cloudformation-template.json",
-                "logicalId": "functionrpc"
-            },
-            "lastBuildTimeStamp": "2020-01-05T02:19:41.278Z",
-            "lastPackageTimeStamp": "2020-01-05T21:58:47.845Z",
-            "distZipFilename": "rpc-45397a6d746a6b473365-build.zip",
-            "lastPushDirHash": "sCCkE4wQXBFnufKdHdXnrsp7SLo="
-        },
-        "trashed452c5745PostConfirmation": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "output": {
-                "Region": "us-east-1",
-                "Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PostConfirmation-production",
-                "Name": "trashed452c5745PostConfirmation-production"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.128Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
-                "logicalId": "functiontrashed452c5745PostConfirmation"
-            },
-            "lastBuildTimeStamp": "2020-01-05T02:19:44.592Z",
-            "lastPackageTimeStamp": "2020-01-05T21:59:03.492Z",
-            "distZipFilename": "trashed452c5745PostConfirmation-4959366d46325a2b6b32-build.zip",
-            "lastPushDirHash": "fUAVKbMqMWSKEjTkpwhRWEs2rws="
-        },
-        "trashed452c5745PreSignup": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "output": {
-                "Region": "us-east-1",
-                "Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PreSignup-production",
-                "Name": "trashed452c5745PreSignup-production"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.130Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
-                "logicalId": "functiontrashed452c5745PreSignup"
-            },
-            "lastBuildTimeStamp": "2020-01-05T02:19:46.525Z",
-            "lastPackageTimeStamp": "2020-01-05T21:58:56.553Z",
-            "distZipFilename": "trashed452c5745PreSignup-6c7158507867556f7842-build.zip",
-            "lastPushDirHash": "flGSGq0woinh+MIGgUPxpWdnBbI="
-        },
-        "DynamoDBStreamTrigger": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "api",
-                    "resourceName": "trashed",
-                    "attributes": [
-                        "GraphQLAPIIdOutput",
-                        "GraphQLAPIEndpointOutput"
-                    ]
-                },
-                {
-                    "category": "storage",
-                    "resourceName": "trashcat",
-                    "attributes": [
-                        "BucketName"
-                    ]
-                },
-                {
-                    "category": "auth",
-                    "resourceName": "trashed452c5745",
-                    "attributes": [
-                        "UserPoolId"
-                    ]
-                }
-            ],
-            "output": {
-                "MediaConvertRoleArn": "arn:aws:iam::046525304497:role/trashedMediaConvertRole73cc0fd8-production",
-                "Region": "us-east-1",
-                "Arn": "arn:aws:lambda:us-east-1:046525304497:function:DynamoDBStreamTrigger-production",
-                "Name": "DynamoDBStreamTrigger-production",
-                "LambdaExecutionRole": "trashedLambdaRole73cc0fd8-production"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.132Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/DynamoDBStreamTrigger-cloudformation-template.json",
-                "logicalId": "functionDynamoDBStreamTrigger"
-            },
-            "lastBuildTimeStamp": "2020-01-05T14:13:22.760Z",
-            "lastPackageTimeStamp": "2020-01-05T21:58:47.827Z",
-            "distZipFilename": "DynamoDBStreamTrigger-4c544e7a466a484d5934-build.zip",
-            "lastPushDirHash": "tYMaFPr8DasKMVi4ASMd9heWiMY="
-        },
-        "MediaConvertJobStateChangeTrigger": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "api",
-                    "resourceName": "trashed",
-                    "attributes": [
-                        "GraphQLAPIIdOutput",
-                        "GraphQLAPIEndpointOutput"
-                    ]
-                },
-                {
-                    "category": "storage",
-                    "resourceName": "trashcat",
-                    "attributes": [
-                        "BucketName"
-                    ]
-                }
-            ],
-            "output": {
-                "Region": "us-east-1",
-                "Arn": "arn:aws:lambda:us-east-1:046525304497:function:MediaConvertJobStateChangeTrigger-production",
-                "Name": "MediaConvertJobStateChangeTrigger-production",
-                "LambdaExecutionRole": "trashedLambdaRolec1ee20aa-production"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.133Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/MediaConvertJobStateChangeTrigger-cloudformation-template.json",
-                "logicalId": "functionMediaConvertJobStateChangeTrigger"
-            },
-            "lastBuildTimeStamp": "2020-01-05T02:20:10.906Z",
-            "lastPackageTimeStamp": "2020-01-05T21:58:47.770Z",
-            "distZipFilename": "MediaConvertJobStateChangeTrigger-5643502f69796b73595a-build.zip",
-            "lastPushDirHash": "z9O+KQt5CZ/MF8yq9MHPm/cck6U="
-        }
-    },
-    "hosting": {
-        "S3AndCloudFront": {
-            "service": "S3AndCloudFront",
-            "providerPlugin": "awscloudformation",
-            "output": {
-                "CloudFrontSecureURL": "https://d1cfcj1loi4v1r.cloudfront.net",
-                "S3BucketSecureURL": "https://trashcat-hosting-production.s3.amazonaws.com",
-                "WebsiteURL": "http://trashcat-hosting-production.s3-website-us-east-1.amazonaws.com",
-                "CloudFrontDistributionID": "E2NSN7WNOF2FZY",
-                "Region": "us-east-1",
-                "HostingBucketName": "trashcat-hosting-production",
-                "CloudFrontDomainName": "d1cfcj1loi4v1r.cloudfront.net"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.135Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/hosting/template.json",
-                "logicalId": "hostingS3AndCloudFront"
-            }
-        }
-    },
-    "storage": {
-        "trashcat": {
-            "service": "S3",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [],
-            "output": {
-                "CloudfrontDistributionDomainName": "d116w8mfsoyqpv.cloudfront.net",
-                "BucketName": "trashcat-production",
-                "Region": "us-east-1"
-            },
-            "lastPushTimeStamp": "2020-01-30T11:50:23.136Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
-                "logicalId": "storagetrashcat"
-            },
-            "lastPushDirHash": "ZgiwZ/OA/q1tWGodKMdFfeQ7Zvo="
-        }
-    }
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "trashed-production-20190824131356-authRole",
+			"UnauthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::046525304497:role/trashed-production-20190824131356-authRole",
+			"Region": "us-east-1",
+			"DeploymentBucketName": "trashed-production-20190824131356-deployment",
+			"UnauthRoleName": "trashed-production-20190824131356-unauthRole",
+			"StackName": "trashed-production-20190824131356",
+			"StackId": "arn:aws:cloudformation:us-east-1:046525304497:stack/trashed-production-20190824131356/8e7ca8d0-c692-11e9-8351-0a16600979f0",
+			"AmplifyAppId": "d2nshcjf1ypod4"
+		},
+		"categories": {
+			"auth": {
+				"trashed452c5745": {}
+			},
+			"function": {
+				"rpc": {},
+				"trashed452c5745": {},
+				"trashed": {},
+				"trashed452c5745PostConfirmation": {},
+				"trashed452c5745PreSignup": {},
+				"DynamoDBStreamTrigger": {},
+				"MediaConvertJobStateChangeTrigger": {}
+			}
+		}
+	},
+	"dns": {
+		"trashed": {
+			"service": "Route53",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "trashcat",
+					"attributes": [
+						"CloudfrontDistributionDomainName"
+					]
+				},
+				{
+					"category": "hosting",
+					"resourceName": "S3AndCloudFront",
+					"attributes": [
+						"CloudFrontDomainName"
+					]
+				},
+				{
+					"category": "api",
+					"resourceName": "apiRpc",
+					"attributes": [
+						"DistributionDomainName",
+						"DistributionHostedZoneId"
+					]
+				}
+			],
+			"output": {},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.138Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/dns/template.json",
+				"logicalId": "dnstrashed"
+			},
+			"lastPushDirHash": "yTfUVGOm03XpRDYkT6+/YFy8PaM="
+		}
+	},
+	"auth": {
+		"trashed452c5745": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "trashed452c5745PostConfirmation",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "trashed452c5745PreSignup",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				}
+			],
+			"output": {
+				"AppClientSecret": "oh10fsivs5gjlh0s99qaq21eg7dltthhs918pbhe1ghudmg2p7v",
+				"UserPoolId": "us-east-1_qG3AN42lX",
+				"AppClientIDWeb": "552dnc6o7mefoba71ib814ovge",
+				"AppClientID": "3q5eclrpc48jd3bjkechq9snb8",
+				"IdentityPoolId": "us-east-1:4b017cc7-d78a-4bfc-b024-1cc6c2b92834",
+				"IdentityPoolName": "trashed452c5745_identitypool_452c5745__production",
+				"UserPoolName": "trashed452c5745_userpool_452c5745"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.113Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/auth/trashed452c5745-cloudformation-template.yml",
+				"logicalId": "authtrashed452c5745"
+			},
+			"lastPushDirHash": "CzMt5zn/4phTGrukXiedPQhKCGU="
+		}
+	},
+	"api": {
+		"trashed": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [
+						{
+							"authenticationType": "AWS_IAM"
+						}
+					],
+					"defaultAuthentication": {
+						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
+						"userPoolConfig": {
+							"userPoolId": "authtrashed452c5745"
+						}
+					}
+				},
+				"GraphQLAPIIdOutput": "akkeqcns2fc5hn7ad3uu3euymy",
+				"GraphQLAPIEndpointOutput": "https://ewxf7cgpvrcvngjo66kv4avc7q.appsync-api.us-east-1.amazonaws.com/graphql"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.115Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"logicalId": "apitrashed"
+			},
+			"lastPushDirHash": "ORJIvdyaEoqa75v+BDiCxU83IZw="
+		},
+		"apiRpc": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "rpc",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"output": {
+				"ApiName": "apiRpc",
+				"RootUrl": "https://5kks7lgsej.execute-api.us-east-1.amazonaws.com/production",
+				"DistributionHostedZoneId": "Z2FDTNDATAQYW2",
+				"DistributionDomainName": "dvmjj4vbwyzvm.cloudfront.net"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.117Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/api/apiRpc-cloudformation-template.json",
+				"logicalId": "apiapiRpc"
+			},
+			"lastPushDirHash": "DZswTowqrgbQziXrIcyAyrW630k="
+		}
+	},
+	"function": {
+		"rpc": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "auth",
+					"resourceName": "trashed452c5745",
+					"attributes": [
+						"UserPoolId"
+					]
+				},
+				{
+					"category": "api",
+					"resourceName": "trashed",
+					"attributes": [
+						"GraphQLAPIIdOutput",
+						"GraphQLAPIEndpointOutput"
+					]
+				}
+			],
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:rpc-production",
+				"Name": "rpc-production",
+				"LambdaExecutionRole": "trashedLambdaRole59092232-production"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.138Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/rpc-cloudformation-template.json",
+				"logicalId": "functionrpc"
+			},
+			"lastBuildTimeStamp": "2020-01-05T02:19:41.278Z",
+			"lastPackageTimeStamp": "2020-01-31T11:32:21.584Z",
+			"distZipFilename": "rpc-547a43492b47352b4762-build.zip",
+			"lastPushDirHash": "PHBlIF1SZkFjwREThr3xF2KPKL0="
+		},
+		"trashed452c5745PostConfirmation": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PostConfirmation-production",
+				"Name": "trashed452c5745PostConfirmation-production"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.138Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PostConfirmation-cloudformation-template.json",
+				"logicalId": "functiontrashed452c5745PostConfirmation"
+			},
+			"lastBuildTimeStamp": "2020-01-05T02:19:44.592Z",
+			"lastPackageTimeStamp": "2020-01-31T11:32:31.664Z",
+			"distZipFilename": "trashed452c5745PostConfirmation-55745a564e4d36432b46-build.zip",
+			"lastPushDirHash": "0jgerWuuopydARrmX6RSZsvbg3w="
+		},
+		"trashed452c5745PreSignup": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:trashed452c5745PreSignup-production",
+				"Name": "trashed452c5745PreSignup-production"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.138Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/trashed452c5745PreSignup-cloudformation-template.json",
+				"logicalId": "functiontrashed452c5745PreSignup"
+			},
+			"lastBuildTimeStamp": "2020-01-05T02:19:46.525Z",
+			"lastPackageTimeStamp": "2020-01-31T11:32:27.970Z",
+			"distZipFilename": "trashed452c5745PreSignup-364a4b6e45706b794753-build.zip",
+			"lastPushDirHash": "K8vRCzr8JnRvrbr+KD7KNv1LsO0="
+		},
+		"DynamoDBStreamTrigger": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "api",
+					"resourceName": "trashed",
+					"attributes": [
+						"GraphQLAPIIdOutput",
+						"GraphQLAPIEndpointOutput"
+					]
+				},
+				{
+					"category": "storage",
+					"resourceName": "trashcat",
+					"attributes": [
+						"BucketName"
+					]
+				},
+				{
+					"category": "auth",
+					"resourceName": "trashed452c5745",
+					"attributes": [
+						"UserPoolId"
+					]
+				}
+			],
+			"output": {
+				"MediaConvertRoleArn": "arn:aws:iam::046525304497:role/trashedMediaConvertRole73cc0fd8-production",
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:DynamoDBStreamTrigger-production",
+				"Name": "DynamoDBStreamTrigger-production",
+				"LambdaExecutionRole": "trashedLambdaRole73cc0fd8-production"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.138Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/DynamoDBStreamTrigger-cloudformation-template.json",
+				"logicalId": "functionDynamoDBStreamTrigger"
+			},
+			"lastBuildTimeStamp": "2020-01-30T12:08:47.543Z",
+			"lastPackageTimeStamp": "2020-01-31T11:32:21.566Z",
+			"distZipFilename": "DynamoDBStreamTrigger-4a6c64782f634b687470-build.zip",
+			"lastPushDirHash": "RR1PDxKnPNAWpv23YeSsp/b9llg="
+		},
+		"MediaConvertJobStateChangeTrigger": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "api",
+					"resourceName": "trashed",
+					"attributes": [
+						"GraphQLAPIIdOutput",
+						"GraphQLAPIEndpointOutput"
+					]
+				},
+				{
+					"category": "storage",
+					"resourceName": "trashcat",
+					"attributes": [
+						"BucketName"
+					]
+				}
+			],
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:046525304497:function:MediaConvertJobStateChangeTrigger-production",
+				"Name": "MediaConvertJobStateChangeTrigger-production",
+				"LambdaExecutionRole": "trashedLambdaRolec1ee20aa-production"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.138Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/function/MediaConvertJobStateChangeTrigger-cloudformation-template.json",
+				"logicalId": "functionMediaConvertJobStateChangeTrigger"
+			},
+			"lastBuildTimeStamp": "2020-01-05T02:20:10.906Z",
+			"lastPackageTimeStamp": "2020-01-31T11:32:21.516Z",
+			"distZipFilename": "MediaConvertJobStateChangeTrigger-755a48704b70722b3264-build.zip",
+			"lastPushDirHash": "bBJKNHcOsqubSXpwp/DofeGXVps="
+		}
+	},
+	"hosting": {
+		"S3AndCloudFront": {
+			"service": "S3AndCloudFront",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"CloudFrontSecureURL": "https://d1cfcj1loi4v1r.cloudfront.net",
+				"S3BucketSecureURL": "https://trashcat-hosting-production.s3.amazonaws.com",
+				"WebsiteURL": "http://trashcat-hosting-production.s3-website-us-east-1.amazonaws.com",
+				"CloudFrontDistributionID": "E2NSN7WNOF2FZY",
+				"Region": "us-east-1",
+				"HostingBucketName": "trashcat-hosting-production",
+				"CloudFrontDomainName": "d1cfcj1loi4v1r.cloudfront.net"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.132Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/hosting/template.json",
+				"logicalId": "hostingS3AndCloudFront"
+			}
+		}
+	},
+	"storage": {
+		"trashcat": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"output": {
+				"CloudfrontDistributionDomainName": "d116w8mfsoyqpv.cloudfront.net",
+				"BucketName": "trashcat-production",
+				"Region": "us-east-1"
+			},
+			"lastPushTimeStamp": "2020-01-31T11:36:58.133Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/trashed-production-20190824131356-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
+				"logicalId": "storagetrashcat"
+			},
+			"lastPushDirHash": "ZgiwZ/OA/q1tWGodKMdFfeQ7Zvo="
+		}
+	}
 }

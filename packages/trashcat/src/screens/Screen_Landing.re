@@ -53,7 +53,7 @@ let make = () => {
         <div>
           {renderLink(~text="App", ~href="/coming-soon")}
           {renderLink(~text="About", ~href="/coming-soon")}
-          {renderLink(~text="Blog", ~href="/coming-soon")}
+          {renderLink(~text="Blog", ~href="https://blog.trashed.today")}
         </div>
       </div>
     </div>

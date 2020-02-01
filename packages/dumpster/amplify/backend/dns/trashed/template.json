@@ -44,6 +44,14 @@
           ]
         }
       ]
+    },
+    "IsProduction": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "production"
+      ]
     }
   },
   "Resources": {
@@ -81,9 +89,7 @@
     },
     "BlogRecordSet": {
       "Type": "AWS::Route53::RecordSet",
-      "Condition": {
-        "Fn::Not": "ShouldSuffixDNSWithEnv"
-      },
+      "Condition": "IsProduction",
       "Properties": {
         "HostedZoneId": {
           "Ref": "route53HostedZoneId"
@@ -104,103 +110,103 @@
           {
             "Ref": "blogTarget"
           }
-        ]
+        ],
+        "TTL": "60"
       }
-    }
-  },
-  "TrashcatRPCRecordSet": {
-    "Type": "AWS::Route53::RecordSet",
-    "Properties": {
-      "HostedZoneId": {
-        "Ref": "route53HostedZoneId"
-      },
-      "Type": "A",
-      "Name": {
-        "Fn::If": [
-          "ShouldSuffixDNSWithEnv",
-          {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Ref": "rpcTrashcatName"
-                },
-                "-",
-                {
-                  "Ref": "env"
-                },
-                ".trashed.today"
-              ]
-            ]
-          },
-          {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Ref": "rpcTrashcatName"
-                },
-                ".trashed.today"
-              ]
-            ]
-          }
-        ]
-      },
-      "AliasTarget": {
-        "DNSName": {
-          "Ref": "apiapiRpcDistributionDomainName"
-        },
+    },
+    "TrashcatRPCRecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
         "HostedZoneId": {
-          "Ref": "apiapiRpcDistributionHostedZoneId"
+          "Ref": "route53HostedZoneId"
+        },
+        "Type": "A",
+        "Name": {
+          "Fn::If": [
+            "ShouldSuffixDNSWithEnv",
+            {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "rpcTrashcatName"
+                  },
+                  "-",
+                  {
+                    "Ref": "env"
+                  },
+                  ".trashed.today"
+                ]
+              ]
+            },
+            {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "rpcTrashcatName"
+                  },
+                  ".trashed.today"
+                ]
+              ]
+            }
+          ]
+        },
+        "AliasTarget": {
+          "DNSName": {
+            "Ref": "apiapiRpcDistributionDomainName"
+          },
+          "HostedZoneId": {
+            "Ref": "apiapiRpcDistributionHostedZoneId"
+          }
+        }
+      }
+    },
+    "TrashcatCDNRecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {
+          "Ref": "route53HostedZoneId"
+        },
+        "Type": "A",
+        "Name": {
+          "Fn::If": [
+            "ShouldSuffixDNSWithEnv",
+            {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "storageTrashcatCdnName"
+                  },
+                  "-",
+                  {
+                    "Ref": "env"
+                  },
+                  ".trashed.today"
+                ]
+              ]
+            },
+            {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "storageTrashcatCdnName"
+                  },
+                  ".trashed.today"
+                ]
+              ]
+            }
+          ]
+        },
+        "AliasTarget": {
+          "DNSName": {
+            "Ref": "storagetrashcatCloudfrontDistributionDomainName"
+          },
+          "HostedZoneId": "Z2FDTNDATAQYW2"
         }
       }
     }
-  },
-  "TrashcatCDNRecordSet": {
-    "Type": "AWS::Route53::RecordSet",
-    "Properties": {
-      "HostedZoneId": {
-        "Ref": "route53HostedZoneId"
-      },
-      "Type": "A",
-      "Name": {
-        "Fn::If": [
-          "ShouldSuffixDNSWithEnv",
-          {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Ref": "storageTrashcatCdnName"
-                },
-                "-",
-                {
-                  "Ref": "env"
-                },
-                ".trashed.today"
-              ]
-            ]
-          },
-          {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Ref": "storageTrashcatCdnName"
-                },
-                ".trashed.today"
-              ]
-            ]
-          }
-        ]
-      },
-      "AliasTarget": {
-        "DNSName": {
-          "Ref": "storagetrashcatCloudfrontDistributionDomainName"
-        },
-        "HostedZoneId": "Z2FDTNDATAQYW2"
-      }
-    }
   }
-}
 }
