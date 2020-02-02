@@ -91,7 +91,15 @@ let make = () => {
       ])}
       icon=SVG.trashedText
       placeholderViewBox="0 0 109 689"
-      placeholderClassName={cn(["bg-brandBlue"])}
+      placeholderClassName={cn([
+        "flex-shrink-0",
+        "min-h-full",
+        "h-full",
+        "block",
+        "bg-brandBlue",
+        "py-2",
+        "px-4",
+      ])}
     />
   </div>;
 };
