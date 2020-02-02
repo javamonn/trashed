@@ -1,21 +1,33 @@
 open Lib.Styles;
 
-let renderLink = (~text, ~href) =>
-  <Link href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
-    <div className={cn(["border-white", "border-4", "w-8", "h-8", "mr-4"])} />
-    <div
-      className={cn([
-        "text-white",
-        "font-bold",
-        "italic",
-        "underline",
-        "uppercase",
-        "text-4xl",
-        "leading-none",
-      ])}>
-      {React.string(text)}
-    </div>
-  </Link>;
+let renderLink = (~text, ~href, ~isLocal) => {
+  let children =
+    <>
+      <div
+        className={cn(["border-white", "border-4", "w-8", "h-8", "mr-4"])}
+      />
+      <div
+        className={cn([
+          "text-white",
+          "font-bold",
+          "italic",
+          "underline",
+          "uppercase",
+          "text-4xl",
+          "leading-none",
+        ])}>
+        {React.string(text)}
+      </div>
+    </>;
+
+  isLocal
+    ? <Link href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+        children
+      </Link>
+    : <a href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+        children
+      </a>;
+};
 
 [@react.component]
 let make = () => {
@@ -32,12 +44,19 @@ let make = () => {
           "py-4",
           "px-6",
         ])}>
-        <span className={cn(["text-xl", "font-bold", "mb-8"])}>
+        <span className={cn(["text-lg", "font-bold"])}>
           {React.string(
              "trashed helps you find and reclaim objects that have been thrown out.",
            )}
         </span>
-        <span className={cn(["text-xl", "font-bold"])}>
+        <div className={cn(["my-4"])} />
+        <span className={cn(["text-lg", "font-bold"])}>
+          {React.string(
+             "trashed is a free, decentralized, and efficient peer-to-peer recycling system.",
+           )}
+        </span>
+        <div className={cn(["my-4"])} />
+        <span className={cn(["text-lg", "font-bold"])}>
           {React.string("trashed is dumpster diving for the digital age.")}
         </span>
       </div>
@@ -45,15 +64,19 @@ let make = () => {
         className={cn([
           "bg-black",
           "flex-col",
-          "flex-1",
           "flex",
           "justify-center",
           "items-center",
+          "py-3",
         ])}>
         <div>
-          {renderLink(~text="App", ~href="/coming-soon")}
-          {renderLink(~text="About", ~href="/coming-soon")}
-          {renderLink(~text="Blog", ~href="https://blog.trashed.today")}
+          {renderLink(~text="App", ~href="/coming-soon", ~isLocal=true)}
+          {renderLink(~text="About", ~href="/coming-soon", ~isLocal=true)}
+          {renderLink(
+             ~text="Blog",
+             ~href="https://blog.trashed.today",
+             ~isLocal=false,
+           )}
         </div>
       </div>
     </div>

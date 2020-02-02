@@ -2039,8 +2039,8 @@ a.post-thumbnail:hover img {
 
 .trashed-link.header {
   position: fixed;
-  top: 12px;
-  right: 12px;
+  top: 0.5vw;
+  right: 0.5vw;
 }
 
 .trashed-link.footer {
@@ -2434,8 +2434,6 @@ a.post-thumbnail:hover img {
 @media only screen and (min-width: 800px) and (max-width: 1146px) {
   .trashed-link {
     border: solid 2px #000;
-    top: 0.5vw;
-    right: 0.5vw;
     width: 4.5vw;
     height: 4.5vw;
   }
