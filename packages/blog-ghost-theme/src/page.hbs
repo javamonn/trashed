@@ -1,0 +1,28 @@
+{{!< default}}
+{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+
+{{!-- Everything inside the #post tags pulls data from the page --}}
+{{#post}}
+<div id="content" class="site-content">
+	<main id="main" class="site-main inner">
+		<article class="{{post_class}}">
+			{{#if feature_image }}
+			<div class="post-thumbnail">
+				<img src="{{feature_image}}" alt="{{title}}" />
+			</div>
+			{{/if}}
+			<header class="entry-header">
+				<h1 class="entry-title">{{title}}</h1>
+			</header><!-- .entry-header -->
+			<div class="entry-content">
+				{{content}}
+			</div><!-- .entry-content -->
+			{{#if tags}}
+			<footer class="entry-footer">
+				<span class="post-tags">{{tags}}</span>
+			</footer><!-- .entry-footer -->
+			{{/if}}
+		</article><!-- .post -->
+	</main><!-- .site-main -->
+</div><!-- .site-content -->
+{{/post}}

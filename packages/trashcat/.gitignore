@@ -1,5 +1,5 @@
 lib/bs/
-src/**/*.js
+src/**/*.bs.js
 .merlin
 .bsb.lock
 

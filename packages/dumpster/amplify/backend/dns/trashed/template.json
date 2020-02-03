@@ -24,6 +24,12 @@
     },
     "route53HostedZoneId": {
       "Type": "String"
+    },
+    "blogName": {
+      "Type": "String"
+    },
+    "blogTarget": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -37,6 +43,14 @@
             "production"
           ]
         }
+      ]
+    },
+    "IsProduction": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "production"
       ]
     }
   },
@@ -71,6 +85,33 @@
           },
           "HostedZoneId": "Z2FDTNDATAQYW2"
         }
+      }
+    },
+    "BlogRecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Condition": "IsProduction",
+      "Properties": {
+        "HostedZoneId": {
+          "Ref": "route53HostedZoneId"
+        },
+        "Type": "CNAME",
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "blogName"
+              },
+              ".trashed.today"
+            ]
+          ]
+        },
+        "ResourceRecords": [
+          {
+            "Ref": "blogTarget"
+          }
+        ],
+        "TTL": "60"
       }
     },
     "TrashcatRPCRecordSet": {

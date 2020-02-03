@@ -1,0 +1,35 @@
+<div id="footer-widgets" class="footer-widgets">
+	<div class="footer-columns">
+
+		<div class="widget-area">
+			<section class="widget widget-recent-posts">
+				<h2 class="widget-title">Latest Posts</h2>
+				{{#get "posts" limit="3"}}
+				<ul>
+					{{#foreach posts}}
+					<li>
+						{{#if feature_image}}
+						<a href="{{url}}" class="recent-thumb" style="background-image: url({{feature_image}});"><span class="screen-reader-text">{{title}}</span></a>
+						{{/if}}
+						<div class="recent-title"><a href="{{url}}">{{title}}</a></div>
+						<div class="recent-date">{{date format="MMMM DD, YYYY"}}</div>
+					</li>
+					{{/foreach}}
+				</ul>
+				{{/get}}
+			</section><!-- .widget -->
+		</div><!-- .widget-area -->
+
+		<div class="widget-area">
+			<section class="widget widget-tags">
+				<h2 class="widget-title">Tags</h2>
+				<div class="tagcloud">
+					{{#get "tags" limit="all" order="name asc"}}
+						{{tags separator=""}}
+					{{/get}}
+				</div>
+			</section><!-- .widget -->
+		</div><!-- .widget-area -->
+
+	</div><!-- .footer-columns -->
+</div><!-- .footer-widgets -->

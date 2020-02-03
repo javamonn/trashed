@@ -52,7 +52,11 @@ let make =
 
   let renderPlaceholder = () =>
     <svg
-      className={cn(["w-full", "h-full", placeholderClassName->Cn.unpack])}
+      className={
+        placeholderClassName->Belt.Option.getWithDefault(
+          cn(["w-full", "h-full"]),
+        )
+      }
       viewBox=placeholderViewBox
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -1,0 +1,79 @@
+{{!< default}}
+{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+
+{{!-- Everything inside the #post tags pulls data from the post --}}
+{{#post}}
+<div id="content" class="site-content">
+	<main id="main" class="site-main inner">
+		<article class="{{post_class}}">
+			{{#if feature_image }}
+			<div class="post-thumbnail">
+				<img src="{{feature_image}}" alt="{{title}}" />
+			</div>
+			{{/if}}
+			<header class="entry-header">
+				<h1 class="entry-title">{{title}}</h1>
+				<div class="entry-meta">
+					{{#primary_author}}<span class="post-author"><a href="{{url}}">{{name}}</a></span>{{/primary_author}}<span class="post-date"><time class="published" datetime="{{date format='YYYY-MM-DD'}}">{{date format="MMMM DD, YYYY"}}</time></span>
+				</div><!-- .entry-meta -->
+			</header><!-- .entry-header -->
+			<div class="entry-content">
+				{{content}}
+			</div><!-- .post-content -->
+			<footer class="entry-footer">
+				{{#if tags}}
+				<div class="post-tags">{{tags}}</div>
+				{{/if}}
+				<div class="share-links">
+					<span class="meta-before">Share:</span>
+					<a target="_blank" href="https://twitter.com/intent/tweet?text={{encode title}}&amp;url={{url absolute="true"}}"><i class="fa-twitter" aria-hidden="true"></i><span class="screen-reader-text">Twitter</span></a>
+					<a target="_blank" href="https://www.facebook.com/sharer.php?u={{url absolute="true"}}"><i class="fa-facebook" aria-hidden="true"></i><span class="screen-reader-text">Facebook</span></a>
+				</div>
+			</footer><!-- .entry-footer -->
+		</article><!-- .post -->
+
+		{{!-- Email subscribe form --}}
+		{{#if @labs.subscribers}}
+		<div class="subscribe-box">
+			<div class="subscribe-inside">
+				<h2 class="subscribe-box-title">Subscribe to {{@site.title}}</h2>
+				<p>Get the latest posts delivered right to your inbox.</p>
+				{{subscribe_form form_class="gh-subscribe-form" input_class="gh-subscribe-field" button_class="gh-subscribe-submit" placeholder="Your email address"}}
+			</div>
+		</div><!-- .subscribe-box -->
+		{{/if}}
+
+		{{!-- Previous/next post links --}}
+		<nav class="navigation post-navigation">
+			<h2 class="screen-reader-text">Post navigation</h2>
+			<div class="nav-links">
+				{{#prev_post}}
+				<div class="nav-previous">
+					<a href="{{url}}" class="nav-inside">
+						<span class="nav-before">Previous post</span>
+						<span class="nav-title">{{title}}</span>
+						<span class="nav-meta">{{date format="MMMM DD, YYYY"}}</span>
+						{{#if feature_image}}
+						<span class="nav-thumb" style="background-image: url({{feature_image}})"></span>
+						{{/if}}
+					</a>
+				</div>
+				{{/prev_post}}
+				{{#next_post}}
+				<div class="nav-next">
+					<a href="{{url}}" class="nav-inside">
+						<span class="nav-before">Next post</span>
+						<span class="nav-title">{{title}}</span>
+						<span class="nav-meta">{{date format="MMMM DD, YYYY"}}</span>
+						{{#if feature_image}}
+						<span class="nav-thumb" style="background-image: url({{feature_image}})"></span>
+						{{/if}}
+					</a>
+				</div>
+				{{/next_post}}
+			</div><!-- .nav-links -->
+		</nav><!-- .post-navigation -->
+
+	</main><!-- .site-main -->
+</div><!-- .site-content -->
+{{/post}}

@@ -1,0 +1,534 @@
+/**
+ * Table of Contents
+ * ----------------------------------------------------------------------------
+ * 0. Icons
+ * 1. Reset
+ * 2. General
+ * 3. Content
+ * 4. Media Queries
+ */
+
+/**
+ * 0. Icons | Font Awesome by Dave Gandy | http://fontawesome.io
+ * ----------------------------------------------------------------------------
+ */
+
+@font-face {
+	font-family: 'fontawesome';
+	src:    url('../fonts/fontawesome.eot?ib3jl6');
+	src:    url('../fonts/fontawesome.eot?ib3jl6#iefix') format('embedded-opentype'),
+		url('../fonts/fontawesome.ttf?ib3jl6') format('truetype'),
+		url('../fonts/fontawesome.woff?ib3jl6') format('woff'),
+		url('../fonts/fontawesome.svg?ib3jl6#fontawesome') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'fontawesome' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-star:before {
+	content: "\f005";
+}
+.icon-close:before {
+	content: "\f00d";
+}
+.icon-map-marker:before {
+	content: "\f041";
+}
+.icon-chevron-left:before {
+	content: "\f053";
+}
+.icon-chevron-right:before {
+	content: "\f054";
+}
+.icon-chevron-up:before {
+	content: "\f077";
+}
+.icon-chevron-down:before {
+	content: "\f078";
+}
+.icon-bar-chart:before {
+	content: "\f080";
+}
+.icon-twitter:before {
+	content: "\f099";
+}
+.icon-facebook:before {
+	content: "\f09a";
+}
+.icon-github:before {
+	content: "\f09b";
+}
+.icon-feed:before {
+	content: "\f09e";
+}
+.icon-chain:before {
+	content: "\f0c1";
+}
+.icon-bars:before {
+	content: "\f0c9";
+}
+.icon-google:before {
+	content: "\f0d5";
+}
+.icon-envelope:before {
+	content: "\f0e0";
+}
+.icon-linkedin:before {
+	content: "\f0e1";
+}
+.icon-code:before {
+	content: "\f121";
+}
+.icon-xing:before {
+	content: "\f168";
+}
+.icon-youtube:before {
+	content: "\f16a";
+}
+.icon-dropbox:before {
+	content: "\f16b";
+}
+.icon-stack-overflow:before {
+	content: "\f16c";
+}
+.icon-instagram:before {
+	content: "\f16d";
+}
+.icon-flickr:before {
+	content: "\f16e";
+}
+.icon-tumblr:before {
+	content: "\f173";
+}
+.icon-dribbble:before {
+	content: "\f17d";
+}
+.icon-behance:before {
+	content: "\f1b4";
+}
+.icon-soundcloud:before {
+	content: "\f1be";
+}
+.icon-vine:before {
+	content: "\f1ca";
+}
+.icon-codepen:before {
+	content: "\f1cb";
+}
+.icon-pinterest:before {
+	content: "\f231";
+}
+.icon-medium:before {
+	content: "\f23a";
+}
+.icon-500px:before {
+	content: "\f26e";
+}
+.icon-vimeo:before {
+	content: "\f27d";
+}
+.icon-mixcloud:before {
+	content: "\f289";
+}
+
+/**
+ * 1. Reset
+ * ----------------------------------------------------------------------------
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+	display: block;
+}
+
+audio,
+canvas,
+video {
+	display: inline-block;
+}
+
+audio:not([controls]) {
+	display: none;
+	height: 0;
+}
+
+[hidden],
+template {
+	display: none;
+}
+
+html {
+	font-size: 100%;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+}
+
+a {
+	background-color: transparent;
+}
+
+a:focus {
+	outline: thin dotted;
+}
+
+a:active,
+a:hover {
+	outline: 0;
+}
+
+abbr[title] {
+	border-bottom: 1px dotted;
+}
+
+b,
+strong {
+	font-weight: bold;
+}
+
+dfn {
+	font-style: italic;
+}
+
+small {
+	font-size: 80%;
+}
+
+img {
+	-ms-interpolation-mode: bicubic;
+	border: 0;
+	vertical-align: middle;
+}
+
+svg:not(:root) {
+	overflow: hidden;
+}
+
+figure {
+	margin: 0;
+}
+
+pre {
+	overflow: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+	font-family: monospace, serif;
+	font-size: 1em;
+}
+
+blockquote,
+q {
+	quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: "";
+	content: none;
+}
+
+form {
+	margin: 0;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+	color: inherit;
+	font: inherit;
+	margin: 0;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/**
+ * 2. General
+ * ----------------------------------------------------------------------------
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+	background-color: #f5f5f5;
+	border-top: 4px solid #e8e8e8;
+	color: #313131;
+	line-height: 1.75;
+	padding: 0 3%;
+}
+
+a {
+	border-bottom: 1px solid #0c92f2;
+	color: #0c92f2;
+	text-decoration: none;
+	-webkit-transition: all 0.3s;
+	-moz-transition:    all 0.3s;
+	transition:         all 0.3s;
+}
+
+a:hover {
+	border-color: #a1d5fa;
+	color: #a1d5fa;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #1f1f1f;
+	font-weight: bold;
+	line-height: 1.25;
+	margin: 30px 0 24px;
+}
+
+h1 {
+	font-size: 30px;
+}
+
+h2 {
+	font-size: 24px;
+}
+
+h3 {
+	font-size: 20px;
+}
+
+h4 {
+	font-size: 18px;
+}
+
+h5 {
+	font-size: 16px;
+}
+
+mark,
+ins {
+	background-color: #ededed;
+	color: #3d3d3d;
+	padding: 0 3px;
+	text-decoration: none;
+}
+
+p {
+	margin: 0 0 24px;
+}
+
+code {
+	background-color: #f5f5f5;
+	padding: 0 3px;
+}
+
+pre {
+	background-color: #f5f5f5;
+	font-size: 14px;
+	line-height: 1.6;
+	margin-bottom: 24px;
+	padding: 20px;
+	white-space: pre;
+	word-wrap: normal;
+}
+
+dl,
+dd {
+	margin: 0 0 24px;
+}
+
+dt {
+	font-weight: bold;
+}
+
+ul,
+ol {
+	margin: 0 0 24px;
+	padding: 0 0 0 30px;
+}
+
+ul {
+	list-style: circle;
+}
+
+ol {
+	list-style: decimal;
+}
+
+li > ul,
+li > ol {
+	margin-bottom: 0;
+}
+
+hr {
+	background-color: #dcdcdc;
+	border: 0;
+	height: 1px;
+	margin: 30px 0;
+}
+
+img {
+	height: auto;
+	max-width: 100%;
+}
+
+/* Clearing floats */
+.row:after {
+	clear: both;
+}
+
+.row:before,
+.row:after {
+	content: "";
+	display: table;
+}
+
+/* Grid */
+.row {
+	margin-left: -30px;
+}
+
+.one-third {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:    border-box;
+	box-sizing:         border-box;
+	float: left;
+	margin-bottom: 12px;
+	padding-left: 30px;
+	width: 33.333%;
+}
+
+/**
+ * 3. Content
+ * ----------------------------------------------------------------------------
+ */
+
+.wrap {
+	margin: 0 auto;
+	max-width: 980px;
+}
+
+/* Header */
+
+.site-header {
+	padding: 24px 0;
+	text-align: center;
+}
+
+.site-title {
+	margin: 0;
+}
+
+.site-description {
+	font-size: 24px;
+	line-height: 1.25;
+}
+
+/* Content */
+
+.site-main {
+	background-color: #fff;
+	border: 1px solid #dcdcdc;
+}
+
+.intro {
+	background-color: #262626;
+	padding: 3% 6%;
+	text-align: center;
+}
+
+.intro p {
+	color: #fff;
+	font-size: 20px;
+	font-style: italic;
+	line-height: 1.4;
+}
+
+.intro a {
+	border-color: #ffcb2e;
+	color: #ffcb2e;
+}
+
+.intro a:hover {
+	border-color: #ffedb7;
+	color: #ffedb7;
+}
+
+.byline {
+	color: #888;
+	list-style: none;
+	padding-left: 0;
+}
+
+.site-content {
+	padding: 3% 6%;
+}
+
+.table-of-contents,
+.site-content section {
+	margin-bottom: 48px;
+}
+
+.table-of-contents > ol {
+	list-style: upper-alpha;
+}
+
+.site-content .icon {
+	display: inline-block;
+	font-size: 14px;
+	margin-right: 10px;
+	width: 20px;
+}
+
+.site-info {
+	font-size: 14px;
+	padding: 3%;
+	text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+	.one-third {
+		width: 100%;
+	}
+}

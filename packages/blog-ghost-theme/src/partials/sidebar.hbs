@@ -1,0 +1,25 @@
+<aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true" class="icon-plus"></span></button>
+		<div class="widget-area">
+
+			{{#if @site.navigation}}
+				{{navigation}}
+			{{/if}}
+
+			<section class="widget widget-text">
+				<h2 class="widget-title">About {{@site.title}}</h2>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed lacus id tortor iaculis iaculis dignissim eget justo. Maecenas posuere eros nisl, ut pharetra turpis faucibus a. In imperdiet urna mattis lacus mollis, sit amet pulvinar purus vehicula.</p>
+			</section><!-- .widget -->
+
+			{{#if @labs.subscribers}}
+			<section class="widget widget-newsletter">
+				<h2 class="widget-title">{{@site.title}} Newsletter</h2>
+				<p>Enter your email address to subscribe to this blog and receive notifications of new posts by email.</p>
+				{{subscribe_form form_class="gh-subscribe-form" input_class="gh-subscribe-field" button_class="gh-subscribe-submit" placeholder="Your email address"}}
+			</section><!-- .widget -->
+			{{/if}}
+
+		</div><!-- .widget-area -->
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->

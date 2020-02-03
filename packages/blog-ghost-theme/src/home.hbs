@@ -1,0 +1,49 @@
+{{!< default}}
+{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+
+{{!-- The main content area on the homepage --}}
+<div id="content" class="site-content">
+  {{!-- The featured posts carousel --}}
+  {{#get "posts" filter="featured:true" limit="5" include="authors,tags" as |featured_posts|}}
+  {{#if featured_posts}}
+  <aside class="featured-posts" aria-label="Featured">
+    <div class="slider-loading">
+      <div id="featured-slider" class="featured-slider">
+        {{#foreach featured_posts}}
+        <div>
+          <div class="slide-inner">
+            {{#if feature_image}}
+            <div class="slide-bg" style="background-image: url({{feature_image}})"></div>
+            {{/if}}
+            <div class="slide-overlay">
+              <h2 class="entry-title"><a href="{{url}}">{{{title}}}</a></h2>
+              <div class="entry-meta">
+                {{#primary_author}}<span class="post-author"><a
+                    href="{{url}}">{{name}}</a></span>{{/primary_author}}<span class="post-date"><time class="published"
+                    datetime="{{date format='YYYY-MM-DD'}}">{{date format="MMMM DD, YYYY"}}</time></span>
+              </div>
+              <!-- .entry-meta -->
+              <div class="slider-nav">
+                <button type="button" class="featured-prev"><i class="fa-arrow-left-custom" aria-hidden="true"></i>
+                  <span class="screen-reader-text">Previous</span></button>
+                <button type="button" class="featured-next"><i class="fa-arrow-right-custom" aria-hidden="true"></i>
+                  <span class="screen-reader-text">Next</span></button>
+              </div>
+            </div><!-- .slide-overlay -->
+          </div><!-- .slider-inner -->
+        </div>
+        {{/foreach}}
+      </div><!-- .featured-slider -->
+    </div><!-- .slider-loading -->
+  </aside><!-- .featured-posts -->
+  {{/if}}
+  {{/get}}
+  <main id="main" class="site-main inner">
+    {{#get "posts" include="authors,tags" limit=@config.posts_per_page filter="featured:false" page=pagination.page}}
+    {{!-- The tag below includes the post loop - partials/loop.hbs --}}
+    {{> "loop"}}
+    {{!-- Previous/next page links - displayed on every page --}}
+    {{pagination}}
+    {{/get}}
+  </main><!-- .site-main -->
+</div><!-- .site-content -->

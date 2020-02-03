@@ -1,0 +1,25 @@
+<header class="site-header">
+	<div class="inner">
+		<div class="site-branding">
+			{{#if @site.logo}}
+			<p class="custom-logo"><a href="{{@site.url}}"><img src="{{@site.logo}}" alt="{{@site.title}}" /></a></p>
+			{{/if}}
+			{{#is "index"}}
+			<h1 class="site-title"><a href="{{@site.url}}">{{@site.title}}</a></h1>
+			{{else}}
+			<p class="site-title"><a href="{{@site.url}}">{{@site.title}}</a></p>
+			{{/is}}
+			{{#if @site.description}}
+			<p class="site-description">{{@site.description}}</p>
+			{{/if}}
+		</div><!-- .site-branding -->
+
+    <a class="trashed-link header" href="https://trashed.today">
+      <img
+        class="trashed-icon"
+        src="../assets/images/icon-192-maskable.png"
+      />
+    </a>
+	</div><!-- .inner -->
+
+</header><!-- .site-header -->
