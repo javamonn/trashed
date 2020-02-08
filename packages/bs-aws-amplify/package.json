@@ -1,5 +1,5 @@
 {
-  "name": "bs-aws-amplify",
+  "name": "@trashed/bs-aws-amplify",
   "version": "1.0.0",
   "description": "",
   "main": "src/Index.bs.js",
@@ -12,19 +12,17 @@
   },
   "author": "",
   "license": "ISC",
-  "peerDependencies": {
+  "dependencies": {
     "@aws-amplify/api": "^1.2.4",
     "@aws-amplify/auth": "^1.5.0",
     "@aws-amplify/core": "^1.2.4",
     "@aws-amplify/pubsub": "^1.2.4",
     "@aws-amplify/storage": "^1.2.4"
   },
+  "peerDependencies": {
+    "bs-platform": "^7.1.0"
+  },
   "devDependencies": {
-    "bs-platform": "^7.0.1",
-    "@aws-amplify/api": "^1.2.4",
-    "@aws-amplify/auth": "^1.5.0",
-    "@aws-amplify/core": "^1.2.4",
-    "@aws-amplify/pubsub": "^1.2.4",
-    "@aws-amplify/storage": "^1.2.4"
+    "bs-platform": "^7.1.0"
   }
 }

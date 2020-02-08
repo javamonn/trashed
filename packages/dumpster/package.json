@@ -1,5 +1,5 @@
 {
-  "name": "dumpster",
+  "name": "@trashed/dumpster",
   "version": "1.0.0",
   "description": "",
   "main": "aws-exports.js",
@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bs-aws-amplify": "^1.0.0",
-    "bs-aws-sdk": "^1.0.0"
+    "@trashed/bs-aws-amplify": "^1.0.0",
+    "@trashed/bs-aws-sdk": "^1.0.0"
   },
   "devDependencies": {}
 }
