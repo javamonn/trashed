@@ -1,4 +1,5 @@
 open Lib;
+open Service;
 
 %raw
 "import './app.pcss'";
@@ -53,6 +54,12 @@ let make = () => {
             Service.Permission.Camera.initialize()
           | _ => ()
           };
+        let _ =
+          Analytics.(
+            {path: url.path |> Array.of_list |> Js.Array.joinWith("/")}
+            ->page
+            ->track
+          );
         None;
       },
       [|url.path |> Array.of_list |> Js.Array.joinWith("/")|],

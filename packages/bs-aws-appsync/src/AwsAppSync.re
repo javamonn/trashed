@@ -29,12 +29,14 @@ module Client = {
     "createAppSyncLink";
 
   [@bs.new] [@bs.module "aws-appsync"]
-  external make: appSyncLinkOptions => ApolloClient.generatedApolloClient = "default";
+  external make: appSyncLinkOptions => ApolloClient.generatedApolloClient =
+    "default";
 
   type makeWithCustomLinkOptions = {link: ReasonApolloTypes.apolloLink};
   [@bs.new] [@bs.module "aws-appsync"]
-  external makeWithCustomLink:
-    ([@bs.as {json|{}|json}] _, makeWithCustomLinkOptions) => ApolloClient.generatedApolloClient =
+  external makeWithOptions:
+    (appSyncLinkOptions, makeWithCustomLinkOptions) =>
+    ApolloClient.generatedApolloClient =
     "default";
 };
 

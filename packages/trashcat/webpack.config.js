@@ -30,6 +30,17 @@ module.exports = {
       'apollo-client': require.resolve('apollo-client'),
       'apollo-cache-inmemory': require.resolve('apollo-cache-inmemory'),
     },
+    modules: [
+      'node_modules',
+      /**
+       * bs-platform doesn't resolve dependencies of linked packages
+       * correctly: https://github.com/BuckleScript/bucklescript/issues/1691
+       *
+       * To workaround, directly include the linked package node_modules
+       * in our resolution search path.
+       */
+      path.resolve(__dirname, '../bs-amplitude/node_modules')
+    ]
   },
   module: {
     rules: [
@@ -115,7 +126,8 @@ module.exports = {
       ),
       'process.env.RPC_ORIGIN': JSON.stringify('trashcat-rpc.trashed.today'),
       'process.env.SERVICE_WORKER_URL': JSON.stringify('/service-worker.js'),
-      'process.env.SENTRY_DSN': JSON.stringify('https://a40bfb7832ee49ada594bcf7f8d9bf87@sentry.io/1850121')
+      'process.env.SENTRY_DSN': JSON.stringify('https://a40bfb7832ee49ada594bcf7f8d9bf87@sentry.io/1850121'),
+      'process.env.AMPLITUDE_API_KEY': JSON.stringify('e122b34b9cccee448f5b1ae3828f7be1')
     }),
   ].filter(p => Boolean(p)),
   devServer: {

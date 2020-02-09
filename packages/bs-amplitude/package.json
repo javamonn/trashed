@@ -1,0 +1,24 @@
+{
+  "name": "@trashed/bs-amplitude",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bsb:build": "bsb -make-world",
+    "bsb:start": "bsb -make-world -w",
+    "bsb:clean": "bsb -clean-world",
+    "start": "npm run bsb:start"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "bs-platform": "^7.1.0"
+  },
+  "devDependencies": {
+    "bs-platform": "^7.1.0"
+  },
+  "dependencies": {
+    "amplitude-js": "^5.9.0"
+  }
+}
