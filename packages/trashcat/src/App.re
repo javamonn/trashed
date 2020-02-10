@@ -34,6 +34,7 @@ let make = () => {
       );
     });
 
+  let pathname = url.path |> Array.of_list |> Js.Array.joinWith("/");
   let _ =
     React.useEffect1(
       () => {
@@ -54,15 +55,19 @@ let make = () => {
             Service.Permission.Camera.initialize()
           | _ => ()
           };
-        let _ =
-          Analytics.(
-            {path: url.path |> Array.of_list |> Js.Array.joinWith("/")}
-            ->page
-            ->track
-          );
         None;
       },
-      [|url.path |> Array.of_list |> Js.Array.joinWith("/")|],
+      [|pathname|],
+    );
+
+  let _ =
+    React.useEffect1(
+      () => {
+        let _ =
+          Analytics.({path: pathname ++ "?" ++ url.search}->page->track);
+        None;
+      },
+      [|pathname ++ "?" ++ url.search|],
     );
 
   switch (url.path) {
