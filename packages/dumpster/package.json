@@ -2,13 +2,14 @@
   "name": "@trashed/dumpster",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "aws-exports.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "./amplify/scripts/deploy.sh"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT - Hippocratic 1.2",
   "dependencies": {
     "@trashed/bs-aws-amplify": "^1.0.0",
     "@trashed/bs-aws-sdk": "^1.0.0"

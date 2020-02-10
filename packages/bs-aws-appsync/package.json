@@ -1,7 +1,6 @@
 {
   "name": "@trashed/bs-aws-appsync",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,8 +9,16 @@
     "bsb:clean": "bsb -clean-world",
     "start": "npm run bsb:start"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Daniel Ramirez <javamonn@gmail.com>",
+  "homepage": "https://trashed.today",
+  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-aws-appsync",
+  "description": "BuckleScript bindings to aws-appsync.",
+  "keywords": [
+    "bucklescript",
+    "reason",
+    "aws-appsync"
+  ],
+  "license": "MIT - Hippocratic 1.2",
   "dependencies": {
     "aws-appsync": "^3.0.2",
     "aws-appsync-react": "^3.0.2",

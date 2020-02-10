@@ -1,7 +1,15 @@
 {
   "name": "@trashed/bs-amplitude",
   "version": "1.0.0",
-  "description": "",
+  "description": "BuckleScript bindings to amplitude-js.",
+  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-amplitude",
+  "homepage": "https://trashed.today",
+  "keywords": [
+    "bucklescript",
+    "reason",
+    "amplitude",
+    "amplitude-js"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,8 +18,8 @@
     "bsb:clean": "bsb -clean-world",
     "start": "npm run bsb:start"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Daniel Ramirez <javamonn@gmail.com>",
+  "license": "MIT - Hippocratic 1.2",
   "peerDependencies": {
     "bs-platform": "^7.1.0"
   },

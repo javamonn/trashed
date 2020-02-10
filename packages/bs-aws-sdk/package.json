@@ -1,7 +1,6 @@
 {
   "name": "@trashed/bs-aws-sdk",
   "version": "1.0.0",
-  "description": "",
   "main": "src/Index.bs.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,8 +10,16 @@
     "start": "npm run bsb:start",
     "build": "npm run bsb:build"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Daniel Ramirez <javamonn@gmail.com>",
+  "homepage": "https://trashed.today",
+  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-aws-sdk",
+  "description": "BuckleScript bindings to aws-sdk.",
+  "keywords": [
+    "bucklescript",
+    "reason",
+    "aws-sdk"
+  ],
+  "license": "MIT - Hippocratic 1.2",
   "peerDependencies": {
     "aws-sdk": "^2.541.0",
     "bs-platform": "^7.0.1"
