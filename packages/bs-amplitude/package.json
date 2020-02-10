@@ -1,13 +1,16 @@
 {
-  "name": "@trashed/bs-aws-amplify",
+  "name": "@trashed/bs-amplitude",
   "version": "1.0.0",
-  "description": "BuckleScript bindings to aws-amplify.",
+  "description": "BuckleScript bindings to amplitude-js.",
+  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-amplitude",
+  "homepage": "https://trashed.today",
   "keywords": [
     "bucklescript",
     "reason",
-    "aws-amplify"
+    "amplitude",
+    "amplitude-js"
   ],
-  "main": "src/AwsAmplify.bs.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bsb:build": "bsb -make-world",
@@ -16,20 +19,14 @@
     "start": "npm run bsb:start"
   },
   "author": "Daniel Ramirez <javamonn@gmail.com>",
-  "homepage": "https://trashed.today",
-  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-aws-amplify",
   "license": "MIT - Hippocratic 1.2",
-  "dependencies": {
-    "@aws-amplify/api": "^1.2.4",
-    "@aws-amplify/auth": "^1.5.0",
-    "@aws-amplify/core": "^1.2.4",
-    "@aws-amplify/pubsub": "^1.2.4",
-    "@aws-amplify/storage": "^1.2.4"
-  },
   "peerDependencies": {
     "bs-platform": "^7.1.0"
   },
   "devDependencies": {
     "bs-platform": "^7.1.0"
+  },
+  "dependencies": {
+    "amplitude-js": "^5.9.0"
   }
 }

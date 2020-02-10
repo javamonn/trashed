@@ -1,6 +1,7 @@
 {
-  "name": "trashcat",
+  "name": "@trashed/trashcat",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -22,7 +23,7 @@
     "start:all": "concurrently -k -n \"bsb,webpack,serve\" \"npm run bsb:start\" \"npm run webpack:serve\""
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT - Hippocratic 1.2",
   "devDependencies": {
     "@baransu/graphql_ppx_re": "^0.4.6",
     "@fullhuman/postcss-purgecss": "^1.3.0",
@@ -58,14 +59,17 @@
     "@aws-amplify/storage": "^1.2.4",
     "@material-ui/core": "^4.7.0",
     "@sentry/browser": "^5.10.1",
+    "@trashed/bs-aws-amplify": "^1.0.0",
+    "@trashed/bs-aws-appsync": "^1.0.0",
+    "@trashed/bs-sentry": "^1.0.0",
+    "@trashed/apollo-link-analytics": "^1.0.0",
+    "@trashed/bs-amplitude": "^1.0.0",
     "apollo-cache-inmemory": "^1.4.3",
     "aws-appsync": "^2.0.0",
     "aws-appsync-react": "^2.0.0",
     "bowser": "^2.5.3",
-    "bs-aws-amplify": "^1.0.0",
     "bs-date-fns": "^0.1.6",
     "bs-fetch": "^0.5.0",
-    "bs-sentry": "^1.0.0",
     "bs-webapi": "^0.15.3",
     "decco": "^1.1.1",
     "js-cookie": "^2.2.1",

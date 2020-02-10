@@ -19,14 +19,20 @@
     "reason-react",
     "re-classnames",
     "bs-webapi",
-    "bs-aws-amplify",
-    "bs-sentry",
+    "@trashed/bs-aws-amplify",
+    "@trashed/bs-sentry",
+    "@trashed/bs-aws-appsync",
+    "@trashed/apollo-link-analytics",
+    "@trashed/bs-amplitude",
     "bs-date-fns",
     "bs-fetch",
     "reason-apollo",
     "reason-apollo-hooks",
     "decco"
   ],
-  "ppx-flags": ["decco/ppx", "@baransu/graphql_ppx_re/ppx6"],
+  "ppx-flags": [
+    "decco/ppx",
+    "@baransu/graphql_ppx_re/ppx6"
+  ],
   "refmt": 3
 }

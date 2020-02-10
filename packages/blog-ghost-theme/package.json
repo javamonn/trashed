@@ -1,7 +1,11 @@
 {
-  "name": "blog-ghost-theme",
+  "name": "@trashed/blog-ghost-theme",
   "version": "1.0.0",
-  "description": "",
+  "author": "Daniel Ramirez <javamonn@gmail.com>",
+  "homepage": "https://trashed.today",
+  "repository": "https://github.com/javamonn/trashed/tree/master/packages/blog-ghost-theme",
+  "description": "Ghost theme for https://blog.trashed.today.",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,8 +14,7 @@
     "ghost:init": "mkdir -p ./local-site && cd ./local-site && ghost install local",
     "ghost:install-theme": "cp -r ./src/. ./local-site/content/themes/trashed"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT - Hippocratic 1.2",
   "dependencies": {
     "ghost-cli": "^1.13.1"
   }

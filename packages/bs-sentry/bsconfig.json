@@ -1,5 +1,5 @@
 {
-  "name": "bs-sentry",
+  "name": "@trashed/bs-sentry",
   "reason": {
     "react-jsx": 3
   },

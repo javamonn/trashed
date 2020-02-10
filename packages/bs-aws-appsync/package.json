@@ -1,31 +1,35 @@
 {
-  "name": "@trashed/bs-aws-sdk",
+  "name": "@trashed/bs-aws-appsync",
   "version": "1.0.0",
-  "main": "src/Index.bs.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bsb:build": "bsb -make-world",
     "bsb:start": "bsb -make-world -w",
     "bsb:clean": "bsb -clean-world",
-    "start": "npm run bsb:start",
-    "build": "npm run bsb:build"
+    "start": "npm run bsb:start"
   },
   "author": "Daniel Ramirez <javamonn@gmail.com>",
   "homepage": "https://trashed.today",
-  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-aws-sdk",
-  "description": "BuckleScript bindings to aws-sdk.",
+  "repository": "https://github.com/javamonn/trashed/tree/master/packages/bs-aws-appsync",
+  "description": "BuckleScript bindings to aws-appsync.",
   "keywords": [
     "bucklescript",
     "reason",
-    "aws-sdk"
+    "aws-appsync"
   ],
   "license": "MIT - Hippocratic 1.2",
+  "dependencies": {
+    "aws-appsync": "^3.0.2",
+    "aws-appsync-react": "^3.0.2",
+    "reason-apollo": "^0.18.0",
+    "reason-react": "^0.7.0",
+    "@trashed/bs-aws-amplify": "^1.0.0"
+  },
   "peerDependencies": {
-    "aws-sdk": "^2.541.0",
     "bs-platform": "^7.0.1"
   },
   "devDependencies": {
-    "aws-sdk": "^2.541.0",
     "bs-platform": "^7.0.1"
   }
 }
