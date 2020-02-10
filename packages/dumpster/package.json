@@ -13,6 +13,5 @@
   "dependencies": {
     "@trashed/bs-aws-amplify": "^1.0.0",
     "@trashed/bs-aws-sdk": "^1.0.0"
-  },
-  "devDependencies": {}
+  }
 }
