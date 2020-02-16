@@ -72,6 +72,7 @@ let make = () => {
 
   switch (url.path) {
   | [] => <ErrorBoundary> <Screen.Landing /> </ErrorBoundary>
+  | ["about"] => <ErrorBoundary> <Screen.About /> </ErrorBoundary>
   | ["coming-soon"] => <ErrorBoundary> <Screen.ComingSoon /> </ErrorBoundary>
   | ["item", ...rest] =>
     let tab =

@@ -1,6 +1,6 @@
 open Lib.Styles;
 
-let renderLink = (~text, ~href, ~isLocal) => {
+let renderLink = (~text, ~href, ~isLocal, ~className=?, ()) => {
   let children =
     <>
       <div
@@ -21,10 +21,24 @@ let renderLink = (~text, ~href, ~isLocal) => {
     </>;
 
   isLocal
-    ? <Link href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+    ? <Link
+        href
+        className={cn([
+          "flex",
+          "flex-row",
+          "items-center",
+          Cn.unpack(className),
+        ])}>
         children
       </Link>
-    : <a href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+    : <a
+        href
+        className={cn([
+          "flex",
+          "flex-row",
+          "items-center",
+          Cn.unpack(className),
+        ])}>
         children
       </a>;
 };
@@ -46,7 +60,7 @@ let make = () => {
         ])}>
         <span className={cn(["text-lg", "font-bold"])}>
           {React.string(
-             "trashed helps you find and reclaim objects that have been thrown out.",
+             "trashed helps you find and reclaim objects that have been thrown out by someone else.",
            )}
         </span>
         <div className={cn(["my-4"])} />
@@ -67,15 +81,22 @@ let make = () => {
           "flex",
           "justify-center",
           "items-center",
-          "py-3",
+          "py-6",
         ])}>
         <div>
-          {renderLink(~text="App", ~href="/coming-soon", ~isLocal=true)}
-          {renderLink(~text="About", ~href="/coming-soon", ~isLocal=true)}
+          {renderLink(~text="App", ~href="/item/feed", ~isLocal=true, ())}
+          {renderLink(
+             ~text="About",
+             ~href="/about",
+             ~isLocal=true,
+             ~className=cn(["my-8"]),
+             (),
+           )}
           {renderLink(
              ~text="Blog",
              ~href="https://blog.trashed.today",
              ~isLocal=false,
+             (),
            )}
         </div>
       </div>
