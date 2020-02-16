@@ -19,8 +19,9 @@ let make = () =>
       "bg-brandYellow",
       "py-8",
       "px-6",
+      "overflow-y-scroll",
     ])}>
-    <div className={cn(["py-8", "text-xl", "font-bold"])}>
+    <div className={cn(["py-8", "text-lg", "font-bold"])}>
       {React.string(
          "trashed is a free, decentralized, and efficient peer-to-peer recycling system.",
        )}
@@ -38,7 +39,7 @@ let make = () =>
                "flex-shrink-0",
              ])}
            />
-           <div className={cn(["text-black", "text-xl", "font-bold"])}>
+           <div className={cn(["text-black", "text-lg", "font-bold"])}>
              {React.string(text)}
            </div>
          </div>

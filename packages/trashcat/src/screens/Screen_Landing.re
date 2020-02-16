@@ -1,6 +1,6 @@
 open Lib.Styles;
 
-let renderLink = (~text, ~href, ~isLocal) => {
+let renderLink = (~text, ~href, ~isLocal, ~className=?, ()) => {
   let children =
     <>
       <div
@@ -21,10 +21,24 @@ let renderLink = (~text, ~href, ~isLocal) => {
     </>;
 
   isLocal
-    ? <Link href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+    ? <Link
+        href
+        className={cn([
+          "flex",
+          "flex-row",
+          "items-center",
+          Cn.unpack(className),
+        ])}>
         children
       </Link>
-    : <a href className={cn(["flex", "flex-row", "my-8", "items-center"])}>
+    : <a
+        href
+        className={cn([
+          "flex",
+          "flex-row",
+          "items-center",
+          Cn.unpack(className),
+        ])}>
         children
       </a>;
 };
@@ -67,15 +81,22 @@ let make = () => {
           "flex",
           "justify-center",
           "items-center",
-          "py-3",
+          "py-6",
         ])}>
         <div>
-          {renderLink(~text="App", ~href="/item/feed", ~isLocal=true)}
-          {renderLink(~text="About", ~href="/about", ~isLocal=true)}
+          {renderLink(~text="App", ~href="/item/feed", ~isLocal=true, ())}
+          {renderLink(
+             ~text="About",
+             ~href="/about",
+             ~isLocal=true,
+             ~className=cn(["my-8"]),
+             (),
+           )}
           {renderLink(
              ~text="Blog",
              ~href="https://blog.trashed.today",
              ~isLocal=false,
+             (),
            )}
         </div>
       </div>
