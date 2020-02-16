@@ -46,7 +46,7 @@ let make = () => {
         ])}>
         <span className={cn(["text-lg", "font-bold"])}>
           {React.string(
-             "trashed helps you find and reclaim objects that have been thrown out.",
+             "trashed helps you find and reclaim objects that have been thrown out by someone else.",
            )}
         </span>
         <div className={cn(["my-4"])} />
@@ -70,8 +70,8 @@ let make = () => {
           "py-3",
         ])}>
         <div>
-          {renderLink(~text="App", ~href="/coming-soon", ~isLocal=true)}
-          {renderLink(~text="About", ~href="/coming-soon", ~isLocal=true)}
+          {renderLink(~text="App", ~href="/item/feed", ~isLocal=true)}
+          {renderLink(~text="About", ~href="/about", ~isLocal=true)}
           {renderLink(
              ~text="Blog",
              ~href="https://blog.trashed.today",
