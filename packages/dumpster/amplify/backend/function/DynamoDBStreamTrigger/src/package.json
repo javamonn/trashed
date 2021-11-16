@@ -10,7 +10,7 @@
     "@aws-amplify/core": "^2.2.1",
     "@aws-amplify/pubsub": "^2.1.1",
     "@glennsl/bs-json": "^5.0.1",
-    "aws-sdk": "^2.597.0",
+    "aws-sdk": "^2.814.0",
     "bs-platform": "^7.0.1",
     "@baransu/graphql_ppx_re": "^0.4.6",
     "uuid": "^3.3.3"
