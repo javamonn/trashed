@@ -13,7 +13,7 @@
     "dotenv": "^8.1.0",
     "dotenv-cli": "^2.0.1",
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.12"
   },
   "scripts": {
     "bsb:build": "bsb -make-world",
